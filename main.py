@@ -14,7 +14,7 @@ driver = Chrome(chrome_options=chrome_options)
 
 
 
-#paulo é ruim ok
+#paulo é ruim
 
 #Inicia o navegador
 chamarDriver(driver)
