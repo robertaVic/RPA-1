@@ -11,6 +11,11 @@ prefs = {"profile.default_content_setting_values.notifications" : 1, 'profile.de
 chrome_options.add_experimental_option("prefs",prefs)
 driver = Chrome(chrome_options=chrome_options)
 
+
+
+
+#paulo é ruim 
+
 #Inicia o navegador
 chamarDriver(driver)
 #Login
