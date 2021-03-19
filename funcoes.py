@@ -3,23 +3,28 @@ from datetime import date
 #Inicia o navegador
 def chamarDriver(navegador):
     navegador.get("https://tpf.madrix.app/?next=/app")
-    navegador.maximize_window()
     navegador.implicitly_wait(120)
 
-#Faz login
+def criarPasta(onedrive, dataCriaçao):
+    onedrive.maximize_window()
+    onedrive.implicitly_wait(120)
+    onedrive.get("https://tpfecombr-my.sharepoint.com")
+    onedrive.find_element_by_xpath("/html/body/div/form[1]/div/div/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div[2]/div[2]/div/input[1]").send_keys("roberta.costa@tpfe.com.br")
+    onedrive.find_element_by_xpath("/html/body/div/form[1]/div/div/div[2]/div/div/div[1]/div[2]/div[2]/div/div/div/div[4]/div/div/div/div/input").click()
+    onedrive.find_element_by_xpath("/html/body/div/form[1]/div/div/div[2]/div/div/div[1]/div[2]/div[2]/div/div[2]/div/div[2]/div/div[2]/input").send_keys("Tecoteco123")
+    onedrive.find_element_by_xpath("/html/body/div/form[1]/div/div/div[2]/div/div/div[1]/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div/div/div/div/input").click()
+    onedrive.find_element_by_xpath("/html/body/div/form/div/div/div[1]/div[2]/div/div[2]/div/div[3]/div[2]/div/div/div[1]/input").click()
+    #onedrive.find_element_by_xpath("/html/body/div[3]/div/div[2]/div/div/div/div[2]/div[2]/main/div/div/div[2]/div/div/div/div/div[2]/div/div/div/div[1]/div/div/div/div[3]/div/div[1]/span/span/button").click()
+    #criar pasta
+    onedrive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/div/div/div[2]/div[1]/div/div/div/div/div/div[1]/div[1]/button").click()
+    onedrive.find_element_by_xpath("/html/body/div[3]/div/div/div/div/div/div/ul/li[1]/button").click()
+    onedrive.find_element_by_xpath("/html/body/div[3]/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div/div/div/input").send_keys(f"{dataCriaçao}")
+    onedrive.find_element_by_xpath("/html/body/div[3]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/span/button").click()
+#Faz login   
 def fazerLogin(login):
-    login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input").send_keys("")
-    login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[2]/div/div/div/input").send_keys("")
+    login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input").send_keys("roberta.costa")
+    login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[2]/div/div/div/input").send_keys("123")
     login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button/span[1]").click()
-
-#aceita alerta
-# def aceitarAlerta(alerta):
-#     try:
-#         alert = alerta.switch_to_alert()
-#         alert.accept()
-#     except:
-#         print("SEM ALERTA")
-#Seleciona o modulo financeiro
 
 def direcionaSolicitado(financeiro):
     financeiro.implicitly_wait(120)
