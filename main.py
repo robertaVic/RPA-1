@@ -1,8 +1,8 @@
 #Codigo Principal
 from selenium import webdriver
 from selenium.webdriver import Chrome
-from funcoes2 import chamarDriver, fazerLogin, criarPasta, direcionaSolicitado
-from pgAvulso2 import pgtoAvulso, chamarSharepoint, baixarNf
+from funcoes import chamarDriver, fazerLogin, criarPasta, direcionaSolicitado
+from pgAvulso import pgtoAvulso, chamarSharepoint, baixarNf
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
