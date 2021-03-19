@@ -23,6 +23,7 @@ driver = Chrome(chrome_options=chrome_options)
 
 #criar a pasta do dia no onedrive
 criarPasta(driver, data_em_texto)
+
 #Inicia o navegador
 chamarDriver(driver)
 
