@@ -1,5 +1,6 @@
 from time import sleep
 from datetime import date
+
 #Inicia o navegador
 def chamarDriver(navegador):
     navegador.get("https://tpf.madrix.app/?next=/app")
@@ -51,6 +52,7 @@ def direcionaSolicitado(financeiro):
     
     
     #abrir a linha (Laço para todos itens filtrados)
+    
     sleep(3)
     financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]").click()
     #clique em certidoes
