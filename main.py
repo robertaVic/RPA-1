@@ -15,7 +15,7 @@ print(data_em_texto)
 chrome_options = webdriver.ChromeOptions()
 #permitir notificaçoes e download automatico
 prefs = {"profile.default_content_setting_values.notifications" : 1, "profile.default_content_setting_values.automatic_downloads": 1,
-        "download.default_directory": r"C:\Users\Usuario\OneDrive - tpfe.com.br\{data_em_texto}\{pastaSolicitacao}"}
+        "download.default_directory": r"C:\Users\Usuario\OneDrive - tpfe.com.br\ "+ data_em_texto + "\ " +pastaSolicitacao+ " }
         
 chrome_options.add_experimental_option("prefs",prefs)
 driver = Chrome(chrome_options=chrome_options)
