@@ -3,18 +3,23 @@ from selenium import webdriver
 from selenium.webdriver import Chrome
 from funcoes import *
 from pgAvulso import *
-from downloads import direcionarDownloads
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
 
+def direcionarDownloads(id):
+    #
+    global pref
+    pref = (r"C:\\Users\\Usuario\\OneDrive - tpfe.com.br\\" + str(data_em_texto) + "\\"+ str(id))
 #data
 today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 print(data_em_texto)
+print(pref)
 #preferencias do chrome
 chrome_options = webdriver.ChromeOptions()
-# chrome_options.add_experimental_option("prefs", )
+prefs = {"profile.default_content_setting_values.notifications" : 1, "profile.default_content_setting_values.automatic_downloads": 1, "download.default_directory": pref }
+chrome_options.add_experimental_option("prefs", prefs)
 driver = Chrome(chrome_options=chrome_options)
 
 #criar a pasta do dia no onedrive
