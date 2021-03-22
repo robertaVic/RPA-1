@@ -24,9 +24,26 @@ def pgtoAvulso(financeiro):
     
     #abrir a linha (Laço para todos itens filtrados)
     sleep(10)
+    tbody1 = financeiro.find_element_by_xpath("//*[@id='mainContent']/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody")
+    rows1 = tbody1.find_elements_by_tag_name("a")
 
-    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
-    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
+    solicitaçao = [] 
+    for row in range(len(rows1)):
+        solicitaçao.append(row)
+    print(solicitaçao)
+    for linha in solicitaçao:
+        index1 = str(linha+1)
+        #para cada linha guardar as informações dela
+        global identificador
+        identificador = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[4]/div").get_attribute("innerText")
+        global razao
+        razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[6]/div").get_attribute("innerText")
+        nomeDaPasta = (f"ID {identificador} {razao}")
+        print(nomeDaPasta)
+        
+
+    # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
+    # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
 #após pegar os valores do formulário, ir no onedrive e criar pasta com o ID + RAZAO SOCIAL 
 def chamarSharepoint(nuvem, Keys):
     nuvem.find_element_by_tag_name('body').send_keys(Keys.COMMAND + 't')
@@ -45,7 +62,6 @@ def chamarSharepoint(nuvem, Keys):
 
     nuvem.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/div/div/div[2]/div[1]/div/div/div/div/div/div[1]/div[1]/button").click()
     nuvem.find_element_by_xpath("/html/body/div[7]/div/div/div/div/div/div/ul/li[1]/button").click()
-    global pastaSolicitacao
     pastaSolicitacao = (f"ID {identificador} {razao}")
     nuvem.find_element_by_xpath("/html/body/div[7]/div/div/div/div[2]/div[2]/div/div[2]/div[1]/div/div/div/div/input").send_keys(pastaSolicitacao)
     nuvem.find_element_by_xpath("/html/body/div[3]/div/div/div/div[2]/div[2]/div/div[2]/div[2]/div/span/button").click()
@@ -72,37 +88,15 @@ def baixarNf(financeiro):
     # financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[10]/div/div/div/div/div/div[1]/div/input").send_keys(dataA)
     financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/button").click()#send_keys("\n")
     
-    #abrir a linha (Laço para todos itens filtrados)
+    #abrir a linha
     sleep(10)
-    tbody1 = financeiro.find_element_by_xpath("//*[@id='mainContent']/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody")
-    rows1 = tbody1.find_elements_by_tag_name("a")
-
-    solicitaçao = [] 
-    for row in range(len(rows1)):
-        solicitaçao.append(row)
-    print(solicitaçao)
-    for linha in solicitaçao:
-        index1 = str(linha+1)
-        #para cada linha guardar as informações dela
-        global identificador
-        identificador = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[4]/div").get_attribute("innerText")
-        global razao
-        razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[6]/div").get_attribute("innerText")
-        nomeDaPasta = (f"ID {identificador} {razao}")
-        print(nomeDaPasta)
-        direcionarDownloads(nomeDaPasta)
+    
     financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
     financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
     #sleep(2)
     #financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div[1]/div[2]/div/div/div/div/div[1]/div[3]/table/tbody/tr/td[2]/div[2]/div/a").click()
     #nota
     financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
-    #pegar o id de solicitação + razao social
-    
-    ("/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[2]/span")
-    print(identificador)
-    ("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[1]/div/div/input").get_attribute("value")
-    print(razao)
 
     # notaFiscal
     tbody2 = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody")
@@ -116,7 +110,7 @@ def baixarNf(financeiro):
         index2 = str(nota+1)
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ index2 +"]/td[2]/div[2]/div/a").click()#send_keys("\n")
         print(f"{index}º NF baixada!")
-
+        direcionarDownloads(nomeDaPasta)
     sleep(10)    
 
 
