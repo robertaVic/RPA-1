@@ -1,6 +1,8 @@
 from time import sleep
 from datetime import date
 from main import direcionarDownloads
+
+
 def pgtoAvulso(financeiro):
     financeiro.implicitly_wait(120)
     # sleep(10)
@@ -30,9 +32,11 @@ def pgtoAvulso(financeiro):
     global solicitaçao
     solicitaçao = [] 
     for row in range(len(rows1)):
-        solicitaçao.append(row)
+        solicitaçao.append(row) #armazenando os indices de cada linha
+
     print(solicitaçao)
-    for linha in solicitaçao:
+
+    for linha in solicitaçao: #para cada linha na solicitação
         index1 = str(linha+1)
         #para cada linha guardar as informações dela
         global identificador
@@ -42,6 +46,7 @@ def pgtoAvulso(financeiro):
         global pastas
         pastas = []
         nomeDaPasta = (f"ID {identificador} {razao}")
+        #adicionar todos os nomes de pasta para uma lista(será usado para a criaçao na nuvem)
         pastas.append(nomeDaPasta)
         print(pastas)
 

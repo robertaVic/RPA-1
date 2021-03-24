@@ -8,7 +8,8 @@ from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
 
 def direcionarDownloads(id):
-    #
+    today = date.today()
+    data_em_texto = today.strftime("%d.%m.%Y")
     global pref
     pref = (r"C:\\Users\\Usuario\\OneDrive - tpfe.com.br\\" + str(data_em_texto) + "\\"+ str(id))
 #data
