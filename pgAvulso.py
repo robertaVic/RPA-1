@@ -7,7 +7,6 @@ today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 
 def pgtoAvulso(financeiro):
-    financeiro.maximize_window()
     financeiro.implicitly_wait(120)
     # sleep(10)
     # financeiro.refresh()

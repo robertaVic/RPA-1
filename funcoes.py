@@ -4,6 +4,7 @@ from datetime import date
 #Inicia o navegador
 def chamarDriver(navegador):
     navegador.get("https://tpf.madrix.app/?next=/app")
+    navegador.maximize_window()
     navegador.implicitly_wait(120)
 
 # def criarPasta(onedrive, dataCriaçao):
