@@ -11,11 +11,13 @@ from datetime import date,datetime
 #preferencias do chrome
 def padraoChrome(diretorio):
     chrome_options = webdriver.ChromeOptions()
-    prefs = {"profile.default_content_setting_values.notifications" : 1, "profile.default_content_setting_values.automatic_downloads": 1, #diretorio  }
+    prefs = {"profile.default_content_setting_values.notifications" : 1, "profile.default_content_setting_values.automatic_downloads": 1, "default_directory": "C:\\Users\\Usuario\\" + diretorio }
     chrome_options.add_experimental_option("prefs", prefs)
     return chrome_options
 
-chrome_options = padraoChrome()
+
+diretorioPadrao = "Downloads" 
+chrome_options = padraoChrome(diretorioPadrao)
 driver = Chrome(chrome_options=chrome_options)
 
 #criar a pasta do dia no onedrive

@@ -1,7 +1,10 @@
 from time import sleep
 from datetime import date
 import gerenciadorPastas
+from main import padraoChrome
 
+today = date.today()
+data_em_texto = today.strftime("%d.%m.%Y")
 
 def pgtoAvulso(financeiro):
     financeiro.implicitly_wait(120)
@@ -45,8 +48,25 @@ def pgtoAvulso(financeiro):
         razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[6]/div").get_attribute("innerText")
         nomeDaPasta = (f"ID {identificador} {razao}")
         print(nomeDaPasta)
-        #adicionar todos os nomes de pasta para uma lista(será usado para a criaçao na nuvem)
         gerenciadorPastas.criarPastasFilhas(nomeDaPasta)
+        sleep(10)
+        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[2]/span/span[1]/input").click()
+        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
+        financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
+
+        tbody2 = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody")
+        rows2 = tbody2.find_elements_by_tag_name("a") # pega todas as linhas que contem nf
+        padraoChrome("OneDrive - tpfe.com.br\\" + data_em_texto + "\\" + nomeDaPasta )
+        for row in range(len(rows2)):
+            nf.append(row)
+        print(nf)
+        for nota in nf:
+        #para cada nf, baixar cada uma delas
+            index2 = str(nota+1)
+            financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ index2 +"]/td[2]/div[2]/div/a").click()#send_keys("\n")
+            print(f"{index}º NF baixada!")
+        
+        
 
 #após pegar os valores do formulário, ir no onedrive e criar pasta com o ID + RAZAO SOCIAL 
 def chamarSharepoint(nuvem, Keys):
@@ -96,10 +116,7 @@ def baixarNf(financeiro):
     
     financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
     financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
-    #sleep(2)
-    #financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div[1]/div[2]/div/div/div/div/div[1]/div[3]/table/tbody/tr/td[2]/div[2]/div/a").click()
-    #nota
-    
+   
     #para cada solicitaçao, baixar as nf
     tbody1 = financeiro.find_element_by_xpath("//*[@id='mainContent']/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody")
     rows1 = tbody1.find_elements_by_tag_name("a")
@@ -109,25 +126,12 @@ def baixarNf(financeiro):
     #Laço para entrar nas solicitações e baixar todas as NF no caminho certo
     for linha in solicitaçao:
         index1 = str(linha+1)
-        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[2]/span/span[1]/input").click()
-        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
-        financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
-
-        tbody2 = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody")
-        rows2 = tbody2.find_elements_by_tag_name("a") # pega todas as linhas que contem nf
         
-        for row in range(len(rows2)):
-            nf.append(row)
-        print(nf)
-        for nota in nf:
-        #para cada nf, baixar cada uma delas
-            index2 = str(nota+1)
             #para cada pasta criada no sharepoint
             for pastaEpecifica in pastas:
                 #para cada
                 direcionarDownloads(pastaEpecifica)
-            financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ index2 +"]/td[2]/div[2]/div/a").click()#send_keys("\n")
-            print(f"{index}º NF baixada!")
+           
             
 
         
