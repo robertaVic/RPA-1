@@ -1,10 +1,14 @@
 import os
+import getpass
+# from pathlib import Path
 from datetime import date,datetime
+
+usuario = getpass.getuser()
 
 today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 
-pref = "C:\\Users\\Usuario\\OneDrive - tpfe.com.br\\" 
+pref = "C:\\Users\\"+ usuario +"\\OneDrive - tpfe.com.br\\RPA-DEV" 
 
 def criarPastaData(pref, nomePasta):
     try:
@@ -17,5 +21,5 @@ def criarPastasFilhas(identificador):
     except:
         print("Já existe a pasta")
 
-criarPastaData(pref, data_em_texto)
+
 
