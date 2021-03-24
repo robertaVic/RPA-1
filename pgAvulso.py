@@ -6,7 +6,7 @@ from main import padraoChrome
 today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 
-def pgtoAvulso(financeiro):
+def pagamentoAvulso(financeiro):
     financeiro.implicitly_wait(120)
     # sleep(10)
     # financeiro.refresh()

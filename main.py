@@ -2,7 +2,7 @@
 from selenium import webdriver
 from selenium.webdriver import Chrome
 from funcoes import *
-import pgAvulso
+from pgAvulso import pagamentoAvulso
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
@@ -40,7 +40,7 @@ chamarDriver(driver)
 fazerLogin(driver)
 
 #entra no pagamento avulso
-pgAvulso.pgtoAvulso(driver)
+pagamentoAvulso(driver)
 
 #volta para o sgp para baixar as NF'S
 # baixarNf(driver)
