@@ -10,13 +10,6 @@ from pgAvulso import pagamentoAvulso
 import getpass
 
 
-#preferencias do chrome
-def padraoChrome(diretorio):
-    usuario = getpass.getuser()
-    chrome_options = webdriver.ChromeOptions()
-    prefs = {"profile.default_content_setting_values.notifications" : 1, "profile.default_content_setting_values.automatic_downloads": 1, "default_directory": "C:\\Users\\"+ usuario +"\\" + diretorio }
-    chrome_options.add_experimental_option("prefs", prefs)
-    return chrome_options
 
 diretorioPadrao = "Downloads"
 chrome_options = padraoChrome(diretorioPadrao)

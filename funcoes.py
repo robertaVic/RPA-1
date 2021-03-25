@@ -1,6 +1,13 @@
 from time import sleep
 from datetime import date
 
+#preferencias do chrome
+def padraoChrome(diretorio):
+    usuario = getpass.getuser()
+    chrome_options = webdriver.ChromeOptions()
+    prefs = {"profile.default_content_setting_values.notifications" : 1, "profile.default_content_setting_values.automatic_downloads": 1, "default_directory": "C:\\Users\\"+ usuario +"\\" + diretorio }
+    chrome_options.add_experimental_option("prefs", prefs)
+    return chrome_options
 
 #Inicia o navegador
 def chamarDriver(navegador):
