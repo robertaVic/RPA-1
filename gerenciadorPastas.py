@@ -8,7 +8,7 @@ usuario = getpass.getuser()
 today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 
-pref = "C:\\Users\\"+ usuario +"\\OneDrive - tpfe.com.br\\RPA-DEV" 
+pref = "C:\\Users\\"+ usuario +"\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
 
 def criarPastaData(pref, nomePasta):
     try:

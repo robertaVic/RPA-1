@@ -2,11 +2,11 @@
 from selenium import webdriver
 from selenium.webdriver import Chrome
 from funcoes import *
-from pgAvulso import pagamentoAvulso
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
 from gerenciadorPastas import criarPastaData
+from pgAvulso import pagamentoAvulso
 import getpass
 
 
@@ -23,6 +23,7 @@ chrome_options = padraoChrome(diretorioPadrao)
 
 usuario = getpass.getuser()
 print(usuario)
+
 today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 pref = "C:\\Users\\"+ usuario +"\\OneDrive - tpfe.com.br\\RPA-DEV" 

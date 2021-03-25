@@ -1,6 +1,7 @@
 from time import sleep
 from datetime import date
 
+
 #Inicia o navegador
 def chamarDriver(navegador):
     navegador.get("https://tpf.madrix.app/?next=/app")

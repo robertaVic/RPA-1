@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import date
 import gerenciadorPastas
-from main import padraoChrome
+# from main import padraoChrome
 
 today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
