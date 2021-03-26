@@ -1,11 +1,14 @@
 from time import sleep
 from datetime import date
+import getpass
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 
 #preferencias do chrome
 def padraoChrome(diretorio):
     usuario = getpass.getuser()
     chrome_options = webdriver.ChromeOptions()
-    prefs = {"profile.default_content_setting_values.notifications" : 1, "profile.default_content_setting_values.automatic_downloads": 1, "default_directory": "C:\\Users\\"+ usuario +"\\" + diretorio }
+    prefs = {"profile.default_content_setting_values.notifications" : 1, "profile.default_content_setting_values.automatic_downloads": 1, "download.default_directory": "C:\\Users\\"+ usuario +"\\" + diretorio }
     chrome_options.add_experimental_option("prefs", prefs)
     return chrome_options
 
@@ -13,7 +16,7 @@ def padraoChrome(diretorio):
 def chamarDriver(navegador):
     navegador.get("https://tpf.madrix.app/?next=/app")
     navegador.maximize_window()
-    navegador.implicitly_wait(120)
+    navegador.implicitly_wait(100)
 
 # def criarPasta(onedrive, dataCriaçao):
 #     onedrive.maximize_window()
