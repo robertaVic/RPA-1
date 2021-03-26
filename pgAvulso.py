@@ -4,6 +4,7 @@ import gerenciadorPastas
 from funcoes import padraoChrome
 import shutil
 import os
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains 
 
 
@@ -12,7 +13,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 #retornar a data atual
 today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
-
+pref = gerenciadorPastas.recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
 
 
 def pagamentoAvulso(financeiro):
@@ -29,7 +30,7 @@ def pagamentoAvulso(financeiro):
     #dataA = date.today().strftime("%d/%m/%Y")
     sleep(10)
     #limpar filtro  => financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[2]/button").click()
-    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]").send_keys("\n")
+    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]").click()
     financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div").send_keys("\n")
     financeiro.find_element_by_xpath("/html/body/div[6]/div[3]/ul/li[3]").send_keys("\n")
     financeiro.find_element_by_xpath("/html/body/div[6]/div[1]").click()
@@ -68,13 +69,16 @@ def pagamentoAvulso(financeiro):
         #tempo para salvar todas pastas
         sleep(1.5)
         #direcionando o diretorio de baixar a nf
-        padraoChrome("\\OneDrive - tpfe.com.br\\RPA-DEV\\"+ data_em_texto +"\\" + nomeDaPasta +"\\")
+        #padraoChrome("\\OneDrive - tpfe.com.br\\RPA-DEV\\"+ data_em_texto +"\\" + nomeDaPasta +"\\")
         #poderiamos reutilizar o laço de "linha in solicitaçao", mas preciso que o nome da pasta seja um elemento iteravel
         #para podermos usar o nome da pasta para direcionar o caminho das nf's
         #para cada solicitaçao, clique nelas e baixe as nf e imprima
         #pega a posição dela na lista
         #acrescenta mais um para ser inserido corretamente no xpath
+        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
+        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
         financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[2]/span/span[1]/input").click()
+        #financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[""]")
         financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
 
@@ -117,10 +121,20 @@ def pagamentoAvulso(financeiro):
 
         financeiro.find_element_by_xpath("/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]").click()
         financeiro.find_element_by_xpath("/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td").click()
+        financeiro.switch_to.default_content()
+        # financeiro.find_element_by_xpath("/html/body/div[8]/div[3]").send_keys(Keys.ESC)
         financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button").click()
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button").click()
+        sleep(5)
 
-#após pegar os valores do formulário, ir no onedrive e criar pasta com o ID + RAZAO SOCIAL 
+        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(pref)
+        print(arquivos)
+        for arquivo in arquivos:
+            print(arquivo)
+            shutil.move(pref + arquivo, pref + data_em_texto +"\\" + nomeDaPasta +"\\" + arquivo)
+            print("moveu o arquivo!")
+
+
 # def chamarSharepoint(nuvem, Keys):
 #     nuvem.find_element_by_tag_name('body').send_keys(Keys.COMMAND + 't')
 
