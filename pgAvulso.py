@@ -3,17 +3,20 @@ from datetime import date
 import gerenciadorPastas
 from funcoes import padraoChrome
 import shutil
-import getpass
 import os
+from selenium.webdriver.common.action_chains import ActionChains 
+
 
 #retornar o usuario da maquina utilizada pelo robo
-usuario = getpass.getuser()
+# usuario = getpass.getuser()
 #retornar a data atual
 today = date.today()
-  
 data_em_texto = today.strftime("%d.%m.%Y")
 
+
+
 def pagamentoAvulso(financeiro):
+    builder = ActionChains(financeiro)
     financeiro.implicitly_wait(120)
     # sleep(10)
     # financeiro.refresh()
@@ -45,7 +48,7 @@ def pagamentoAvulso(financeiro):
         solicitaçao.append(row) #armazenando os indices de cada linha
 
     print(solicitaçao)
-    pastas = []
+    # pastas = []
     for linha in solicitaçao: #para cada linha na solicitação
         index1 = str(linha+1)
         #para cada linha guardar as informações dela
@@ -59,52 +62,59 @@ def pagamentoAvulso(financeiro):
         nomeDaPasta = (f"ID {identificador} {razao}")
         print(nomeDaPasta)
         #adicionando cada modelo de nome de pasta para uma lista
-        pastas.append(nomeDaPasta)
-    for cadaPasta in pastas:
+        # pastas.append(nomeDaPasta)
         #para cada solicitaçao, criar as pastas respectivas
-        gerenciadorPastas.criarPastasFilhas(cadaPasta)
-    #tempo para salvar todas pastas
-    sleep(10)
-    #poderiamos reutilizar o laço de "linha in solicitaçao", mas preciso que o nome da pasta seja um elemento iteravel
-    #para podermos usar o nome da pasta para direcionar o caminho das nf's
-    #para cada solicitaçao, clique nelas e baixe as nf e imprima
-    for cadaPasta in pastas:
+        gerenciadorPastas.criarPastasFilhas(nomeDaPasta)
+        #tempo para salvar todas pastas
+        sleep(1.5)
+        #direcionando o diretorio de baixar a nf
+        padraoChrome("\\OneDrive - tpfe.com.br\\RPA-DEV\\"+ data_em_texto +"\\" + nomeDaPasta +"\\")
+        #poderiamos reutilizar o laço de "linha in solicitaçao", mas preciso que o nome da pasta seja um elemento iteravel
+        #para podermos usar o nome da pasta para direcionar o caminho das nf's
+        #para cada solicitaçao, clique nelas e baixe as nf e imprima
         #pega a posição dela na lista
-        posiçao = pastas.index(cadaPasta)
         #acrescenta mais um para ser inserido corretamente no xpath
-        index2 = str(posiçao+1)
-        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index2 +"]/td[2]/span/span[1]/input").click()
+        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[2]/span/span[1]/input").click()
         financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
 
         tbody2 = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody")
-        rows2 = tbody2.find_elements_by_tag_name("a") # pega todas as linhas que contem nf
+        rows2 = tbody2.find_elements_by_tag_name("a") 
+        # pega todas as linhas que contem nf
         #criaçao de uma lista para armazenar os indices de cada nota fiscal
-        nf = [] 
+        nota = 0
         #laço para adicionar os valores de *indices* na lista
-        for row in range(len(rows2)):
-            nf.append(row)
-            print(row)
-        print(nf)
+        for row in rows2:
+            row.click()
+            #nota += 1
+            #nomeNf = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ str(nota) +"]/td[2]/div[2]/div/a").get_attribute("innerText")
+            #financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ str(nota) +"]/td[2]/div[2]/div/a").click()
+            # nf.append(row)
+        # print(nf)
         #nova lista criada apenas para guardar os *nomes* de cada nota fiscal(difere da lista anterior)
-        nomeDaNf = []
-        #para cada nf, baixar cada uma delas
-        for nota in nf:
-            index3 = str(nota+1)
-            #capturando os nomes de cada nota fiscal
-            nomeNf = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ index3 +"]/td[2]/div[2]/div/a").get_attribute("innerText")
-            financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ index3 +"]/td[2]/div[2]/div/a").click()
-            #imprime o nome de cada nf
-            print(nomeNf)
-            #guarda os nomes na lista nomeDaNf
-            nomeDaNf.append(nomeNf)
-            #imprime se foram baixadas
-            print(f"{index3}º NF baixada!")
+        # nomeDaNf = []
+        # #para cada nf, baixar cada uma delas
+        # for nota in nf:
+        #     index3 = str(nota+1)
+        #     #capturando os nomes de cada nota fiscal
+            
+        #     #imprime o nome de cada nf
+        #     print(nomeNf)
+        #     #guarda os nomes na lista nomeDaNf
+        #     nomeDaNf.append(nomeNf)
+        #     #imprime se foram baixadas
+        #     print(f"{index3}º NF baixada!")
+
         sleep(10)    
-        #imprimindo    
+        #imprimindo
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click() 
-        financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div[2]/div/div/button").click()   
-        financeiro.find_element_by_xpath("/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr/td[1]").click()
+        financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div[2]/div/div/button").click()  
+        #outra forma de clique diretamente no elemento
+        financeiro.switch_to_frame(0)
+        imprimir = financeiro.find_element_by_xpath("/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr").click() 
+        click_me = builder.click(imprimir)
+        click_me.perform()
+
         financeiro.find_element_by_xpath("/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]").click()
         financeiro.find_element_by_xpath("/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td").click()
         financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button").click()
