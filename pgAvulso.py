@@ -10,7 +10,7 @@ import os
 usuario = getpass.getuser()
 #retornar a data atual
 today = date.today()
-#formataçao da data para o modelo de pasta do financeiro
+  
 data_em_texto = today.strftime("%d.%m.%Y")
 
 def pagamentoAvulso(financeiro):
