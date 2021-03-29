@@ -68,10 +68,6 @@ def pagamentoAvulso(financeiro):
         gerenciadorPastas.criarPastasFilhas(nomeDaPasta)
         #tempo para salvar todas pastas
         sleep(1.5)
-        #direcionando o diretorio de baixar a nf
-        #padraoChrome("\\OneDrive - tpfe.com.br\\RPA-DEV\\"+ data_em_texto +"\\" + nomeDaPasta +"\\")
-        #poderiamos reutilizar o laço de "linha in solicitaçao", mas preciso que o nome da pasta seja um elemento iteravel
-        #para podermos usar o nome da pasta para direcionar o caminho das nf's
         #para cada solicitaçao, clique nelas e baixe as nf e imprima
         #pega a posição dela na lista
         #acrescenta mais um para ser inserido corretamente no xpath
@@ -86,28 +82,12 @@ def pagamentoAvulso(financeiro):
         rows2 = tbody2.find_elements_by_tag_name("a") 
         # pega todas as linhas que contem nf
         #criaçao de uma lista para armazenar os indices de cada nota fiscal
-        nota = 0
         #laço para adicionar os valores de *indices* na lista
-        for row in rows2:
-            row.click()
-            #nota += 1
-            #nomeNf = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ str(nota) +"]/td[2]/div[2]/div/a").get_attribute("innerText")
-            #financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr["+ str(nota) +"]/td[2]/div[2]/div/a").click()
-            # nf.append(row)
-        # print(nf)
-        #nova lista criada apenas para guardar os *nomes* de cada nota fiscal(difere da lista anterior)
-        # nomeDaNf = []
-        # #para cada nf, baixar cada uma delas
-        # for nota in nf:
-        #     index3 = str(nota+1)
-        #     #capturando os nomes de cada nota fiscal
-            
-        #     #imprime o nome de cada nf
-        #     print(nomeNf)
-        #     #guarda os nomes na lista nomeDaNf
-        #     nomeDaNf.append(nomeNf)
-        #     #imprime se foram baixadas
-        #     print(f"{index3}º NF baixada!")
+        if len(rows2) > 0:
+            for row in rows2:
+                row.click()
+        else:
+            continue        
 
         sleep(10)    
         #imprimindo
