@@ -13,9 +13,9 @@ def padraoChrome(diretorio):
 
 #Inicia o navegador
 def chamarDriver(navegador):
-    navegador.get("https://tpf.madrix.app/?next=/app")
     navegador.maximize_window()
-    navegador.implicitly_wait(100)
+    navegador.get("https://tpf.madrix.app/")
+    navegador.implicitly_wait(5)
 
 # #Faz login   
 def fazerLogin(login):

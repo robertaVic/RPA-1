@@ -15,14 +15,15 @@ def listar_arquivos_em_diretorios(diretorio):
     return listaDeArquivos
 
 
-def criarPastaData(pref, nomePasta):
+def criarPastaData(caminho, nomePasta):
     try:
-        os.mkdir(pref + nomePasta)
+        os.mkdir(caminho + nomePasta)
     except:
         print("Já existe a pasta")
+
 def criarPastasFilhas(identificador):
     try:
-        os.mkdir(pref + data_em_texto + "\\" + identificador)
+        os.mkdir(caminho_da_pasta + data_em_texto + "\\" + identificador)
     except:
         print("Já existe a pasta")
 
@@ -30,5 +31,5 @@ def recuperar_diretorio_usuario():
     home = str(Path.home())
     return home
 
-pref = recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
+caminho_da_pasta = recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
 

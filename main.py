@@ -14,22 +14,20 @@ today = date.today()
 #formataçao da data para o modelo de pasta do financeiro
 data_em_texto = today.strftime("%d.%m.%Y")
 
-diretorioPadrao = "\\OneDrive - tpfe.com.br\\RPA-DEV\\" + data_em_texto + "\\"
-chrome_options = padraoChrome(diretorioPadrao)
-#retornar o usuario da maquina utilizada pelo robo
-# usuario = getpass.getuser()
-# print(usuario)
+#diretório padrão para todos os arquivos serem baixados nele
+diretorio_padrao = "\\OneDrive - tpfe.com.br\\RPA-DEV\\" + data_em_texto + "\\"
 
+#padrão do chrome 
+chrome_options = padraoChrome(diretorio_padrao)
 
 #caminho onde a pasta será criada
-pref = recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
+caminho_da_pasta = recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
 
 #inserindo as opçoes do chrome no driver
 driver = Chrome(chrome_options=chrome_options)
 
 #criar a pasta do dia no onedrive
-criarPastaData(pref, data_em_texto)
-#criar a pasta do dia no onedrive
+criarPastaData(caminho_da_pasta, data_em_texto)
 
 #Inicia o navegador
 chamarDriver(driver)
