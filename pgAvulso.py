@@ -19,7 +19,7 @@ caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\OneDrive
 def pagamentoAvulso(financeiro):
     #pra uso de click
     builder = ActionChains(financeiro)
-    financeiro.implicitly_wait(30)
+    financeiro.implicitly_wait(50)
     # sleep(10)
     # financeiro.refresh()
     financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div").click()
