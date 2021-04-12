@@ -9,17 +9,17 @@ from gerenciadorPastas import criarPastaData, recuperar_diretorio_usuario
 from pgAvulso import pagamentoAvulso
 
 
-
-
-diretorioPadrao = "\\OneDrive - tpfe.com.br\\RPA-DEV\\"
-chrome_options = padraoChrome(diretorioPadrao)
-#retornar o usuario da maquina utilizada pelo robo
-# usuario = getpass.getuser()
-# print(usuario)
 #retornar a data atual
 today = date.today()
 #formataçao da data para o modelo de pasta do financeiro
 data_em_texto = today.strftime("%d.%m.%Y")
+
+diretorioPadrao = "\\OneDrive - tpfe.com.br\\RPA-DEV\\" + data_em_texto + "\\"
+chrome_options = padraoChrome(diretorioPadrao)
+#retornar o usuario da maquina utilizada pelo robo
+# usuario = getpass.getuser()
+# print(usuario)
+
 
 #caminho onde a pasta será criada
 pref = recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 

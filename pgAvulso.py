@@ -13,7 +13,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 #retornar a data atual
 today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
-pref = gerenciadorPastas.recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
+pref = gerenciadorPastas.recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" + data_em_texto + "\\" 
 
 
 def pagamentoAvulso(financeiro):
@@ -60,7 +60,10 @@ def pagamentoAvulso(financeiro):
         #armazenando a razao social de cada solicitaçao
         razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[6]/div").get_attribute("innerText")
         #criando um modelo de nome de pastas para serem salvas(igualmente ao modelo do financeiro)
-        nomeDaPasta = (f"ID {identificador} {razao}")
+        if not razao:
+            nomeDaPasta = (f"ID {identificador}")
+        else:    
+            nomeDaPasta = (f"ID {identificador} {razao}")
         print(nomeDaPasta)
         #adicionando cada modelo de nome de pasta para uma lista
         # pastas.append(nomeDaPasta)
@@ -86,8 +89,6 @@ def pagamentoAvulso(financeiro):
         if len(rows2) > 0:
             for row in rows2:
                 row.click()
-        else:
-            continue        
 
         sleep(10)    
         #imprimindo
@@ -111,9 +112,10 @@ def pagamentoAvulso(financeiro):
         print(arquivos)
         for arquivo in arquivos:
             print(arquivo)
-            shutil.move(pref + arquivo, pref + data_em_texto +"\\" + nomeDaPasta +"\\" + arquivo)
+            shutil.move(pref + arquivo, pref + nomeDaPasta +"\\" + arquivo)
             print("moveu o arquivo!")
 
+    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[4]").click()
 
 # def chamarSharepoint(nuvem, Keys):
 #     nuvem.find_element_by_tag_name('body').send_keys(Keys.COMMAND + 't')
