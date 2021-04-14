@@ -4,36 +4,36 @@
 # arquivo_excel.sheetnames
 # for d in arquivo_excel['Sheet1'].iter_rows(values_only = True):
 #     print(d)
-import pandas as pd
 
-df = pd.read_excel("C:\\Users\\Usuario\\Downloads\\Solicitação de Pgto Avulso.xlsx")
-# print(df.values)
-planilha = df.values
 
-linhaExcel = []
-conjunto = []
 
-for linha in planilha:
-    print("-------")
-    # print(linha)
-    data = linha[8]
-    valor = linha[9]
-    if data != 'Nat' and valor != 'nan':
-        idSolicitacao = linha[0]
-        print(idSolicitacao)
-    print(data)
-    print(valor)
-    conjunto.append(linha)
-    for celula in linha:
-        if not celula:
-            print(celula)
-        # print(celula)
-        # linhas.append(celula)
 
-# conjunto.append(linhaExcel)    
 
-# print(conjunto)
-        
+
+# import pandas as pd
+
+# df = pd.read_excel("C:\\Users\\Usuario\\Downloads\\Solicitação de Pgto Avulso.xlsx")
+# # print(df.values)
+# planilha = df.values
+
+# linhaExcel = []
+# conjunto = []
+
+# for linha in planilha:
+#     print("-------")
+#     # print(linha)
+#     data = linha[8]
+#     valor = linha[9]
+#     if data != 'Nat' and valor != 'nan':
+#         idSolicitacao = linha[0]
+#         print(idSolicitacao)
+#     print(data)
+#     print(valor)
+#     conjunto.append(linha)
+#     for celula in linha:
+#         if not celula:
+#             print(celula)
+
 
 
 

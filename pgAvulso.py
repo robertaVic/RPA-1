@@ -19,7 +19,7 @@ caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\OneDrive
 def pagamentoAvulso(financeiro):
     #pra uso de click
     builder = ActionChains(financeiro)
-    financeiro.implicitly_wait(50)
+    financeiro.implicitly_wait(40)
     # sleep(10)
     # financeiro.refresh()
     financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div").click()
@@ -30,7 +30,7 @@ def pagamentoAvulso(financeiro):
 
     #Filtro
     #dataA = date.today().strftime("%d/%m/%Y")
-    sleep(10)
+    sleep(9)
     #limpar filtro  => financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[2]/button").click()
     filtro = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]")
     try:
@@ -51,7 +51,7 @@ def pagamentoAvulso(financeiro):
     financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/button").click()#send_keys("\n")
     
     #abrir a linha (Laço para todos itens filtrados)
-    sleep(10)
+    sleep(3)
     #pegar o corpo da tabela de solicitaçoes
     tbody1 = financeiro.find_element_by_xpath("//*[@id='mainContent']/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody")
     #pegar as linhas que existem dentro do corpo
@@ -68,14 +68,14 @@ def pagamentoAvulso(financeiro):
 
     #laço para tramitar cada solicitaçao
     for linha in solicitaçao: 
-        index1 = str(linha+1)
+        # index1 = str(linha+1)
         #para cada linha guardar as informações dela
         global identificador
         #armazenando o id de cada solicitaçao
-        identificador = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[4]/div").get_attribute("innerText")
+        identificador = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
         global razao
         #armazenando a razao social de cada solicitaçao
-        razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[6]/div").get_attribute("innerText")
+        razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[6]/div").get_attribute("innerText")
 
         #criando um modelo de nome de pastas para serem salvas(igualmente ao modelo do financeiro)
         #criando uma condicional para saber se a pasta tem apenas id ou tem os dois(id + razao)
@@ -89,12 +89,12 @@ def pagamentoAvulso(financeiro):
         gerenciadorPastas.criarPastasFilhas(nomeDaPasta)
         #tempo para salvar todas pastas
         sleep(1.5)
-        #para cada solicitação marcar a caixa de selecionar todas
-        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
-        #desmarcar
-        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
+        # #para cada solicitação marcar a caixa de selecionar todas
+        # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
+        # #desmarcar
+        # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
         #clicar na caixa de seleção especifica da linha
-        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr["+ index1 +"]/td[2]/span/span[1]/input").click()
+        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
         financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
         #clicar em "notas fiscais"
@@ -109,7 +109,11 @@ def pagamentoAvulso(financeiro):
             for row in rows2:
                 row.click()
 
-        sleep(5)    
+
+
+
+
+        sleep(4)    
         #imprimindo
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click() 
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div[2]/div/div/button").click()  
@@ -134,13 +138,14 @@ def pagamentoAvulso(financeiro):
         financeiro.switch_to.default_content()
         # financeiro.find_element_by_xpath("/html/body/div[8]/div[3]").send_keys(Keys.ESC)
         financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button").click()
-        financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
-        financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[2]/ul/div[3]").click()
-        financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
+        #financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
+        # financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[2]/ul/div[3]").click()
+        print("passou")
+        # financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button").click()
         
-        sleep(5)
-
+        sleep(1.5)
+        print("mover arquivos")
         #listando os arquivos baixados na pasta macro(pasta do dia)
         arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(caminho_da_pasta)
         print(arquivos)
@@ -150,6 +155,27 @@ def pagamentoAvulso(financeiro):
             #movendo os arquivos para a pasta da sua solicitaçao
             shutil.move(caminho_da_pasta + arquivo, caminho_da_pasta + nomeDaPasta +"\\" + arquivo)
             print("moveu o arquivo!")
+
+        # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
+        # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
+        # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
+        # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
+        
+        tramitar = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]")
+        
+        try:
+            tramitar.send_keys("\n")
+        except:
+            print("1- Não consegui clicar")
+        try:
+            tramitar.click()
+        except:
+            print("1- Não consegui clicar")
+
+        financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/ul/div[3]").click()
+        sleep(1.5)
+
+        # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[2]").click()    
 
     #para cada solicitação marcar a caixa de selecionar todas
     financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()
