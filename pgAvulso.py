@@ -6,6 +6,7 @@ import shutil
 import os
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains 
+from openpyxl import load_workbook
 
 #retornar a data atual
 today = date.today()
@@ -76,7 +77,7 @@ def pagamentoAvulso(financeiro):
         global razao
         #armazenando a razao social de cada solicitaçao
         razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[6]/div").get_attribute("innerText")
-
+        estado = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]").get_attribute("value")
         #criando um modelo de nome de pastas para serem salvas(igualmente ao modelo do financeiro)
         #criando uma condicional para saber se a pasta tem apenas id ou tem os dois(id + razao)
         if not razao:
@@ -97,6 +98,21 @@ def pagamentoAvulso(financeiro):
         financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
         financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
+        #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
+        cnpj = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[1]/div/div/div/input").get_attribute("value")
+        banco = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[1]/div/div[1]/div/div/div/input").get_attribute("value")
+        agencia = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[1]/div/div[2]/div/div/div/input").get_attribute("value")
+        conta = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[2]/div/div[1]/div/div/div/input").get_attribute("value")
+        tipo_conta = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[2]/div/div[2]/div/div/div/div/div/div/div[1]/input").get_attribute("value")
+        natureza_da_conta = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[2]/div/div[3]/div/div/div/div/div/div/div[1]/input").get_attribute("value")
+        forma_de_pagamento = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/input").get_attribute("value")
+        valor = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value")
+        valor_pago = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[2]/div/div[2]/div/div/div/input").get_attribute("value")
+        data_solicitada = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div/div[1]/div/div/div/input").get_attribute("value")
+        data_solicitacao = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div/div[2]/div/div/div/input").get_attribute("value")
+        data_pagamento = financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[2]/div/div[1]/div/div/div/input").get_attribute("value")
+
+
         #clicar em "notas fiscais"
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
 
@@ -105,13 +121,12 @@ def pagamentoAvulso(financeiro):
         rows2 = tbody2.find_elements_by_tag_name("a") 
        
         #clicar só se houver elementos 
-        if len(rows2) > 0:
-            for row in rows2:
-                row.click()
-
-
-
-
+        try:
+            if len(rows2) > 0:
+                for row in rows2:
+                    row.click()
+        except:
+            comentarioNf = f"Não foi possível baixar a nota fiscal"            
 
         sleep(4)    
         #imprimindo
@@ -144,6 +159,37 @@ def pagamentoAvulso(financeiro):
         # financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button").click()
         
+        arquivo_excel = "C:\\Users\\Usuario\\OneDrive - tpfe.com.br\\RPA-DEV\\Planilha de Acompanhamento de Solicitações Financeiras 2021 (1).xlsx"
+        wb = load_workbook(arquivo_excel)
+        sh1 = wb.worksheets[0]
+
+        maximo = sh1.max_row
+        print(maximo)
+
+        # minimo = lista[0]
+        lista = list(range(8,maximo))
+        try:
+            for x in solicitaçao:
+                sh1[f"A{lista[0]}"].value = identificador
+                sh1[f"B{lista[0]}"].value = cnpj
+                sh1[f"C{lista[0]}"].value = razaoSocial
+                sh1[f"D{lista[0]}"].value = forma_de_pagamento
+                sh1[f"E{lista[0]}"].value = banco
+                sh1[f"F{lista[0]}"].value = agencia
+                sh1[f"G{lista[0]}"].value = conta
+                sh1[f"H{lista[0]}"].value = tipo_conta
+                sh1[f"I{lista[0]}"].value = natureza_da_conta
+                sh1[f"J{lista[0]}"].value = valor
+                sh1[f"K{lista[0]}"].value = valor_pago
+                sh1[f"L{lista[0]}"].value = data_solicitada
+                sh1[f"M{lista[0]}"].value = data_solicitacao
+                sh1[f"N{lista[0]}"].value = data_pagamento
+                sh1[f"Q{lista[0]}"].value = estado
+                lista.pop(0)
+            print(lista) 
+            wb.save(arquivo_excel)
+        except:
+            print("ERRO AO SALVAR NA PLANILHA")
         sleep(1.5)
         print("mover arquivos")
         #listando os arquivos baixados na pasta macro(pasta do dia)
