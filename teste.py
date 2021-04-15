@@ -1,6 +1,6 @@
 
 from openpyxl import load_workbook
-arquivo_excel = "C:\\Users\\Usuario\\OneDrive - tpfe.com.br\\RPA-DEV\\Planilha de Acompanhamento de Solicitações Financeiras 2021 (1).xlsx"
+arquivo_excel = "C:\\Users\\Usuario\\OneDrive - tpfe.com.br\\RPA-DEV\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
 wb = load_workbook(arquivo_excel)
 sh1 = wb.worksheets[0]
 
@@ -15,7 +15,10 @@ agencia = "fdf"
 tipo = "nenhum"
 natureza = "nenhuma"
 valorPago = "x"
-dataSolicitada = "34/05/2021"
+dataSolicitada = "31/05/2021"
+data_solicitacao = "04/12/2020"
+data_pagamento = "05/03/2021"
+        
 
 maximo = sh1.max_row
 print(maximo) 
@@ -24,11 +27,24 @@ print(maximo)
 #     if not row:      
 #         pro = row.index
 #         print(pro) 
+index_row = []
+for i in range(8, maximo):
+    # define emptiness of cell
+    if sh1.cell(row=i, column=1).value in [None,'None']:
+        # collect indexes of rows
+        index_row.append(i)  
+print(index_row)      
 
+inicio = index_row[0]        
    
-
+lista = list(range(inicio,maximo))
 # minimo = lista[0]
-lista = list(range(8,maximo))
+# for cell in sh1["A1"] :
+#     if not cell:
+#         print(cell)    
+#     else:
+#         print("te sai")
+
 solicitaçao = list(range(5))
 for x in solicitaçao:
     sh1[f"A{lista[0]}"].value = identificaçao
@@ -43,37 +59,22 @@ for x in solicitaçao:
     sh1[f"J{lista[0]}"].value = valor
     sh1[f"K{lista[0]}"].value = valorPago
     sh1[f"L{lista[0]}"].value = dataSolicitada
+    sh1[f"M{lista[0]}"].value = data_solicitacao
+    sh1[f"N{lista[0]}"].value = data_pagamento
+        
+    wb.save(arquivo_excel)
     lista.pop(0)
+
 print(lista) 
-solicita = list(range(10))   
-for x in solicita:
-    sh1[f"A{lista[0]}"].value = identificaçao
-    sh1[f"B{lista[0]}"].value = cnpj
-    sh1[f"C{lista[0]}"].value = razaoSocial
-    sh1[f"D{lista[0]}"].value = forma
-    sh1[f"E{lista[0]}"].value = banco
-    sh1[f"F{lista[0]}"].value = agencia
-    sh1[f"G{lista[0]}"].value = conta
-    sh1[f"H{lista[0]}"].value = tipo
-    sh1[f"I{lista[0]}"].value = natureza
-    sh1[f"J{lista[0]}"].value = valor
-    sh1[f"K{lista[0]}"].value = valorPago
-    sh1[f"L{lista[0]}"].value = dataSolicitada
-    lista.pop(0)
-                                                               
-
-
-print(lista)
-
-wb.save(arquivo_excel)
 
 
 
 
-# for cell in sh1["A"]:
-#     if cell.value is not None:
-#         print(cell.row)
-#         break
+
+
+
+
+
 # else:
 #     print(cell.row + 1)
 # while len(lista) > 0:

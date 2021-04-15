@@ -26,6 +26,10 @@ def criarPastasFilhas(identificador):
         os.mkdir(caminho_da_pasta + data_em_texto + "\\" + identificador)
     except:
         print("Já existe a pasta")
+    try:
+        os.mkdir(caminho_da_pasta + data_em_texto + "\\" + identificador)
+    except:
+        print("Já existe a pasta")
 
 def recuperar_diretorio_usuario():
     home = str(Path.home())
