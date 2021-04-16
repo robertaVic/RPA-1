@@ -19,9 +19,9 @@ today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 
 #caminho da pasta macro(pasta do dia)
-caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" + data_em_texto + "\\" 
+caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + data_em_texto + "\\" 
 #parte do excel
-arquivo_excel = "C:\\Users\\Usuario\\OneDrive - tpfe.com.br\\RPA-DEV\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
+arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
 wb = load_workbook(arquivo_excel) #carregar o arquivo
 sh1 = wb.worksheets[0] #carregar a primeira planilha
 maximo = sh1.max_row #retorna a ultima linha da planilha

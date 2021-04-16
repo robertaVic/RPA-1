@@ -16,13 +16,13 @@ today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 
 #diretório padrão para todos os arquivos serem baixados nele
-diretorio_padrao = "\\OneDrive - tpfe.com.br\\RPA-DEV\\" + data_em_texto + "\\"
+diretorio_padrao = "\\tpfe.com.br\\SGP e SGC - RPA\\" + data_em_texto + "\\"
 
 #padrão do chrome 
 chrome_options = padraoChrome(diretorio_padrao)
 
 #caminho onde a pasta será criada
-caminho_da_pasta = recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
+caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" 
 
 #inserindo as opçoes do chrome no driver
 driver = Chrome(chrome_options=chrome_options)

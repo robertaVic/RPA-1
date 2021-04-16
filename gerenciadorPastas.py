@@ -35,5 +35,5 @@ def recuperar_diretorio_usuario():
     home = str(Path.home())
     return home
 
-caminho_da_pasta = recuperar_diretorio_usuario() + "\\OneDrive - tpfe.com.br\\RPA-DEV\\" 
+caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" 
 
