@@ -87,7 +87,7 @@ def pagamentoAvulso(financeiro):
         global razao
         #armazenando a razao social de cada solicitaçao
         razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[6]/div").get_attribute("innerText")
-        estado = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]").get_attribute("value")
+        # estado = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]").get_attribute("value")
         #criando um modelo de nome de pastas para serem salvas(igualmente ao modelo do financeiro)
         #criando uma condicional para saber se a pasta tem apenas id ou tem os dois(id + razao)
         if not razao:
@@ -111,6 +111,7 @@ def pagamentoAvulso(financeiro):
         dados_do_formulario = []
         caminho_em_comum_entre_campos_do_formulario = "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div"
         #adicionando os valores à lista
+        dados_do_formulario.append("Solicitação de Pgto Avulso")
         dados_do_formulario.append(identificador)
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[1]/div/div/div/input").get_attribute("value"))
         dados_do_formulario.append(razao)
@@ -121,13 +122,13 @@ def pagamentoAvulso(financeiro):
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[2]/div/div[3]/div/div/div/div/div/div/div[1]/input").get_attribute("value"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/input").get_attribute("value"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[2]/div/div[2]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(financeiro.find_element_by_xpath("0"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[5]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[5]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[5]/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append("")                                                                             
         dados_do_formulario.append("")
-        dados_do_formulario.append("")
-        dados_do_formulario.append(estado)
+        dados_do_formulario.append("Processada")
         
         #clicar em "notas fiscais"
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()

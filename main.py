@@ -8,7 +8,6 @@ from datetime import date,datetime
 from gerenciadorPastas import criarPastaData, recuperar_diretorio_usuario
 from pgAvulso import pagamentoAvulso
 
-#carlos
 
 #retornar a data atual
 today = date.today()

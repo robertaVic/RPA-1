@@ -1,156 +1,30 @@
+from datetime import date
 
-from openpyxl import load_workbook
-arquivo_excel = "C:\\Users\\Usuario\\OneDrive - tpfe.com.br\\RPA-DEV\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
-wb = load_workbook(arquivo_excel)
-sh1 = wb.worksheets[0]
+data_solicitacao = date(2021, 4, 27)
+data_solicitacao.strftime("%d.%m.%Y")
+today = date.today()
+#formataçao da data para o modelo de pasta do financeiro
+data_em_texto = today.strftime("%d.%m.%Y")
 
-identificaçao = "986690"
-razaoSocial = "CELL AUTO"
-valor = "tal"
-forma = "dinheiro"
-cnpj = "98790-8989"
-banco = "BRA"
-conta = "77876-a"
-agencia = "fdf"
-tipo = "nenhum"
-natureza = "nenhuma"
-valorPago = "x"
-dataSolicitada = "31/05/2021"
-data_solicitacao = "04/12/2020"
-data_pagamento = "05/03/2021"
-        
+dias = list(range(1,16))
+print(dias)
 
-maximo = sh1.max_row
-print(maximo) 
-
-# for row in sh1:
-#     if not row:      
-#         pro = row.index
-#         print(pro) 
-index_row = []
-for i in range(8, maximo):
-    # define emptiness of cell
-    if sh1.cell(row=i, column=1).value in [None,'None']:
-        # collect indexes of rows
-        index_row.append(i)  
-print(index_row)      
-
-inicio = index_row[0]        
-   
-lista = list(range(inicio,maximo))
-# minimo = lista[0]
-# for cell in sh1["A1"] :
-#     if not cell:
-#         print(cell)    
-#     else:
-#         print("te sai")
-
-solicitaçao = list(range(5))
-for x in solicitaçao:
-    sh1[f"A{lista[0]}"].value = identificaçao
-    sh1[f"B{lista[0]}"].value = cnpj
-    sh1[f"C{lista[0]}"].value = razaoSocial
-    sh1[f"D{lista[0]}"].value = forma
-    sh1[f"E{lista[0]}"].value = banco
-    sh1[f"F{lista[0]}"].value = agencia
-    sh1[f"G{lista[0]}"].value = conta
-    sh1[f"H{lista[0]}"].value = tipo
-    sh1[f"I{lista[0]}"].value = natureza
-    sh1[f"J{lista[0]}"].value = valor
-    sh1[f"K{lista[0]}"].value = valorPago
-    sh1[f"L{lista[0]}"].value = dataSolicitada
-    sh1[f"M{lista[0]}"].value = data_solicitacao
-    sh1[f"N{lista[0]}"].value = data_pagamento
-        
-    wb.save(arquivo_excel)
-    lista.pop(0)
-
-print(lista) 
-
-
-
-
-
-
-
-
-
+# if data_solicitacao.day in dias:
+#     print("pagar até dia 30")
 # else:
-#     print(cell.row + 1)
-# while len(lista) > 0:
-#     print(f"célula {lista[0]}")
-#     lista.pop(0) 
-#     print(lista)
-# for i in range(sh1.nrows) :                                     
-#     for j in range (sh1.ncols) :                                
-#         ptrow=i                                                   
-#         if(sh1.cell_value(ptrow,j)=="") :                       
-#             count +=1                                             
-#         if (count==sh1.ncols):                                  
-#             return ptrow                                          
-#         else:                                                     
-#             continue                                              
-                               
-# rownum=rtrow()                                                             
-# rownum=rownum+1                                                                 
-# print(f"The presence of an empty row is at :{rownum}")
-# linha = sh1.max_row
-# print(linha)
+#     print("pagar até dia 04 do outro mês")    
     
+if today.day in dias:
+    print("puxar as solicitações de 1 a 15")
+    data_inicio = date(today.year, today.month, 1)
+    data_fim = date(today.year, today.month, 15)  
+    data_fim_formatada = data_fim.strftime("%d/%m/%Y")
+    data_inicio_formatada = data_inicio.strftime("%d/%m/%Y")
+else:
+    print("puxar as solicitações de 16 a 30")
+    data_inicio = date(today.year, today.month, 16)
+    data_fim = date(today.year, today.month, 30)  
+    data_fim_formatada = data_fim.strftime("%d/%m/%Y")
+    data_inicio_formatada = data_inicio.strftime("%d/%m/%Y")
 
-
-    
-
-
-
-
-
-
-# import pandas as pd
-
-# df = pd.read_excel("C:\\Users\\Usuario\\Downloads\\Solicitação de Pgto Avulso.xlsx")
-# # print(df.values)
-# planilha = df.values
-
-# linhaExcel = []
-# conjunto = []
-
-# for linha in planilha:
-#     print("-------")
-#     # print(linha)
-#     data = linha[8]
-#     valor = linha[9]
-#     if data != 'Nat' and valor != 'nan':
-#         idSolicitacao = linha[0]
-#         print(idSolicitacao)
-#     print(data)
-#     print(valor)
-#     conjunto.append(linha)
-#     for celula in linha:
-#         if not celula:
-#             print(celula)
-
-
-
-
-
-
-
-
-
-# print(arquivo_excel)
-# c1 = arquivo_excel['C1']
-# max_linha = arquivo_excel.max_row
-# max_coluna = arquivo_excel.max_column
-# for i in range(1, max_linha + 1):
-#     for j in range(1, max_coluna + 1):
-#         print(arquivo_excel.cell(row=i, column=j).value, end=" - ")
-
-# book = xlrd.open_workbook("")
-# print ("Número de abas: ", book.nsheets)
-# print ("Nomes das Planilhas:", book.sheet_names())
-# sh = book.sheet_by_index(0)
-# print(sh.name, sh.nrows, sh.ncols)
-# print("Valor da célula C6 é ", sh.cell_value(rowx=5, colx=2))
-# for rx in range(sh.nrows):
-#     print(sh.row(rx))
+print(f"inicio {data_inicio_formatada}\nData de fim {data_fim_formatada}")      
