@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
 from gerenciadorPastas import criarPastaData, recuperar_diretorio_usuario
 from pgAvulso import pagamentoAvulso
-
+from solicitacao_de_reembolso import reembolso
 
 #retornar a data atual
 today = date.today()
@@ -27,7 +27,7 @@ caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - R
 driver = Chrome(chrome_options=chrome_options)
 
 #criar a pasta do dia no onedrive
-criarPastaData(caminho_da_pasta, data_em_texto)
+#criarPastaData(caminho_da_pasta, data_em_texto)
 
 #Inicia o navegador
 chamarDriver(driver)
@@ -38,6 +38,5 @@ fazerLogin(driver)
 #entra no pagamento avulso
 pagamentoAvulso(driver)
 
-
-#volta para o sgp para baixar as NF'S
-# baixarNf(driver)
+#entra na solicitação de reemb
+#reembolso(driver)
