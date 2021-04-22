@@ -39,4 +39,4 @@ fazerLogin(driver)
 pagamentoAvulso(driver)
 
 #entra na solicitação de reemb
-#reembolso(driver)
+reembolso(driver)
