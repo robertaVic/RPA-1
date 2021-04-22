@@ -20,9 +20,9 @@ today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 
 #caminho da pasta macro(pasta do dia)
-caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + data_em_texto + "\\" 
-
-#laço para encontrar as linhas vazias e armazenar na lista acima
+caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamento Avulso\\" 
+#criar pasta do dia dentro de pagamento avulso
+gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
 
 
 #função para tramitar as solicitações

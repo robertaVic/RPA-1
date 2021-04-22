@@ -1,30 +1,32 @@
-from datetime import date
+from openpyxl import load_workbook
+import gerenciadorPastas
+from datetime import date, datetime
 
-data_solicitacao = date(2021, 4, 27)
-data_solicitacao.strftime("%d.%m.%Y")
-today = date.today()
-#formataçao da data para o modelo de pasta do financeiro
-data_em_texto = today.strftime("%d.%m.%Y")
+arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021 .xlsx"
+wb = load_workbook(arquivo_excel) #carregar o arquivo
+sh1 = wb.worksheets[0] #carregar a primeira planilha
 
-dias = list(range(1,16))
-print(dias)
+status = sh1["X"]
+linhasTramitacao = []
 
-# if data_solicitacao.day in dias:
-#     print("pagar até dia 30")
-# else:
-#     print("pagar até dia 04 do outro mês")    
+# Print the contents
+for x in range(7, len(status)):
+    celula = (status[x].value)
+    if celula == "PAGO":
+        print(celula)
+        print("PAGO NO SGP")
+        linha = (status[x].row)
+        linhasTramitacao.append(linha)
+
+print(linhasTramitacao) 
+
+for x in linhasTramitacao:
+    valor = sh1[f"L{x}"].value
+    data = (sh1[f"Y{x}"].value).strftime("%d/%m/%Y")
+    print(f"Valor pago: {valor}, data: {data}")
     
-if today.day in dias:
-    print("puxar as solicitações de 1 a 15")
-    data_inicio = date(today.year, today.month, 1)
-    data_fim = date(today.year, today.month, 15)  
-    data_fim_formatada = data_fim.strftime("%d/%m/%Y")
-    data_inicio_formatada = data_inicio.strftime("%d/%m/%Y")
-else:
-    print("puxar as solicitações de 16 a 30")
-    data_inicio = date(today.year, today.month, 16)
-    data_fim = date(today.year, today.month, 30)  
-    data_fim_formatada = data_fim.strftime("%d/%m/%Y")
-    data_inicio_formatada = data_inicio.strftime("%d/%m/%Y")
-
-print(f"inicio {data_inicio_formatada}\nData de fim {data_fim_formatada}")      
+    # print(dataString)
+        
+# for row in sh1.rows:
+#     for cell in row:
+#         print(cell.value)        
