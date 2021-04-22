@@ -15,13 +15,17 @@ today = date.today()
 data_em_texto = today.strftime("%d.%m.%Y")
 
 #diretório padrão para todos os arquivos serem baixados nele
-diretorio_padrao = "\\tpfe.com.br\\SGP e SGC - RPA\\" + data_em_texto + "\\"
+diretorio_padrao = "\\tpfe.com.br\\SGP e SGC - RPA\\"
 
 #padrão do chrome 
 chrome_options = padraoChrome(diretorio_padrao)
 
 #caminho onde a pasta será criada
+<<<<<<< HEAD
 # caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" 
+=======
+caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\"
+>>>>>>> 601a74fd4f01671ea735ba705b1628076f4828e4
 
 #inserindo as opçoes do chrome no driver
 driver = Chrome(chrome_options=chrome_options)
@@ -33,7 +37,7 @@ chamarDriver(driver)
 fazerLogin(driver)
 
 #entra no pagamento avulso
-pagamentoAvulso(driver)
+#pagamentoAvulso(driver)
 
 #entra na solicitação de reemb
-#reembolso(driver)
+reembolso(driver)

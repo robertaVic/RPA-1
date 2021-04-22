@@ -21,13 +21,10 @@ def criarPastaData(caminho, nomePasta):
     except:
         print("Já existe a pasta")
 
-def criarPastasFilhas(identificador):
+def criarPastasFilhas(tipo_solicitacao,identificador):
+    print(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + tipo_solicitacao +"\\"+ data_em_texto + "\\" + identificador)
     try:
-        os.mkdir(caminho_da_pasta + data_em_texto + "\\" + identificador)
-    except:
-        print("Já existe a pasta")
-    try:
-        os.mkdir(caminho_da_pasta + data_em_texto + "\\" + identificador)
+        os.mkdir(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + "\\" + tipo_solicitacao +"\\"+ data_em_texto + "\\" + identificador)
     except:
         print("Já existe a pasta")
 
