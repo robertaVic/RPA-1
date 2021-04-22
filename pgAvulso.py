@@ -90,6 +90,8 @@ def pagamentoAvulso(financeiro):
         # estado = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]").get_attribute("value")
         #criando um modelo de nome de pastas para serem salvas(igualmente ao modelo do financeiro)
         #criando uma condicional para saber se a pasta tem apenas id ou tem os dois(id + razao)
+
+        #####MODIFICAR A CRIACAO DA PASTA BASEADO NA NOVA FUNCÃO
         if not razao:
             nome_da_pasta = (f"ID {identificador}")
         else:    

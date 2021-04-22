@@ -2,11 +2,12 @@ from datetime import date
 import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from gerenciadorPastas import criarPastaData, recuperar_diretorio_usuario
+import gerenciadorPastas
+import shutil
 
 data_em_texto = date.today().strftime("%d.%m.%Y")
-caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Reembolso\\"
-criarPastaData(caminho_da_pasta, data_em_texto)
+caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Reembolso\\"
+gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
 
 
 def reembolso(drive):
@@ -50,12 +51,24 @@ def reembolso(drive):
 
     drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
     
-    for anexo in drive.find_elements_by_css_selector("tr.MuiTableRow-root"):
+    tabela_anexos = drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table")
+
+    for anexo in tabela_anexos.find_elements_by_xpath(".//tr"):
         filtro_click = builder.click(anexo)
         filtro_click.perform()
-       #anexo.click()
+    
+    nome_da_pasta = "ID " + id_solicitacao
+    gerenciadorPastas.criarPastasFilhas('Reembolso', nome_da_pasta)
 
-    #print("H")
+    arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
+
+    for arquivo in arquivos:
+        #print(arquivo)
+        #movendo os arquivos para a pasta da sua solicitaçao
+        try:
+            shutil.move(caminho_da_pasta + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
+        except:
+            print("Não moveu o arquivo!")
     
     
 
