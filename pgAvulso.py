@@ -7,8 +7,25 @@ import os
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains 
 from openpyxl import load_workbook
-from gerenciadorPlanilhas import preencher_solicitacao_pagamento_avulso
+from gerenciadorPlanilhas import preencher_solicitacao_pagamento_avulso, tramitar_para_pago
 
+def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
+    maximo_tentativas = 0
+    while maximo_tentativas <= 20:
+        print(informacao_acao, maximo_tentativas)
+        try:
+            drive.find_element_by_xpath(element_path)
+            if acao == "click":
+                drive.find_element_by_xpath(element_path).click()
+                maximo_tentativas = 21
+            elif acao == "link":
+                maximo_tentativas = 21
+                pass
+        except:
+            maximo_tentativas+=1
+            sleep(tempo_espera)
+    if maximo_tentativas > 20:
+        return("#Erro " + informacao_acao)  
 
 #data atual formatada
 data_em_texto = date.today().strftime("%d.%m.%Y")
@@ -21,22 +38,15 @@ gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
 
 #função para tramitar as solicitações
 def pagamentoAvulso(financeiro):
+    tipo_de_solicitacao = "SPA"
     #pra uso de click
     builder = ActionChains(financeiro)
-    financeiro.implicitly_wait(40)
-    drive.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
+    # financeiro.implicitly_wait(40)
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","link","SRB1",0.2)
+    financeiro.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
+    # encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","link","SRB2",0.4)
     #limpar filtro  => financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[2]/button").click()
-    filtro = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]")
-    try:
-        filtro_click = builder.click(filtro)
-        filtro_click.perform()
-    except:
-        pass
-    try:
-        filtro_click = builder.click(filtro)
-        filtro_click.perform()
-    except:
-        pass    
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro",0.2)
     financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div").send_keys("\n")
     financeiro.find_element_by_xpath("/html/body/div[6]/div[3]/ul/li[3]").send_keys("\n")
     financeiro.find_element_by_xpath("/html/body/div[6]/div[1]").click()
@@ -45,10 +55,10 @@ def pagamentoAvulso(financeiro):
     
     #abrir a linha (Laço para todos itens filtrados)
     sleep(3)
-    quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
+    quantidade_de_requisicoes = int((financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
     
     #laço para tramitar cada solicitaçao
-    for linha in range(quantidade_de_requisicoes): 
+    for linha in range(2): #voltar para antigo quantidades
         global identificador
         #armazenando o id de cada solicitaçao
         identificador = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
@@ -80,7 +90,7 @@ def pagamentoAvulso(financeiro):
         dados_do_formulario = []
         caminho_em_comum_entre_campos_do_formulario = "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div"
         #adicionando os valores à lista
-        dados_do_formulario.append("SPA")
+        dados_do_formulario.append(tipo_de_solicitacao)
         dados_do_formulario.append(identificador)
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[1]/div/div/div/input").get_attribute("value"))
         dados_do_formulario.append(razao)
@@ -91,7 +101,7 @@ def pagamentoAvulso(financeiro):
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[2]/div/div[3]/div/div/div/div/div/div/div[1]/input").get_attribute("value"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/input").get_attribute("value"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
-        dados_do_formulario.append(financeiro.find_element_by_xpath("0"))
+        dados_do_formulario.append("0")
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[5]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[5]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[5]/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
@@ -122,22 +132,9 @@ def pagamentoAvulso(financeiro):
         #imprimindo
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click() 
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div[2]/div/div/button").click()  
-        #outra forma de clique diretamente no elemento
         financeiro.switch_to_frame(0)
-        imprimir = financeiro.find_element_by_xpath("/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr").click() 
-        
-        try:
-            click_me = builder.click(imprimir)
-            click_me.perform()
-        except:
-            print("1- Não consegui clicar")
-        try:
-            click_me = builder.click(imprimir)
-            click_me.perform()
-        except:
-            print("2- Não consegui clicar")
-            
-
+        #baixar a capa
+        encontrar_elemento_por_repeticao(financeiro,"/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr","click","filtro",0.2) 
         financeiro.find_element_by_xpath("/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]").click()
         financeiro.find_element_by_xpath("/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td").click()
         financeiro.switch_to.default_content()
@@ -147,13 +144,15 @@ def pagamentoAvulso(financeiro):
 
     
         # if not comentario_nota_fiscal:
-        #     comentario = (f"Nenhum")
+        #     comentario = ("Nenhum")
         # else:
         #     comentario = (f"2- {comentario_nota_fiscal}")   
         #     if not comentario_nao_possui_nota:
         #         comentario = (f"Nenhum")
         #     else:
         #         comentario = (f"3- {comentario_nao_possui_nota}")
+
+        # print(comentario)        
 
         preencher_solicitacao_pagamento_avulso(dados_do_formulario)
             
@@ -167,27 +166,34 @@ def pagamentoAvulso(financeiro):
             print(arquivo)
             #movendo os arquivos para a pasta da sua solicitaçao
             try:
-                shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA" + arquivo, caminho_da_pasta + nome_da_pasta +"\\" + arquivo)
+                shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
             except:
                 print("não moveu o arquivo!")
 
         #tramitação das solicitaçoes
-        tramitar = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]")
+        encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","filtro",0.2)
         
-        try:
-            tramitar.send_keys("\n")
-        except:
-            print("1- Não consegui clicar")
-        try:
-            tramitar.click()
-        except:
-            print("1- Não consegui clicar")
 
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/ul/div[3]").click()
         sleep(1.5)
-
+    print("Vai começar a contar")
+    for i in range(0,60):
+        print(i)
+        sleep(1)
+    #2° parte: ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO   
+    tramitar_para_pago(tipo_de_solicitacao, financeiro)
+    print("FIMMMMMMMMMMMMMMM")
         
-        # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[2]").click()    
+
+
+
+
+
+
+
+
+
+
 
     # #para cada solicitação marcar a caixa de selecionar todas
     # financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/thead/tr/th[2]/span/span[1]/input").click()

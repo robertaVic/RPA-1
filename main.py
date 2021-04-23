@@ -35,7 +35,7 @@ chamarDriver(driver)
 fazerLogin(driver)
 
 #entra no pagamento avulso
-#pagamentoAvulso(driver)
+pagamentoAvulso(driver)
 
 #entra na solicitação de reemb
-reembolso(driver)
+# reembolso(driver)
