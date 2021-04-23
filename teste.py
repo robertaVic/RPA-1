@@ -44,17 +44,18 @@ for i in todos:
         print(f"Valor pago: {valor}  data: {data}")
         linha = (todosOsIds[i].row)
         status = sh1[f"X{linha}"].value
+        sleep(5)
         filtro = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]")
         try:
             filtro_click = builder.click(filtro)
             filtro_click.perform()
         except:
-            pass
+            print("nao clicou")
         try:
             filtro_click = builder.click(filtro)
             filtro_click.perform()
         except:
-            pass    
+            print("nao clicou") 
         driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[1]/div[1]/button").click()
         driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(idd)
         driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div").send_keys("\n")
@@ -70,18 +71,25 @@ for i in todos:
         driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]").send_keys("\n")
         driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(data)
         driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(valor)
-        driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
+        try:
+            driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]").send_keys("\n")
+        except:
+            pass
+        try:
+            driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]").send_keys("\n")
+        except:
+            pass       
         driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button").click()
         driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]").click()
         if status == "PAGO":
             driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/ul/div[1]").click()
             print("PAGO NO SGP")
-            sh1.cell(row=i, column=18, value="PAGO")
+            sh1.cell(row=i+1, column=18, value="PAGO")
             wb.save(arquivo_excel)
         elif status == "PARCIALMENTE PAGO":
             driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/ul/div[2]").click()
             print("PARCIALMENTE PAGO NO SGP")
-            sh1.cell(row=i, column=18, value="PARCIALMENTE PAGO")
+            sh1.cell(row=i+1, column=18, value="PARCIALMENTE PAGO")
             wb.save(arquivo_excel)
 
        

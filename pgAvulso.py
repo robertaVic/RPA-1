@@ -24,12 +24,7 @@ def pagamentoAvulso(financeiro):
     #pra uso de click
     builder = ActionChains(financeiro)
     financeiro.implicitly_wait(40)
-    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div").click()
-    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/div[2]/div/div/div[2]/div/div[2]/div[1]").click()
-    url = "/runtime/44/list/190/Solicitação de Pgto Avulso"
-    #clicar na parte de pagamento avulso
-    financeiro.find_element_by_xpath('//a[@href="'+url+'"]').click()
-    sleep(10)
+    drive.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
     #limpar filtro  => financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[2]/button").click()
     filtro = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]")
     try:
@@ -165,14 +160,14 @@ def pagamentoAvulso(financeiro):
         sleep(1.5)
         print("mover arquivos")
         #listando os arquivos baixados na pasta macro(pasta do dia)
-        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(caminho_da_pasta)
+        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
         print(arquivos)
         #criando um laço para mover cada um para sua pasta especifica
         for arquivo in arquivos:
             print(arquivo)
             #movendo os arquivos para a pasta da sua solicitaçao
             try:
-                shutil.move(caminho_da_pasta + arquivo, caminho_da_pasta + nome_da_pasta +"\\" + arquivo)
+                shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA" + arquivo, caminho_da_pasta + nome_da_pasta +"\\" + arquivo)
             except:
                 print("não moveu o arquivo!")
 
