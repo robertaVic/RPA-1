@@ -7,7 +7,7 @@ import os
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains 
 from openpyxl import load_workbook
-from gerenciadorPlanilhas import preencher_solicitacao_pagamento_avulso, tramitar_para_pago
+from gerenciadorPlanilhas import preencher_solicitacao_pagamento_avulso, tramitar_para_pago, selecionar_ids_do_tipo_de_solicitacao
 
 def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
     maximo_tentativas = 0
@@ -178,6 +178,7 @@ def pagamentoAvulso(financeiro):
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/ul/div[3]").click()
         sleep(1.5)
     print("Vai começar a contar")
+    selecionar_ids_do_tipo_de_solicitacao(tipo_de_solicitacao)
     for i in range(0,60):
         print(i)
         sleep(1)
@@ -186,10 +187,31 @@ def pagamentoAvulso(financeiro):
     funcoes.chamarDriver(financeiro)
     funcoes.fazerLogin(financeiro)
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","link","SRB1",0.2)
-    financeiro.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")  
-
-    tramitar_para_pago(tipo_de_solicitacao, financeiro)
-
+    financeiro.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
+    for i in range(selecionar_ids_do_tipo_de_solicitacao(tipo_de_solicitacao)):
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro",0.2)
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[6]","click","filtro",0.2)
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro",0.2)
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
+        driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(tramitar_para_pago(tipo_de_solicitacao, "id"))
+        driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div").send_keys("\n")
+        driver.find_element_by_xpath("/html/body/div[6]/div[3]/ul/li[7]").send_keys("\n")
+        driver.find_element_by_xpath("/html/body/div[6]/div[1]").click()
+        print(20*"=")
+        driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/button").click()#send_keys("\n")
+        sleep(5)
+        driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input").click()
+        driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
+        driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]").click()
+        sleep(3)
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","SRB1",0.2)
+        driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(tramitar_para_pago(tipo_de_solicitacao, "data"))
+        driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(tramitar_para_pago(tipo_de_solicitacao, "valor"))
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","SRB1",0.2)
+        driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button").click()
+        driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]").click()
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","SRB1",0.2)     
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div["+ tramitar_para_pago(tipo_de_solicitacao, str("opcao"))+"]","click","SRB1",0.2)     
     print("FIMMMMMMMMMMMMMMM")
         
 
