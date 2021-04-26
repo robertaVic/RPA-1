@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import date
 import gerenciadorPastas
-from funcoes import padraoChrome
+import funcoes
 import shutil
 import os
 from selenium.webdriver.common.keys import Keys
@@ -61,6 +61,7 @@ def pagamentoAvulso(financeiro):
     for linha in range(2): #voltar para antigo quantidades
         global identificador
         #armazenando o id de cada solicitaçao
+        #colocar um int?
         identificador = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
         global razao
         #armazenando a razao social de cada solicitaçao
@@ -180,8 +181,15 @@ def pagamentoAvulso(financeiro):
     for i in range(0,60):
         print(i)
         sleep(1)
-    #2° parte: ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO   
+    #2° parte: ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO 
+    # #parte do sgp
+    funcoes.chamarDriver(financeiro)
+    funcoes.fazerLogin(financeiro)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","link","SRB1",0.2)
+    financeiro.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")  
+
     tramitar_para_pago(tipo_de_solicitacao, financeiro)
+
     print("FIMMMMMMMMMMMMMMM")
         
 
