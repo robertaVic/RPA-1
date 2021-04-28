@@ -1,8 +1,37 @@
-from time import sleep
+from time import sleep, time
 from datetime import date
 from selenium import webdriver
 from gerenciadorPastas import recuperar_diretorio_usuario
 from selenium.webdriver.chrome.options import Options
+
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+def espera_explicita_de_elemento(drive, element_path, acao, informacao_acao, tempo_espera):
+    
+    if acao == "encontrar":
+        try:
+            element = WebDriverWait(drive, tempo_espera).until(
+                EC.presence_of_element_located((By.XPATH, element_path))
+            )
+            return False
+        except:
+            print(informacao_acao, "Erro ao encontrar elemento")
+            return True
+
+
+    elif acao == "click":
+        try:
+            element = WebDriverWait(drive, tempo_espera).until(
+                EC.element_to_be_clickable((By.XPATH, element_path))
+            )
+            element.click()
+            return False
+            #drive.find_element_by_xpath(element_path).click()
+        except:
+            print(informacao_acao, "Erro ao encontrar elemento")
+            return True
 
 #preferencias do chrome
 def padraoChrome(diretorio):
@@ -15,13 +44,19 @@ def padraoChrome(diretorio):
 def chamarDriver(navegador):
     navegador.maximize_window()
     navegador.get("https://tpf.madrix.app/")
-    navegador.implicitly_wait(10)
+    #navegador.implicitly_wait(10)
 
 # #Faz login   
 def fazerLogin(login):
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "encontrar", "Login", 30)
     login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input").send_keys("roberta.costa")
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "encontrar", "Senha", 30)
     login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[2]/div/div/div/input").send_keys("123")
-    login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button/span[1]").click()
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button/span[1]", "click", "Login", 30)
+    
+    #login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input").send_keys("roberta.costa")
+    #login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[2]/div/div/div/input").send_keys("123")
+    #login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button/span[1]").click()
 
 def direcionaSolicitado(financeiro):
     financeiro.implicitly_wait(120)

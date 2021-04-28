@@ -1,4 +1,5 @@
 #Codigo Principal
+from solicitacao_de_pagamento import pagamentos
 from selenium import webdriver
 from selenium.webdriver import Chrome
 from funcoes import *
@@ -38,4 +39,7 @@ fazerLogin(driver)
 pagamentoAvulso(driver)
 
 #entra na solicitação de reemb
-# reembolso(driver)
+#reembolso(driver)
+
+pagamentos(driver)
+
