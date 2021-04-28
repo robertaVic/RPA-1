@@ -1,13 +1,13 @@
 from time import sleep
 from datetime import date
 import gerenciadorPastas
-from funcoes import padraoChrome
+import funcoes
 import shutil
 import os
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains 
 from openpyxl import load_workbook
-from gerenciadorPlanilhas import preencher_solicitacao_pagamento_avulso, tramitar_para_pago
+from gerenciadorPlanilhas import preencher_solicitacao, tramitar_para_pago
 
 def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
     maximo_tentativas = 0
@@ -44,8 +44,10 @@ def pagamentoAvulso(financeiro):
     # financeiro.implicitly_wait(40)
     encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","link","SRB1",0.2)
     financeiro.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
-    # encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","link","SRB2",0.4)
+    # encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","link","SRB2",0.4)
     #limpar filtro  => financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[2]/button").click()
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro",0.2)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"//*[@id='menu-']/div[3]/ul/li[2]","click","filtro",0.2)
     encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro",0.2)
     financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div").send_keys("\n")
     financeiro.find_element_by_xpath("/html/body/div[6]/div[3]/ul/li[3]").send_keys("\n")
@@ -61,6 +63,7 @@ def pagamentoAvulso(financeiro):
     for linha in range(2): #voltar para antigo quantidades
         global identificador
         #armazenando o id de cada solicitaçao
+        #colocar um int?
         identificador = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
         global razao
         #armazenando a razao social de cada solicitaçao
@@ -153,8 +156,8 @@ def pagamentoAvulso(financeiro):
         #         comentario = (f"3- {comentario_nao_possui_nota}")
 
         # print(comentario)        
-
-        preencher_solicitacao_pagamento_avulso(dados_do_formulario)
+        sleep(3)
+        preencher_solicitacao(dados_do_formulario, tipo_de_solicitacao)
             
         sleep(1.5)
         print("mover arquivos")
@@ -177,11 +180,39 @@ def pagamentoAvulso(financeiro):
         financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/ul/div[3]").click()
         sleep(1.5)
     print("Vai começar a contar")
+    #selecionar_ids_do_tipo_de_solicitacao(tipo_de_solicitacao)
     for i in range(0,60):
         print(i)
         sleep(1)
-    #2° parte: ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO   
-    tramitar_para_pago(tipo_de_solicitacao, financeiro)
+    #2° parte: ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO 
+    # #parte do sgp
+    funcoes.chamarDriver(financeiro)
+    funcoes.fazerLogin(financeiro)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","link","SRB1",0.2)
+    financeiro.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro",0.2)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/ul/li[6]","click","filtro",0.2)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro",0.2)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
+    financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(tramitar_para_pago(tipo_de_solicitacao, "id"))
+    financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div").send_keys("\n")
+    financeiro.find_element_by_xpath("/html/body/div[6]/div[3]/ul/li[7]").send_keys("\n")
+    financeiro.find_element_by_xpath("/html/body/div[6]/div[1]").click()
+    print(20*"=")
+    financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/button").click()#send_keys("\n")
+    sleep(5)
+    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input").click()
+    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]").click()
+    financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]").click()
+    sleep(3)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","SRB1",0.2)
+    financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(tramitar_para_pago(tipo_de_solicitacao, "data"))
+    financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(tramitar_para_pago(tipo_de_solicitacao, "valor"))
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","SRB1",0.2)
+    financeiro.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button").click()
+    financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]").click()
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","SRB1",0.2)     
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/div/div[2]/ul/div["+ tramitar_para_pago(tipo_de_solicitacao, str("opcao"))+"]","click","SRB1",0.2)     
     print("FIMMMMMMMMMMMMMMM")
         
 
@@ -205,7 +236,7 @@ def pagamentoAvulso(financeiro):
 
      # delay = 10 # seconds
     # try:
-    #     myElem = WebDriverWait(financeiro, delay).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]")))
+    #     myElem = WebfinanceiroWait(financeiro, delay).until(EC.presence_of_element_located((By.XPATH, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]")))
     #     filtro = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]")
     #     try:
     #         filtro_click = builder.click(filtro)
