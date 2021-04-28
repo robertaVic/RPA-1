@@ -154,6 +154,7 @@ def pagamentoAvulso(financeiro):
         #         comentario = (f"Nenhum")
         #     else:
         #         comentario = (f"3- {comentario_nao_possui_nota}")
+        #         comentario+= comentario, 
 
         # print(comentario)        
         sleep(3)
