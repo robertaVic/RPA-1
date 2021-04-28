@@ -7,7 +7,7 @@ import os
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains 
 from openpyxl import load_workbook
-from gerenciadorPlanilhas import preencher_solicitacao, tramitar_para_pago
+from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, tramitar_para_pago
 
 def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
     maximo_tentativas = 0
@@ -157,7 +157,7 @@ def pagamentoAvulso(financeiro):
 
         # print(comentario)        
         sleep(3)
-        preencher_solicitacao(dados_do_formulario, tipo_de_solicitacao)
+        preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
             
         sleep(1.5)
         print("mover arquivos")

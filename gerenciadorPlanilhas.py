@@ -20,9 +20,9 @@ listaStatusDiferente = []
 
 
 
-def preencher_solicitacao(dados_formulario, tipo_de_solicitacao):
+def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
     for i in todos:
-        avulso = (tipo_avulso[i])
+        avulso = (tipo[i])
         if avulso.value == tipo_de_solicitacao:
             listaId.append(todosOsIds[i].value)
             listaLinha.append(avulso.row)
