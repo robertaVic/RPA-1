@@ -7,47 +7,53 @@ arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\
 wb = load_workbook(arquivo_excel) #carregar o arquivo
 sh1 = wb.worksheets[0] #carregar a primeira planilha
 
-#retorna a ultima linha da planilha
+#retorna a ultima linha da planilha 
+ultima_linha = sh1.max_row
 todosOsIds = sh1["B"]
-tipo_avulso = sh1["A"]
+tipo = sh1["A"]
 statusRobo = sh1["R"]
 statusFinanceiro = sh1["X"]
-todos = list(range(7, len(tipo_avulso)))
+todos = list(range(7, ultima_linha))
 listaId = []
 listaLinha = []
 listaStatusDiferente = []
 
-def selecionar_ids_do_tipo_de_solicitacao(tipo_de_solicitacao):
+
+
+def preencher_solicitacao(dados_formulario, tipo_de_solicitacao):
     for i in todos:
         avulso = (tipo_avulso[i])
         if avulso.value == tipo_de_solicitacao:
             listaId.append(todosOsIds[i].value)
             listaLinha.append(avulso.row)
-            if statusRobo[i].value != statusFinanceiro[i].value:
+            statusRo = statusRobo[i]
+            statusFinan = statusFinanceiro[i]
+            if statusRo.value != statusFinan.value:
                 #print("diferente")
                 listaStatusDiferente.append(statusRobo[i].row)
-                return int(len(listaStatusDiferente))
-
-def preencher_solicitacao_pagamento_avulso(dados_formulario):
-    for idd in range(len(listaId)):
-        print(f"ID: {listaId[idd]} LINHA: {listaLinha[idd]}")
+    print(listaId)            
+    for coluna in range(len(dados_formulario)):
+        #print(f"ID: {listaId[idd]} LINHA: {listaLinha[idd]}")
         if dados_formulario[1] in listaId:
+            print("JA EXISTE, SOBRESCREVER")
             #sobrescrever
             linhaa = listaId.index(dados_formulario[1])
-            sh1.cell(row=listaLinha[linhaa], column=idd+1, value=dados_formulario[1])
+            sh1.cell(row=listaLinha[linhaa], column=coluna+1, value=dados_formulario[coluna])
             wb.save(arquivo_excel)
         else:
+            print("NÃO EXISTE, SALVAR NOVO")
             #adicionar um novo
-            sh1.cell(row=ultima_linha+1, column=idd+1, value=dados_formulario[1])
+            sh1.cell(row=ultima_linha+1, column=coluna+1, value=dados_formulario[coluna])
             # print("adicionando um novo")
             wb.save(arquivo_excel)
+        print("SALVOU")  
+    print(ultima_linha)
 
 def tramitar_para_pago(tipo_de_solicitacao, dado):
-    selecionar_ids_do_tipo_de_solicitacao(tipo_de_solicitacao)
     for i in listaStatusDiferente:
         statusR = statusRobo[i].value
         print(statusR)
-        if statusR == "PROCESSADA":
+        if statusR == "Processada":
             identificacao = todosOsIds[i].value
             print(identificacao)
             valor = sh1[f"L{i}"].value
