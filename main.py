@@ -41,5 +41,5 @@ pagamentoAvulso(driver)
 #entra na solicitação de reemb
 #reembolso(driver)
 
-pagamentos(driver)
+# pagamentos(driver)
 

@@ -17,7 +17,26 @@ todos = list(range(7, ultima_linha))
 listaId = []
 listaLinha = []
 listaStatusDiferente = []
+dados = []
 
+def ler_dados_da_planilha(tipo_de_solicitacao):
+    for i in todos:
+        avulso = tipo[i]
+        if avulso.value == tipo_de_solicitacao:
+            listaId.append(todosOsIds[i].value)
+            listaLinha.append(avulso.row)
+            statusRo = statusRobo[i]
+            statusFinan = statusFinanceiro[i]
+            if statusRo.value != statusFinan.value:
+                #print("diferente")
+                cadaSolicitacao = []
+                cadaSolicitacao.append(todosOsIds[statusRo.row].value)
+                cadaSolicitacao.append(sh1[f"L{statusRo.row}"].value)
+                cadaSolicitacao.append((sh1[f"Y{statusRo.row}"].value).strftime("%d/%m/%Y"))
+                cadaSolicitacao.append(sh1[f"X{statusRo.row}"].value)
+                listaStatusDiferente.append(statusRo.row)
+                dados.append(cadaSolicitacao)
+    return dados     
 
 
 def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
@@ -49,32 +68,26 @@ def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
         print("SALVOU")  
     print(ultima_linha)
 
-def tramitar_para_pago(tipo_de_solicitacao, dado):
-    for i in listaStatusDiferente:
-        statusR = statusRobo[i].value
-        print(statusR)
-        if statusR == "Processada":
-            identificacao = todosOsIds[i].value
-            print(identificacao)
-            valor = sh1[f"L{i}"].value
-            data = (sh1[f"Y{i}"].value).strftime("%d/%m/%Y")
-            print(f"Valor pago: {valor} data: {data}")
-            status = sh1[f"X{i}"].value
-            if dado == "id":
-                return identificacao
-            elif dado == "valor":
-                return valor
-            elif dado == "data":
-                return data     
-            elif dado == "opcao":       
-                if status == "PAGO":   
-                    return "1"  
-                    sh1.cell(row=i, column=18, value="PAGO")
-                    wb.save(arquivo_excel)
-                elif status ==  "PARCIALMENTE PAGO":
-                    return "2"
-                    sh1.cell(row=i, column=18, value="PARCIALMENTE PAGO")
-                    wb.save(arquivo_excel)
+def quantidade_para_tramitacao():
+    return listaStatusDiferente        
+
+def tramitar_para_pago(tipo_de_solicitacao, dado, iteracao):
+    ler_dados_da_planilha(tipo_de_solicitacao)
+    if dado == "id":
+        return (dados[iteracao])[0]
+    elif dado == "valor":
+        return (dados[iteracao])[1]
+    elif dado == "data":
+        return (dados[iteracao])[2]     
+    elif dado == "opcao":       
+        if (dados[iteracao])[3] == "PAGO":     
+            sh1.cell(row=listaStatusDiferente[iteracao], column=18, value="PAGO")
+            wb.save(arquivo_excel)
+            return "1"
+        elif (dados[iteracao])[3] == "PARCIALMENTE PAGO":
+            sh1.cell(row=listaStatusDiferente[iteracao], column=18, value="PARCIALMENTE PAGO")
+            wb.save(arquivo_excel) 
+            return "2"
 
 
         
