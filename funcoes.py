@@ -15,6 +15,7 @@ def espera_explicita_de_elemento(drive, element_path, acao, informacao_acao, tem
             element = WebDriverWait(drive, tempo_espera).until(
                 EC.presence_of_element_located((By.XPATH, element_path))
             )
+            sleep(5)
             return False
         except:
             print(informacao_acao, "Erro ao encontrar elemento")
@@ -26,6 +27,7 @@ def espera_explicita_de_elemento(drive, element_path, acao, informacao_acao, tem
             element = WebDriverWait(drive, tempo_espera).until(
                 EC.element_to_be_clickable((By.XPATH, element_path))
             )
+            sleep(5)
             element.click()
             return False
             #drive.find_element_by_xpath(element_path).click()

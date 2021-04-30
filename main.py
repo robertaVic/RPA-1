@@ -37,11 +37,11 @@ chamarDriver(driver)
 fazerLogin(driver)
 
 #entra no pagamento avulso
-# pagamentoAvulso(driver)
-# tramitar_para_pago_no_sgp(driver)
+pagamentoAvulso(driver)
+tramitar_para_pago_no_sgp(driver)
 
 #entra na solicitação de reemb
 #reembolso(driver)
-adiantamento(driver)
+# adiantamento(driver)
 # pagamentos(driver)
 

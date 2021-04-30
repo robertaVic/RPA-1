@@ -7,7 +7,7 @@ import os
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains 
 from openpyxl import load_workbook
-from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, tramitar_para_pago
+from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da_planilha, atualizar_status_na_planilha
 
 
 #data atual formatada
@@ -165,3 +165,50 @@ def adiantamento(driver):
         funcoes.espera_explicita_de_elemento(driver, "/html/body/div[5]/div[3]/div/div[2]/ul/div[3]", "click", "tramitar", 2)
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(3)
+
+        sleep(1.5)
+    driver.quit()
+        
+    print("Vai começar a contar")
+    #selecionar_ids_do_tipo_de_solicitacao(tipo_de_solicitacao)
+    for i in range(0,60):
+        print(i)
+        sleep(1)
+    #2° parte: ESPERANDO DO driver PRA TRAMITAR PRA PAGO 
+    # #parte do sgp
+def tramitar_para_pago_no_sgp(driver):
+    funcoes.chamarDriver(driver)
+    funcoes.fazerLogin(driver)
+    funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SPA",2)
+    driver.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
+    for i in range(len(ler_dados_da_planilha(tipo_de_solicitacao))):
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro",0.2)
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[5]/div[3]/ul/li[6]","click","filtro",0.2)
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro",0.2)
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
+        driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(ler_dados_da_planilha(tipo_de_solicitacao)[i][0])
+        funcoes.espera_explicita_de_elemento(driver, "/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro", 0.4)
+        funcoes.espera_explicita_de_elemento(driver, "/html/body/div[6]/div[3]/ul/li[7]", "click", "filtro", 0.4)
+        funcoes.espera_explicita_de_elemento(driver, "/html/body/div[6]/div[1]", "click", "filtro", 0.4 )
+        print(20*"=")
+        funcoes.espera_explicita_de_elemento(driver, "/html/body/div[5]/div[3]/div/div[2]/button", "click", "filtro", 0.4 )
+        sleep(5)
+        funcoes.espera_explicita_de_elemento(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input", "click", "filtro", 0.4 )
+        funcoes.espera_explicita_de_elemento(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "filtro", 0.4 )
+        funcoes.espera_explicita_de_elemento(driver, "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]", "click", "filtro", 0.4 )
+        sleep(3)
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","SPA",0.2)
+        driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(ler_dados_da_planilha(tipo_de_solicitacao)[i][2])
+        driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(ler_dados_da_planilha(tipo_de_solicitacao)[i][1])
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","SPA",0.4)
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button","click","SPA",0.4)
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","SPA",0.4)
+        funcoes.espera_explicita_de_elemento(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","SPA",0.4) 
+        sleep(3)    
+        if ler_dados_da_planilha(tipo_de_solicitacao)[i][3] == "PAGO":
+            funcoes.espera_explicita_de_elemento(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","SPA",0.4)    
+        elif ler_dados_da_planilha(tipo_de_solicitacao)[i][3] == "PARCIALMENTE PAGO":  
+            funcoes.espera_explicita_de_elemento(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[2]","click","SPA",0.4)
+        sleep(4)
+        atualizar_status_na_planilha(ler_dados_da_planilha(tipo_de_solicitacao)[i][4])    
+    print("FIMMMMMMMMMMMMMMM")

@@ -17,12 +17,12 @@ statusFinanceiro = sh1["X"]
 
 # listaLinha = []
 linhaStatusDiferente = []
-# cadaSolicitacao = []
+# 
 dados = []
 
 def ler_dados_da_planilha(tipo_de_solicitacao):
     listaId = []
-    todos = list(range(7, ultima_linha))
+    todos = list(range(8, ultima_linha))
     for i in todos:
         avulso = tipo[i]
         if avulso.value == tipo_de_solicitacao:
@@ -31,18 +31,20 @@ def ler_dados_da_planilha(tipo_de_solicitacao):
             statusRo = statusRobo[i]
             statusFinan = statusFinanceiro[i]
             if statusRo.value != statusFinan.value:
-                dados.append([todosOsIds[statusRo.row].value, sh1[f"L{statusRo.row}"].value, sh1[f"Y{statusRo.row}"].value).strftime("%d/%m/%Y"), sh1[f"X{statusRo.row}"].value, statusRo.row ])
-                # dados.append(todosOsIds[statusRo.row].value)
-                # cadaSolicitacao.append(sh1[f"L{statusRo.row}"].value)
-                # cadaSolicitacao.append((sh1[f"Y{statusRo.row}"].value).strftime("%d/%m/%Y"))
-                # cadaSolicitacao.append(sh1[f"X{statusRo.row}"].value)
-                # listaStatusDiferente.append()
-                # dados.append(cadaSolicitacao)
+                cadaSolicitacao = []
+                status = statusRo.row
+                # geral = [todosOsIds[statusRo.row].value, sh1[f"L{statusRo.row}"].value, (sh1[f"Y{statusRo.row}"].value).strftime("%d/%m/%Y"), sh1[f"X{statusRo.row}"].value, statusRo.row]
+                cadaSolicitacao.append(sh1[f"B{status}"].value)
+                cadaSolicitacao.append(sh1[f"L{status}"].value)
+                cadaSolicitacao.append((sh1[f"Y{status}"].value).strftime("%d/%m/%Y"))
+                cadaSolicitacao.append(sh1[f"X{status}"].value)
+                cadaSolicitacao.append(status)
+                dados.append(cadaSolicitacao)
     return dados     
 
-
 def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
-    todos = list(range(7, ultima_linha))
+    todos = list(range(8, ultima_linha))
+    listaId = []
     ler_dados_da_planilha(tipo_de_solicitacao)          
     for coluna in range(len(dados_formulario)):
         #print(f"ID: {listaId[idd]} LINHA: {listaLinha[idd]}")
@@ -61,31 +63,33 @@ def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
         print("SALVOU")  
     print(ultima_linha)
 
-def quantidade_para_tramitacao():
-    return len(ler_dados_da_planilha())        
-
-def tramitar_para_pago(tipo_de_solicitacao, dado, iteracao): #atualizar status
-    ler_dados_da_planilha(tipo_de_solicitacao)
-    if dado == "id":
-        return (dados[iteracao])[0]
-    elif dado == "valor":
-        return (dados[iteracao])[1]
-    elif dado == "data":
-        return (dados[iteracao])[2]     
-    elif dado == "opcao":       
-        if (dados[iteracao])[3] == "PAGO":     
-            sh1.cell(row=listaStatusDiferente[iteracao], column=18, value="PAGO")
-            wb.save(arquivo_excel)
-            return "1"
-        elif (dados[iteracao])[3] == "PARCIALMENTE PAGO":
-            sh1.cell(row=listaStatusDiferente[iteracao], column=18, value="PARCIALMENTE PAGO")
-            wb.save(arquivo_excel) 
-            return "2"
-
-
 def atualizar_status_na_planilha(linha):
     #pegar o status daqui mesmo
-    sh1.cell(row=linha column=18, value= sh1[f"X{linha}"].value)
-    wb.save(arquivo_excel) 
+    sh1.cell(row=linha, column=18, value= sh1[f"X{linha}"].value)
+    wb.save(arquivo_excel)     
+
+# def quantidade_para_tramitacao():
+#     return len(ler_dados_da_planilha())        
+
+# def tramitar_para_pago(tipo_de_solicitacao, dado, iteracao): #atualizar status
+#     ler_dados_da_planilha(tipo_de_solicitacao)
+#     if dado == "id":
+#         return (dados[iteracao])[0]
+#     elif dado == "valor":
+#         return (dados[iteracao])[1]
+#     elif dado == "data":
+#         return (dados[iteracao])[2]     
+#     elif dado == "opcao":       
+#         if (dados[iteracao])[3] == "PAGO":     
+#             sh1.cell(row=listaStatusDiferente[iteracao], column=18, value="PAGO")
+#             wb.save(arquivo_excel)
+#             return "1"
+#         elif (dados[iteracao])[3] == "PARCIALMENTE PAGO":
+#             sh1.cell(row=listaStatusDiferente[iteracao], column=18, value="PARCIALMENTE PAGO")
+#             wb.save(arquivo_excel) 
+#             return "2"
+
+
+
 
 
