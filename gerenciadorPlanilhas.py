@@ -13,44 +13,37 @@ todosOsIds = sh1["B"]
 tipo = sh1["A"]
 statusRobo = sh1["R"]
 statusFinanceiro = sh1["X"]
-todos = list(range(7, ultima_linha))
-listaId = []
-listaLinha = []
-listaStatusDiferente = []
+
+
+# listaLinha = []
+linhaStatusDiferente = []
+# cadaSolicitacao = []
 dados = []
 
 def ler_dados_da_planilha(tipo_de_solicitacao):
+    listaId = []
+    todos = list(range(7, ultima_linha))
     for i in todos:
         avulso = tipo[i]
         if avulso.value == tipo_de_solicitacao:
             listaId.append(todosOsIds[i].value)
-            listaLinha.append(avulso.row)
+            # listaLinha.append(avulso.row)
             statusRo = statusRobo[i]
             statusFinan = statusFinanceiro[i]
             if statusRo.value != statusFinan.value:
-                #print("diferente")
-                cadaSolicitacao = []
-                cadaSolicitacao.append(todosOsIds[statusRo.row].value)
-                cadaSolicitacao.append(sh1[f"L{statusRo.row}"].value)
-                cadaSolicitacao.append((sh1[f"Y{statusRo.row}"].value).strftime("%d/%m/%Y"))
-                cadaSolicitacao.append(sh1[f"X{statusRo.row}"].value)
-                listaStatusDiferente.append(statusRo.row)
-                dados.append(cadaSolicitacao)
+                dados.append([todosOsIds[statusRo.row].value, sh1[f"L{statusRo.row}"].value, sh1[f"Y{statusRo.row}"].value).strftime("%d/%m/%Y"), sh1[f"X{statusRo.row}"].value, statusRo.row ])
+                # dados.append(todosOsIds[statusRo.row].value)
+                # cadaSolicitacao.append(sh1[f"L{statusRo.row}"].value)
+                # cadaSolicitacao.append((sh1[f"Y{statusRo.row}"].value).strftime("%d/%m/%Y"))
+                # cadaSolicitacao.append(sh1[f"X{statusRo.row}"].value)
+                # listaStatusDiferente.append()
+                # dados.append(cadaSolicitacao)
     return dados     
 
 
 def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
-    for i in todos:
-        avulso = (tipo[i])
-        if avulso.value == tipo_de_solicitacao:
-            listaId.append(todosOsIds[i].value)
-            listaLinha.append(avulso.row)
-            statusRo = statusRobo[i]
-            statusFinan = statusFinanceiro[i]
-            if statusRo.value != statusFinan.value:
-                #print("diferente")
-                listaStatusDiferente.append(statusRobo[i].row)
-    print(listaId)            
+    todos = list(range(7, ultima_linha))
+    ler_dados_da_planilha(tipo_de_solicitacao)          
     for coluna in range(len(dados_formulario)):
         #print(f"ID: {listaId[idd]} LINHA: {listaLinha[idd]}")
         if dados_formulario[1] in listaId:
@@ -69,9 +62,9 @@ def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
     print(ultima_linha)
 
 def quantidade_para_tramitacao():
-    return listaStatusDiferente        
+    return len(ler_dados_da_planilha())        
 
-def tramitar_para_pago(tipo_de_solicitacao, dado, iteracao):
+def tramitar_para_pago(tipo_de_solicitacao, dado, iteracao): #atualizar status
     ler_dados_da_planilha(tipo_de_solicitacao)
     if dado == "id":
         return (dados[iteracao])[0]
@@ -90,6 +83,9 @@ def tramitar_para_pago(tipo_de_solicitacao, dado, iteracao):
             return "2"
 
 
-        
+def atualizar_status_na_planilha(linha):
+    #pegar o status daqui mesmo
+    sh1.cell(row=linha column=18, value= sh1[f"X{linha}"].value)
+    wb.save(arquivo_excel) 
 
 
