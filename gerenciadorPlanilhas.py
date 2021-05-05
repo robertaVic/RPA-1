@@ -2,38 +2,34 @@ from openpyxl import load_workbook
 import gerenciadorPastas
 import funcoes
 from time import sleep
+from openpyxl.styles import Color, PatternFill, Font, Border
+from openpyxl.styles import colors
+from openpyxl.cell import Cell
 
 arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
 wb = load_workbook(arquivo_excel) #carregar o arquivo
 sh1 = wb.worksheets[0] #carregar a primeira planilha
 
-#retorna a ultima linha da planilha 
-ultima_linha = sh1.max_row
-todosOsIds = sh1["B"]
-tipo = sh1["A"]
-statusRobo = sh1["R"]
-statusFinanceiro = sh1["X"]
-
-
-# listaLinha = []
-linhaStatusDiferente = []
-# 
-dados = []
 
 def ler_dados_da_planilha(tipo_de_solicitacao):
+    ultima_linha = sh1.max_row
+    dados = []
     listaId = []
     todos = list(range(8, ultima_linha))
     for i in todos:
-        avulso = tipo[i]
-        if avulso.value == tipo_de_solicitacao:
+        tipo = sh1['A']
+        todosOsIds = sh1["B"]
+        statusRobo = sh1["R"]
+        statusFinanceiro = sh1["X"]
+        # avulso = tipo[i]
+        if tipo[i].value == tipo_de_solicitacao:
             listaId.append(todosOsIds[i].value)
-            # listaLinha.append(avulso.row)
             statusRo = statusRobo[i]
             statusFinan = statusFinanceiro[i]
             if statusRo.value != statusFinan.value:
                 cadaSolicitacao = []
                 status = statusRo.row
-                # geral = [todosOsIds[statusRo.row].value, sh1[f"L{statusRo.row}"].value, (sh1[f"Y{statusRo.row}"].value).strftime("%d/%m/%Y"), sh1[f"X{statusRo.row}"].value, statusRo.row]
+                #geral = [todosOsIds[status].value, sh1[f"L{status}"].value, (sh1[f"Y{status}"].value).strftime("%d/%m/%Y"), sh1[f"X{status}"].value, status]
                 cadaSolicitacao.append(sh1[f"B{status}"].value)
                 cadaSolicitacao.append(sh1[f"L{status}"].value)
                 cadaSolicitacao.append((sh1[f"Y{status}"].value).strftime("%d/%m/%Y"))
@@ -43,9 +39,16 @@ def ler_dados_da_planilha(tipo_de_solicitacao):
     return dados     
 
 def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
+    ultima_linha = sh1.max_row
     todos = list(range(8, ultima_linha))
     listaId = []
-    ler_dados_da_planilha(tipo_de_solicitacao)          
+    for i in todos:
+        todosOsIds = sh1["B"]
+        tipo = sh1['A']
+        # avulso = tipo[i]
+        if tipo[i].value == tipo_de_solicitacao:
+            listaId.append(todosOsIds[i].value)
+
     for coluna in range(len(dados_formulario)):
         #print(f"ID: {listaId[idd]} LINHA: {listaLinha[idd]}")
         if dados_formulario[1] in listaId:
@@ -65,7 +68,10 @@ def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
 
 def atualizar_status_na_planilha(linha):
     #pegar o status daqui mesmo
-    sh1.cell(row=linha, column=18, value= sh1[f"X{linha}"].value)
+    myFill = PatternFill(start_color='A9D08E', 
+                    end_color='A9D08E', 
+                    fill_type = 'solid')
+    sh1.cell(row=linha, column=18, value= sh1[f"X{linha}"].value).fill = myFill
     wb.save(arquivo_excel)     
 
 # def quantidade_para_tramitacao():
