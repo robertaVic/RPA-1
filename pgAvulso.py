@@ -21,7 +21,6 @@ gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
 
 #função para tramitar as solicitações
 def pagamentoAvulso(financeiro):
-    global tipo_de_solicitacao
     tipo_de_solicitacao = "SPA"
     builder = ActionChains(financeiro)
     financeiro.implicitly_wait(10)
@@ -35,6 +34,7 @@ def pagamentoAvulso(financeiro):
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 3)
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/ul/li[2]","click","filtro",2)
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 3)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
     funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro",2)
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[6]/div[3]/ul/li[3]", "click", "filtro", 0.4)
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[6]/div[1]", "click", "filtro", 0.3)
@@ -167,10 +167,19 @@ def pagamentoAvulso(financeiro):
         for arquivo in arquivos:
             print(arquivo)
             #movendo os arquivos para a pasta da sua solicitaçao
-            try:
-                shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
-            except:
-                print("não moveu o arquivo!")
+            down = os.path.splitext(arquivo)[-1].lower()
+            maximo_tentativas = 0
+            while maximo_tentativas <= 10:
+                if down == ".crdownload":
+                    print(arquivo + " BAIXANDO AINDA")
+                    maximo_tentativas+= 1
+                    sleep(1)
+                else:
+                    try:
+                        shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
+                        maximo_tentativas = 11
+                    except:
+                        maximo_tentativas+= 1
         sleep(3)
 
         #tramitação das solicitaçoes

@@ -9,6 +9,7 @@ from datetime import date
 from openpyxl import load_workbook
 from time import sleep
 import gerenciadorPastas
+from os.path import isfile, join
 # from gerenciadorPlanilhas import ler_dados_da_planilha, atualizar_status_na_planilha, preencher_solicitacao_na_planilha
 
 
@@ -17,13 +18,21 @@ import gerenciadorPastas
 def listar_arquivos_em_diretorios(diretorio):
     listaDeArquivos = [f for f in os.listdir(diretorio) if isfile(join(diretorio, f))]
     return listaDeArquivos
-arquivos = listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
+arquivos = listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamento Avulso\\03.05.2021\\ID 0258780 LARISSA GALDINO DA SILVA PADILHA\\")
 #criando um laço para mover cada um para sua pasta especifica
 for arquivo in arquivos:
-    print(arquivo)
-    fileExt = r".crdownload"
-    if _.endswith(fileExt):
-        print("ok")
+    down = os.path.splitext(arquivo)[-1].lower()
+    maximo_tentativas = 0
+    while maximo_tentativas <= 10:
+        if down == ".crdownload":
+            maximo_tentativas+= 1
+            sleep(1)
+        else:
+            print(arquivo + " baixado")
+            maximo_tentativas = 11
+
+
+        
 
 
 

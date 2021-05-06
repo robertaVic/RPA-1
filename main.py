@@ -26,19 +26,18 @@ chrome_options = padraoChrome(diretorio_padrao)
 
 caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\"
 
-def instanciar_driver():
-    #inserindo as opçoes do chrome no driver
-    driver = Chrome(chrome_options=chrome_options)
-    chamarDriver(driver)
-    fazerLogin(driver)
-    return driver
+#inserindo as opçoes do chrome no driver
+driver = Chrome(chrome_options=chrome_options)
+
+chamarDriver(driver)
+fazerLogin(driver)
 
 #entra no pagamento avulso
-pagamentoAvulso(instanciar_driver())
-tramitar_para_pago_no_sgp(instanciar_driver())
+# pagamentoAvulso(driver)
+# tramitar_para_pago_no_sgp(driver)
 
 # #entra na solicitação de reemb
 #reembolso(driver)
-# adiantamento(driver)
+adiantamento(driver)
 # pagamentos(driver)
 
