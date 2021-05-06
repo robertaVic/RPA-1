@@ -1,5 +1,6 @@
 from datetime import date
-from gerenciadorPlanilhas import preencher_solicitacao_na_planilha
+from funcoes import espera_explicita_de_elemento
+from gerenciadorPlanilhas import ler_dados_da_planilha, preencher_solicitacao_na_planilha
 import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -38,16 +39,14 @@ def reembolso(drive):
     #drive.implicitly_wait(70)
 
     #Aceesando o menu de reembolso
-    drive.implicitly_wait(2)
-    encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","link","SRB1",2)
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",120)
     drive.get("https://tpf.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
-    drive.implicitly_wait(10)
 
     #Filtrando as solicitações com status aprovado pelo gerente
-    encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","link","SRB2",0.4)
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
     time.sleep(10)
-    encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",0.3)
-    encontrar_elemento_por_repeticao(drive,"/html/body/div[5]/div[3]/ul/li[3]","click","SRB4",0.3)
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
+    espera_explicita_de_elemento(drive,"/html/body/div[5]/div[3]/ul/li[3]","click","SRB4",120)
 
     quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
 
@@ -139,8 +138,9 @@ def reembolso(drive):
         time.sleep(15)
         drive.switch_to_frame(0)
         
-        encontrar_elemento_por_repeticao(drive,"/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr/td[2]","click","filtro",0.2) 
-        drive.find_element_by_xpath("/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]").click()
+        espera_explicita_de_elemento(drive,"/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr/td[2]","click","filtro",160) 
+        espera_explicita_de_elemento(drive,"/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]","click","filtro2",160) 
+        #drive.find_element_by_xpath("/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]").click()
         drive.find_element_by_xpath("/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td").click()
         drive.switch_to.default_content()
         drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button").click()
@@ -177,12 +177,16 @@ def reembolso(drive):
         filtro_click.perform()
 
         drive.get("https://tpf.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
-        encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","link","SRB5",0.4)
+        espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","link","SRB5",160)
         time.sleep(4)
     
     time.sleep(4)
     drive.close()
 
+
+def tramitar_para_pago(): 
+    lista_de_tramitacao = ler_dados_da_planilha("SRB")
+tramitar_para_pago()
 
         
 

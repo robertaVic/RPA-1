@@ -38,7 +38,7 @@ pagamentoAvulso(instanciar_driver())
 tramitar_para_pago_no_sgp(instanciar_driver())
 
 # #entra na solicitação de reemb
-#reembolso(driver)
+#reembolso(instanciar_driver())
 # adiantamento(driver)
 # pagamentos(driver)
 
