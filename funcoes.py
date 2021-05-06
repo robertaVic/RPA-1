@@ -164,20 +164,4 @@ for handle in financeiro.window_handles:
     financeiro.switch_to.window(lpage)
 '''
 #financeiro.execute_script("document.getElementByXpath('/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr/td[2]')[0].click()")
-def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
-    maximo_tentativas = 0
-    while maximo_tentativas <= 20:
-        print(informacao_acao, maximo_tentativas)
-        try:
-            drive.find_element_by_xpath(element_path)
-            if acao == "click":
-                drive.find_element_by_xpath(element_path).click()
-                maximo_tentativas = 21
-            elif acao == "link":
-                maximo_tentativas = 21
-                pass
-        except:
-            maximo_tentativas+=1
-            sleep(tempo_espera)
-    if maximo_tentativas > 20:
-        return("#Erro " + informacao_acao)
+
