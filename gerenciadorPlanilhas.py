@@ -26,16 +26,17 @@ def ler_dados_da_planilha(tipo_de_solicitacao):
             listaId.append(todosOsIds[i].value)
             statusRo = statusRobo[i]
             statusFinan = statusFinanceiro[i]
-            if statusRo.value != statusFinan.value:
+            if statusRo.value != statusFinan.value and statusFinan.value != None:
                 cadaSolicitacao = []
                 status = statusRo.row
                 #geral = [todosOsIds[status].value, sh1[f"L{status}"].value, (sh1[f"Y{status}"].value).strftime("%d/%m/%Y"), sh1[f"X{status}"].value, status]
-                cadaSolicitacao.append(sh1[f"B{status}"].value)
-                cadaSolicitacao.append(sh1[f"L{status}"].value)
-                cadaSolicitacao.append((sh1[f"Y{status}"].value).strftime("%d/%m/%Y"))
-                cadaSolicitacao.append(sh1[f"X{status}"].value)
-                cadaSolicitacao.append(status)
-                dados.append(cadaSolicitacao)
+                if (sh1[f"L{status}"].value != None) and (sh1[f"Y{status}"].value != None) and (sh1[f"X{status}"].value != None):
+                    cadaSolicitacao.append(sh1[f"B{status}"].value)
+                    cadaSolicitacao.append(sh1[f"L{status}"].value)
+                    cadaSolicitacao.append((sh1[f"Y{status}"].value).strftime("%d/%m/%Y"))
+                    cadaSolicitacao.append(sh1[f"X{status}"].value)
+                    cadaSolicitacao.append(status)
+                    dados.append(cadaSolicitacao)
     return dados     
 
 def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):

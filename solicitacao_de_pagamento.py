@@ -43,9 +43,11 @@ def pagamentos(drive):
     drive.get("https://tpf.madrix.app/runtime/44/list/186/Solicitação de Pagamento")
     time.sleep(8)
     #Filtrando as solicitações com status pagamento solicitado
-    #espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",20)
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
     espera_explicita_de_elemento(drive,"/html/body/div[5]/div[3]/ul/li[3]","click","SRB4",60)
+    time.sleep(3)
+
 
     quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
 
@@ -98,8 +100,24 @@ def pagamentos(drive):
         #cpf
         cpf = drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[2]/div/div/div/input").get_attribute("value")
         
-        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
 
+
+        #Imprimindo a Capa
+        #drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[8]/div[2]/div/div/button").click()
+        time.sleep(15)
+        drive.switch_to_frame(0)
+        
+        espera_explicita_de_elemento(drive,"/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr/td[2]","click","filtro",60) 
+        time.sleep(3)
+        drive.find_element_by_xpath("/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]").click()
+        drive.find_element_by_xpath("/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td").click()
+        drive.switch_to.default_content()
+        drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button").click()
+        time.sleep(4)
+
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
+        time.sleep(10)
 
         #/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div
         div_externa = drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div")
@@ -108,22 +126,6 @@ def pagamentos(drive):
             certidao.click()
             time.sleep(5)
         
-        print(2)
-        '''
-        #Download de Certidão negativa
-        estruta_externas =  drive.find_elements_by_css_selector("tr.MuiTableRow-root")
-        for row in estruta_externas:
-            try:
-                link = row.find_element_by_tag_name("a")
-                nome_anexo = link.get_attribute("innerText")
-                nome_anexo = nome_anexo.split(".")[-1]
-                if len(nome_anexo) == 3:
-                   link.click()
-            except:
-                link = ""
-                continue
-        '''
-        
         #Download de Nota Fiscal
         drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]").click()
         div_externa = drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]")
@@ -131,8 +133,73 @@ def pagamentos(drive):
         for nfs in trs:
             nfs.click()
             time.sleep(5)
+
+        #Criando pasta para o ID da solicitação no diretorio de reembolso
+        nome_da_pasta = "ID " + id_solicitacao
+        gerenciadorPastas.criarPastasFilhas('Pagamentos', nome_da_pasta)
+
+        #Preencher lista com as informações que serão enviadas para a planilha
+        #CPF
+        if len(cpf)>0:
+            dados_do_formulario.append(cpf)
+        else:
+            dados_do_formulario.append(cnpj)
+        #Razão Social
+        dados_do_formulario.append(razao_social)
+        #Forma de Pagt
+        dados_do_formulario.append("")
+        #Banco
+        dados_do_formulario.append(banco)
+        #Agencia
+        dados_do_formulario.append(agencia)
+        #Conta
+        dados_do_formulario.append(conta)
+        #Tipo de Conta
+        dados_do_formulario.append(tipo_de_conta)
+        #Natureza da conta
+        dados_do_formulario.append("")
+        #Valor
+        dados_do_formulario.append(valor)
+        #Valor Pg
+        dados_do_formulario.append("")
+        #Data Solicitada p/ pgto
+        dados_do_formulario.append(data_previsao)
+        #Data Solicitação
+        dados_do_formulario.append(data_solicitacao)
+        #Data Pgto
+        dados_do_formulario.append(data_pagamento)
+        #Comentario Robo
+        dados_do_formulario.append("")
+        #Ajuste
+        dados_do_formulario.append("")
+
+
+        #Movendo os Arquivos para a pasta da solicitacao
+        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
+        for arquivo in arquivos:
+            try:
+                shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
+            except:
+                print("Não moveu o arquivo!")
+
         
-        a = 2
-        print(a)
+        #Tramitar para processado
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[4]/fieldset/button[3]").click()
+        drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[2]/ul/div[4]/div").click()
+        time.sleep(5)
+        dados_do_formulario.append("Processada")
+
+        #Preencher Planilha
+        preencher_solicitacao_na_planilha(dados_do_formulario,'SPG')
+
+        filtro_click = builder.send_keys(Keys.ESCAPE)
+        filtro_click.perform()
+        time.sleep(2)
+
+        drive.get("https://tpf.madrix.app/runtime/44/list/186/Solicitação de Pagamento")
+        espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","escontrar","SRB5",120)
+        time.sleep(4)
         
-     
+    time.sleep(4)
+    drive.close()

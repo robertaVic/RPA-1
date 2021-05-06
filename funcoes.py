@@ -16,6 +16,7 @@ def espera_explicita_de_elemento(drive, element_path, acao, informacao_acao, tem
                 EC.presence_of_element_located((By.XPATH, element_path))
             )
             sleep(5)
+        
             return False
         except:
             print(informacao_acao, "Erro ao encontrar elemento")
@@ -24,35 +25,17 @@ def espera_explicita_de_elemento(drive, element_path, acao, informacao_acao, tem
 
     elif acao == "click":
         try:
-            sleep(5)
             element = WebDriverWait(drive, tempo_espera).until(
                 EC.element_to_be_clickable((By.XPATH, element_path))
             )
+            #print("Encontrou o bendito")
+            sleep(5)
             element.click()
             return False
             #drive.find_element_by_xpath(element_path).click()
         except:
             print(informacao_acao, "Erro ao encontrar elemento")
             return True
-
-def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
-    maximo_tentativas = 0
-    while maximo_tentativas <= 20:
-        try:
-            drive.find_element_by_xpath(element_path)
-            if acao == "click":
-                print(informacao_acao, maximo_tentativas)
-                drive.find_element_by_xpath(element_path).click()
-                maximo_tentativas = 21
-            elif acao == "link":
-                print(informacao_acao, maximo_tentativas)
-                maximo_tentativas = 21
-                pass
-        except:
-            maximo_tentativas+=1
-            sleep(tempo_espera)
-    if maximo_tentativas > 20:
-        return("#Erro " + informacao_acao)
 
 #preferencias do chrome
 def padraoChrome(diretorio):
@@ -69,11 +52,11 @@ def chamarDriver(navegador):
 
 # #Faz login   
 def fazerLogin(login):
-    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "encontrar", "Login", 10)
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "encontrar", "Login", 30)
     login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input").send_keys("roberta.costa")
-    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "encontrar", "Senha", 10)
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "encontrar", "Senha", 30)
     login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[2]/div/div/div/input").send_keys("123")
-    encontrar_elemento_por_repeticao(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button", "click", "Login", 3)
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button/span[1]", "click", "Login", 30)
     
     #login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input").send_keys("roberta.costa")
     #login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[2]/div/div/div/input").send_keys("123")
@@ -181,3 +164,4 @@ for handle in financeiro.window_handles:
     financeiro.switch_to.window(lpage)
 '''
 #financeiro.execute_script("document.getElementByXpath('/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr/td[2]')[0].click()")
+
