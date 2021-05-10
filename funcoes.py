@@ -154,7 +154,24 @@ def tramitar(baixar):
    ''' 
 
 
-
+def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
+    maximo_tentativas = 0
+    while maximo_tentativas <= 20:
+        print(informacao_acao, maximo_tentativas)
+        try:
+            sleep(tempo_espera)
+            drive.find_element_by_xpath(element_path)
+            if acao == "click":
+                drive.find_element_by_xpath(element_path).click()
+                maximo_tentativas = 21
+            elif acao == "link":
+                maximo_tentativas = 21
+                pass
+        except:
+            maximo_tentativas+=1
+            sleep(tempo_espera)
+    if maximo_tentativas > 20:
+        return("#Erro " + informacao_acao)
 
 '''
 page = financeiro.current_window_handle

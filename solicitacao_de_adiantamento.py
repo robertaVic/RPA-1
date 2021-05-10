@@ -10,22 +10,20 @@ from openpyxl import load_workbook
 from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da_planilha, atualizar_status_na_planilha
 
 
-#data atual formatada
-data_em_texto = date.today().strftime("%d.%m.%Y")
-
-#caminho da pasta macro(pasta do dia)
-caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Adiantamento\\" 
-#criar pasta do dia dentro de pagamento avulso
-gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
-
 def adiantamento(driver):
+    #data atual formatada
+    data_em_texto = date.today().strftime("%d.%m.%Y")
+    #caminho da pasta macro(pasta do dia)
+    caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Adiantamento\\" 
+    #criar pasta do dia dentro de pagamento avulso
+    gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
     tipo_de_solicitacao = "SAT"
     builder = ActionChains(driver)
     driver.implicitly_wait(2)
 
     #ACESSANDO SOLICITAÇAO DE ADIANTAMENTO
     funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SAT",2)
-    driver.get("https://tpf.madrix.app/runtime/44/list/176/Solicitação de Adiantamento")
+    driver.get("https://tpf.madrix.app/runtime/44/list/184/Solicitação de Adiantamento")
     driver.implicitly_wait(10)
 
     #FILTRANDO AS SOLICITAÇÕES APROVADAS PELO GERENTE
@@ -54,7 +52,7 @@ def adiantamento(driver):
         driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
-        #Acessando as informações presentes em 'driver HTML'
+        #Acessando as informações presentes em 'Financeiro HTML'
         sleep(5)
         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/div/div/div/div/div", "click", "click na linha", 4)
         filtro_click = builder.send_keys(Keys.ARROW_DOWN)
@@ -168,20 +166,15 @@ def adiantamento(driver):
         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/ul/div[1]", "click", "tramitar", 0.4)
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(3)
-    driver.quit()
         
     print("Vai começar a contar")
-    #selecionar_ids_do_tipo_de_solicitacao(tipo_de_solicitacao)
     for i in range(0,60):
         print(i)
         sleep(1)
-    #2° parte: ESPERANDO DO driver PRA TRAMITAR PRA PAGO 
-    # #parte do sgp
-def tramitar_para_pago_no_sgp(driver):
-    funcoes.chamarDriver(driver)
-    funcoes.fazerLogin(driver)
-    funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SPA",2)
-    driver.get("https://tpf.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
+
+    #2° parte: ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO 
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[6]","click","filtro",2)
     for i in range(len(ler_dados_da_planilha(tipo_de_solicitacao))):
         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 2)
         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)

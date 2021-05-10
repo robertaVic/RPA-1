@@ -32,6 +32,8 @@ for arquivo in arquivos:
             maximo_tentativas = 11
 
 
+print(tempo)
+
         
 
 

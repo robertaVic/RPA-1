@@ -7,9 +7,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
 from gerenciadorPastas import criarPastaData, recuperar_diretorio_usuario
-from pgAvulso import pagamentoAvulso, tramitar_para_pago_no_sgp
+from pgAvulso import pagamentoAvulso
 from solicitacao_de_reembolso import reembolso
 from solicitacao_de_adiantamento import adiantamento
+from prestacaoDeContas import prestacao_de_contas
 
 #retornar a data atual
 today = date.today()
@@ -33,11 +34,9 @@ chamarDriver(driver)
 fazerLogin(driver)
 
 #entra no pagamento avulso
-# pagamentoAvulso(driver)
-# tramitar_para_pago_no_sgp(driver)
-
-# #entra na solicitação de reemb
+#pagamentoAvulso(driver)
 #reembolso(driver)
-adiantamento(driver)
+#adiantamento(driver)
+prestacao_de_contas(driver)
 # pagamentos(driver)
 
