@@ -14,37 +14,36 @@ from os.path import isfile, join
 
 
 
-# print(arquivos)
-def listar_arquivos_em_diretorios(diretorio):
-    listaDeArquivos = [f for f in os.listdir(diretorio) if isfile(join(diretorio, f))]
-    return listaDeArquivos
-arquivos = listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamento Avulso\\03.05.2021\\ID 0258780 LARISSA GALDINO DA SILVA PADILHA\\")
-#criando um laço para mover cada um para sua pasta especifica
-for arquivo in arquivos:
-    down = os.path.splitext(arquivo)[-1].lower()
-    maximo_tentativas = 0
-    while maximo_tentativas <= 10:
-        if down == ".crdownload":
-            maximo_tentativas+= 1
-            sleep(1)
-        else:
-            print(arquivo + " baixado")
-            maximo_tentativas = 11
-
-
-print(tempo)
 
         
 
 
 
 
-# data_em_texto = date.today().strftime("%d/%m/%Y")
-# arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
-# wb = load_workbook(arquivo_excel) #carregar o arquivo
-# sh1 = wb.worksheets[0]
+data_em_texto = date.today().strftime("%d/%m/%Y")
+arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
+wb = load_workbook(arquivo_excel) #carregar o arquivo
+sh1 = wb.worksheets[0]
 
 
+ultima_linha = sh1.max_row
+todos = list(range(8, ultima_linha))
+listaId = []
+listaLinha = []
+for i in todos:
+    todosOsIds = sh1["B"]
+    tipo = sh1['A']
+    # avulso = tipo[i]
+    if tipo[i].value == "SPA":
+        listaId.append(todosOsIds[i].value)
+        listaLinha.append(todosOsIds[i].row)
+print(listaId)
+print(listaLinha)     
+if "0264867" in listaId:
+    print("JA EXISTE, SOBRESCREVER")
+    #sobrescrever
+    linhaa = listaId.index("0264867")
+    print(listaLinha[linhaa])     
 # ler_dados_da_planilha("SPA") 
 # print(len(ler_dados_da_planilha("SPA"))) 
 

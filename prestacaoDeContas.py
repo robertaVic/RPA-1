@@ -18,12 +18,12 @@ def prestacao_de_contas(driver):
     caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Prestação de Contas\\" 
     #criar pasta do dia dentro de pagamento avulso
     gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
-    tipo_de_solicitacao = "PDC"
+    tipo_de_solicitacao = "PC"
     builder = ActionChains(driver)
     driver.implicitly_wait(2)
 
     #ACESSANDO PRESTACAO DE CONTAS - CARTAO CORPORATIVO
-    funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","PDC",2)
+    funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","PC",2)
     driver.get("https://tpf.madrix.app/runtime/44/list/221/Prestação de Contas - Cartão Corporativo")
     driver.implicitly_wait(10)
 
@@ -47,7 +47,7 @@ def prestacao_de_contas(driver):
         dados_do_formulario = []
         #armazenando o id de cada prestação
         identificador = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
-        
+        estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A PRESTAÇÃO
         driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 2)
@@ -55,13 +55,13 @@ def prestacao_de_contas(driver):
         #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
         caminho_em_comum_entre_campos_do_formulario = "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div"
 
-        #PDC
+        #PC
         dados_do_formulario.append(tipo_de_solicitacao)
         #ID DA SOLICITAÇAO
         dados_do_formulario.append(identificador)
         #CPF/CNPJ
         dados_do_formulario.append("")
-        #RAZÃO SOCIAL
+        #RAZAO
         dados_do_formulario.append("")
         #FORMA DE PAGAMENTO
         dados_do_formulario.append("")
@@ -90,9 +90,6 @@ def prestacao_de_contas(driver):
         dados_do_formulario.append("")                                                                             
         #AJUSTE FINANCEIRO
         dados_do_formulario.append("")
-        #STATUS ROBO
-        if valor != "":
-            dados_do_formulario.append("Processada")
         
         # #BAIXANDO AS NOTAS FISCAIS
         # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]", "click", "clicar em notas", 3)
@@ -123,7 +120,7 @@ def prestacao_de_contas(driver):
         # driver.switch_to.default_content()
         # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button", "click", "baixar capa", 2)
         # print("passou")
-        # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "baixar capa", 2)
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "baixar capa", 2)
     
         # # if not comentario_nota_fiscal:
         # #     comentario = ("Nenhum")
@@ -169,8 +166,15 @@ def prestacao_de_contas(driver):
         # sleep(3)
 
         #TRAMITAR PARA "PROCESSADA"
-        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[4]","click","tramitar",2)
-        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/ul/div", "click", "tramitar", 2)
+        try:
+            funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[4]","click","tramitar",2)
+            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/ul/div", "click", "tramitar", 2)
+            if valor != "":
+                dados_do_formulario.append("Processada")
+        except:
+            dados_do_formulario.append(estado)
+            dados_do_formulario[15] = "Falha na tramitação"
+            
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(3)
 

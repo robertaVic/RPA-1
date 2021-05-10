@@ -21,7 +21,7 @@ def pagamentoAvulso(financeiro):
     caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamento Avulso\\" 
     #criar pasta do dia dentro de pagamento avulso
     gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
-    tipo_de_solicitacao = "SPA"
+    tipo_de_solicitacao = "SA"
     builder = ActionChains(financeiro)
     financeiro.implicitly_wait(10)
 
@@ -54,7 +54,7 @@ def pagamentoAvulso(financeiro):
         global razao
         #armazenando a razao social de cada solicitaçao
         razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[6]/div").get_attribute("innerText")
-        
+        estado = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A SOLICITAÇAO
         financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
@@ -63,7 +63,7 @@ def pagamentoAvulso(financeiro):
         #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
         caminho_em_comum_entre_campos_do_formulario = "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div"
 
-        #SPA
+        #SA
         dados_do_formulario.append(tipo_de_solicitacao)
         #ID DA SOLICITAÇAO
         dados_do_formulario.append(identificador)
@@ -84,7 +84,8 @@ def pagamentoAvulso(financeiro):
         #NATUREZA DA CONTA
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/input").get_attribute("value"))
         #VALOR
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
+        valor = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value")
+        dados_do_formulario.append(valor)
         #VALOR PAGO
         dados_do_formulario.append("0")
         #DATA SOLICITADA PARA PAGAMENTO
@@ -183,9 +184,15 @@ def pagamentoAvulso(financeiro):
                         maximo_tentativas+= 1
         sleep(3)
 
-        #tramitação das solicitaçoes
-        funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","tramitar",2)
-        funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[5]/div[3]/div/div[2]/ul/div[3]", "click", "tramitar", 2)
+        #TRAMITAÇÃO
+        try:
+            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","tramitar",2)
+            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[5]/div[3]/div/div[2]/ul/div[3]", "click", "tramitar", 2)
+            if valor != "":
+                dados_do_formulario.append("Processada")
+        except:
+            dados_do_formulario.append(estado)
+            dados_do_formulario[15] = "Falha na tramitação"
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(3)
 
