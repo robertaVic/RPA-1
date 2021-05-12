@@ -9,9 +9,6 @@ import gerenciadorPastas
 import shutil
 from funcoes import espera_explicita_de_elemento
 
-data_em_texto = date.today().strftime("%d.%m.%Y")
-caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamentos\\"
-gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
 
 '''Função responsavel por fazer buscas repetitivas em um mesmo elemento da página'''
 def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
@@ -36,6 +33,10 @@ def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao,
 '''Realizar coleta de todas as solicitações  de pagemento com status 'Pagamento Solicitado'
     e realizar o download de seus arquivos anexos na pasta do destinada a solicitação'''
 def pagamentos(drive):
+    data_em_texto = date.today().strftime("%d.%m.%Y")
+    caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamentos\\"
+    gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
+
     builder = ActionChains(drive)
     #drive.implicitly_wait(70)
 

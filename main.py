@@ -7,9 +7,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
 from gerenciadorPastas import criarPastaData, recuperar_diretorio_usuario
-from pgAvulso import pagamentoAvulso, tramitar_para_pago_no_sgp
+from pgAvulso import pagamentoAvulso
 from solicitacao_de_reembolso import reembolso
 from solicitacao_de_adiantamento import adiantamento
+from prestacaoDeContas import prestacao_de_contas
 
 #retornar a data atual
 today = date.today()
@@ -26,19 +27,17 @@ chrome_options = padraoChrome(diretorio_padrao)
 
 caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\"
 
-def instanciar_driver():
-    #inserindo as opçoes do chrome no driver
-    driver = Chrome(chrome_options=chrome_options)
-    chamarDriver(driver)
-    fazerLogin(driver)
-    return driver
+#inserindo as opçoes do chrome no driver
+driver = Chrome(chrome_options=chrome_options)
+
+chamarDriver(driver)
+fazerLogin(driver)
+
 
 #entra no pagamento avulso
-pagamentoAvulso(instanciar_driver())
-tramitar_para_pago_no_sgp(instanciar_driver())
-
-# #entra na solicitação de reemb
-#reembolso(instanciar_driver())
-# adiantamento(driver)
-#pagamentos(instanciar_driver())
+#pagamentoAvulso(driver)
+#reembolso(driver)
+adiantamento(driver)
+#prestacao_de_contas(driver)
+# pagamentos(driver)
 

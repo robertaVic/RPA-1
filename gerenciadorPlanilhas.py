@@ -43,12 +43,14 @@ def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
     ultima_linha = sh1.max_row
     todos = list(range(8, ultima_linha))
     listaId = []
+    listaLinha = []
     for i in todos:
         todosOsIds = sh1["B"]
         tipo = sh1['A']
         # avulso = tipo[i]
         if tipo[i].value == tipo_de_solicitacao:
             listaId.append(todosOsIds[i].value)
+            listaLinha.append(todosOsIds[i].row)
 
     for coluna in range(len(dados_formulario)):
         #print(f"ID: {listaId[idd]} LINHA: {listaLinha[idd]}")
