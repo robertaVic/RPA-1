@@ -1,5 +1,7 @@
 from datetime import date
-from gerenciadorPlanilhas import preencher_solicitacao_na_planilha
+
+from selenium.webdriver.common import keys
+from gerenciadorPlanilhas import atualizar_status_na_planilha, ler_dados_da_planilha, preencher_solicitacao_na_planilha
 import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
@@ -53,7 +55,7 @@ def pagamentos(drive):
     quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
 
     #Percorrento por todas as solicitações filtradas com o status definido no sistema
-    for qtd_solicitacoes in range(2):
+    for qtd_solicitacoes in range(1):
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
         #Tipo
@@ -133,7 +135,7 @@ def pagamentos(drive):
         trs = div_externa.find_elements_by_tag_name("a")
         for nfs in trs:
             nfs.click()
-            time.sleep(5)
+            time.sleep(10)
 
         #Criando pasta para o ID da solicitação no diretorio de reembolso
         nome_da_pasta = "ID " + id_solicitacao
@@ -203,4 +205,56 @@ def pagamentos(drive):
         time.sleep(4)
         
     time.sleep(4)
+
+    tramitar_para_pago(drive)
     drive.close()
+    
+
+def tramitar_para_pago(drive):
+
+    drive.get("https://tpf.madrix.app/runtime/44/list/186/Solicitação de Pagamento")
+    #Filtrando as solicitações com status processado
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
+    espera_explicita_de_elemento(drive,"/html/body/div[5]/div[3]/ul/li[8]","click","SRB4",120)
+    time.sleep(3)
+
+    lista_de_tramitacao = ler_dados_da_planilha("SPG")
+    
+    for solicitacao in lista_de_tramitacao:
+        #Acessando o botao do filtro
+        espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[2]","click","SRB5",120)
+        espera_explicita_de_elemento(drive,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","SRB6",120)
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/button").click()
+        time.sleep(2)
+
+        drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr").click()
+        time.sleep(5)
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[4]").click()
+        espera_explicita_de_elemento(drive,"/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[5]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","SRB7",120)
+        time.sleep(5)
+        #Data
+        drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(solicitacao[2])
+        #Valor
+        valor = str(solicitacao[1]).replace(".",",")
+        teste_casas_decimais = valor.split(",")
+        if len(teste_casas_decimais[1]) == 1:
+            valor+="0"
+        drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(valor)
+        #Salvar
+        drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[1]").click()
+        #Voltar
+        drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[1]/button").click()
+        #Dados
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
+        #Valor Liquido
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div[2]/div/div/input").send_keys(valor)
+        #Pagar
+        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[8]/div[1]/div/button").click()
+        time.sleep(5)
+        
+        atualizar_status_na_planilha(int(solicitacao[4]))
+        print("p")
+
+#tramitar_para_pago()

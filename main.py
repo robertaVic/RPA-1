@@ -33,6 +33,7 @@ driver = Chrome(chrome_options=chrome_options)
 chamarDriver(driver)
 fazerLogin(driver)
 
+
 #entra no pagamento avulso
 #pagamentoAvulso(driver)
 #reembolso(driver)
