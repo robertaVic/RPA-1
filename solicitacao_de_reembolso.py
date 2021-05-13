@@ -190,9 +190,61 @@ def reembolso(drive):
     drive.close()
 
 
-def tramitar_para_pago(): 
-    lista_de_tramitacao = ler_dados_da_planilha("SR")
-#tramitar_para_pago()
+def tramitar_para_pago(drive):
+    drive.get("https://tpf2.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
+    #Filtrando as solicitações com status processado
+    
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
+    espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/ul/li[9]","click","SRB4",120)
+    
+    time.sleep(3)
+
+    lista_de_tramitacao = ler_dados_da_planilha("RB")
+    
+    for solicitacao in lista_de_tramitacao:
+        #Acessando o botao do filtro
+        espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","SRB5",120)
+        espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","SRB6",120)
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0][]))
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[2]/button").click()
+        time.sleep(2)
+
+        drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr").click()
+        #/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[8]/div[1]/div/button
+        time.sleep(5)
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[4]").click()
+        espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[5]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","SRB7",120)
+        time.sleep(10)
+        #Data
+        drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(solicitacao[2])
+        #Valor
+        valor = str(solicitacao[1]).replace(".",",")
+
+        teste_casas_decimais_virgula = valor.count(",")
+        teste_casas_decimais = valor.split(",")
+
+        if teste_casas_decimais_virgula > 0 and len(teste_casas_decimais[1]) == 1:
+            valor+="0"
+        elif teste_casas_decimais_virgula == 0:
+            valor+=",00"
+        drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(valor)
+        #Salvar
+        drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
+        #/html/body/div[7]/div[3]/div/div/div[1]/div[4]/fieldset/button[2]
+        #/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]
+        #Voltar
+        #drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[1]/button").click()
+        #Dados
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
+        #Valor Liquido
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div[2]/div/div/input").send_keys(valor)
+        #Pagar
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[8]/div[1]/div/button").click()
+        time.sleep(5)
+        
+        atualizar_status_na_planilha(int(solicitacao[4]))
+        print("p")
 
         
 

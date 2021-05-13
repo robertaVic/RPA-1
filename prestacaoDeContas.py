@@ -25,9 +25,9 @@ def prestacao_de_contas(driver):
     driver.implicitly_wait(2)
 
     #ACESSANDO PRESTACAO DE CONTAS - CARTAO CORPORATIVO
-    funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","PC",2)
+    #funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","PC",2)
     driver.get("https://tpf2.madrix.app/runtime/44/list/221/Prestação de Contas - Cartão Corporativo")
-    driver.implicitly_wait(10)
+    #driver.implicitly_wait(10)
 
     #FILTRANDO AS PRESTAÇÕES REALIZADAS
     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 3)

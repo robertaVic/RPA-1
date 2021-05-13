@@ -40,12 +40,10 @@ def pagamentos(drive):
     gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
 
     builder = ActionChains(drive)
-    #drive.implicitly_wait(70)
-
     #Aceesando o menu de pagamento
-    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",100)
-
+    #espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",100)
     drive.get("https://tpf2.madrix.app/runtime/44/list/186/Solicitação de Pagamento")
+
     time.sleep(8)
     #Filtrando as solicitações com status pagamento solicitado
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
@@ -238,7 +236,7 @@ def pagamentos(drive):
     time.sleep(4)
 
     tramitar_para_pago(drive)
-    drive.close()
+    #drive.close()
     
 
 def tramitar_para_pago(drive):

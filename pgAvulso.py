@@ -30,7 +30,7 @@ def pagamentoAvulso(financeiro):
     #ACESSANDO PAGAMENTO AVULSO
     funcoes.espera_explicita_de_elemento(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",2)
     financeiro.get("https://tpf2.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
-    financeiro.implicitly_wait(10)
+    #financeiro.implicitly_wait(10)
     #FILTRANDO OS PAGAMENTOS SOLICITADOS
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 3)
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/ul/li[2]","click","filtro",2)
