@@ -7,7 +7,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 import gerenciadorPastas
 import shutil
 
-
+  
 
 '''Função responsavel por fazer buscas repetitivas em um mesmo elemento da página'''
 def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
