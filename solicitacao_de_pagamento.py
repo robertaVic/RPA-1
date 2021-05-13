@@ -49,13 +49,13 @@ def pagamentos(drive):
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
     espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/ul/li[3]","click","SRB4",120)
-    time.sleep(3)
+    time.sleep(6)
 
 
     quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
 
     #Percorrento por todas as solicitações filtradas com o status definido no sistema
-    for qtd_solicitacoes in range(0):
+    for qtd_solicitacoes in range(10):
         tramitar = 0
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
@@ -63,6 +63,7 @@ def pagamentos(drive):
         dados_do_formulario.append("SP")
         path_comum = "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]"
         #ID da Solicitação
+        espera_explicita_de_elemento(drive, path_comum + "/td[4]/div","encontrar","id_solicitacao",120)
         id_solicitacao = drive.find_element_by_xpath(path_comum + "/td[4]/div").get_attribute("innerText")
         dados_do_formulario.append(id_solicitacao)
         #Razão social
@@ -101,6 +102,13 @@ def pagamentos(drive):
             tipo_de_conta = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[2]/div/div[2]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText")
         except:
             tipo_de_conta = ""
+        
+        #Natureza da conta
+        try:
+            natureza_conta = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div[2]/div/div/div/div/div/div[1]/div").get_attribute("innerText")
+        except:
+            natureza_conta = ""
+        
         #cnpj
         cnpj = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[1]/div/div/div/input").get_attribute("value")
         #cpf
@@ -172,7 +180,7 @@ def pagamentos(drive):
         #Tipo de Conta
         dados_do_formulario.append(tipo_de_conta)
         #Natureza da conta
-        dados_do_formulario.append("")
+        dados_do_formulario.append(natureza_conta)
         #Valor
         dados_do_formulario.append(valor)
         #Valor Pg
@@ -183,9 +191,20 @@ def pagamentos(drive):
         dados_do_formulario.append(data_solicitacao)
         #Data Pgto
         dados_do_formulario.append(data_pagamento)
-        #Comentario Robo
-        #if banco !=
-        dados_do_formulario.append("")
+        
+        valor_da_conta = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div[1]/div/div/input").get_attribute("value")
+        valor_da_conta = valor_da_conta.replace(".","")
+        valor_da_conta = valor_da_conta.replace("R$","")
+        valor_da_conta = valor_da_conta.replace(",",".")
+        valor_da_conta = float(valor_da_conta)
+        
+        if banco == "" or  agencia == "" or  conta == "" or  tipo_de_conta == "" or  natureza_conta == "" or valor_da_conta == 0:# and  banco != ""
+            #Comentario Robo
+            dados_do_formulario.append("Atenção: Dados bancarios inconpletos ou solicitação esta com valor da conta com zero.")
+            tramitar = 1
+        else:
+            #Comentario Robo 
+            dados_do_formulario.append("")
         #Ajuste
         dados_do_formulario.append("")
         
@@ -199,8 +218,6 @@ def pagamentos(drive):
             except:
                 print("Não moveu o arquivo!")
 
-        
-        #Tramitar para processado
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]").click()
         drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div[2]/ul/div[4]/div").click()
