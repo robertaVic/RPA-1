@@ -7,7 +7,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import gerenciadorPastas
 import shutil
-from funcoes import espera_explicita_de_elemento
+from funcoes import espera_explicita_de_elemento, validar_download
 
 
 '''Função responsavel por fazer buscas repetitivas em um mesmo elemento da página'''
@@ -33,6 +33,8 @@ def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao,
 '''Realizar coleta de todas as solicitações  de pagemento com status 'Pagamento Solicitado'
     e realizar o download de seus arquivos anexos na pasta do destinada a solicitação'''
 def pagamentos(drive):
+    #verificar se tem downloads antigos e apagar
+    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     data_em_texto = date.today().strftime("%d.%m.%Y")
     caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamentos\\"
     gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
@@ -60,7 +62,7 @@ def pagamentos(drive):
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
         #Tipo
-        dados_do_formulario.append("SP")
+        dados_do_formulario.append("SP") /html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div[1]/div/div/input
         path_comum = "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]"
         #ID da Solicitação
         espera_explicita_de_elemento(drive, path_comum + "/td[4]/div","encontrar","id_solicitacao",120)
@@ -211,12 +213,7 @@ def pagamentos(drive):
 
 
         #Movendo os Arquivos para a pasta da solicitacao
-        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
-        for arquivo in arquivos:
-            try:
-                shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
-            except:
-                print("Não moveu o arquivo!")
+        validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta)
 
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]").click()

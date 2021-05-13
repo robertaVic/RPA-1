@@ -5,10 +5,12 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from gerenciadorPastas import recuperar_diretorio_usuario
 from selenium.webdriver.chrome.options import Options
-
+import gerenciadorPastas
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import os
+import shutil
 
 def espera_explicita_de_elemento(drive, element_path, acao, informacao_acao, tempo_espera):
     
@@ -86,6 +88,22 @@ def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao,
             sleep(tempo_espera)
     if maximo_tentativas > 20:
         return("#Erro " + informacao_acao)
+
+def validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta):
+    while True:
+        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
+        if len(arquivos) > 0:
+            arquivo = arquivos[0]
+            extensao = arquivo.split(".")[1]
+            if extensao == "crdownload":
+                sleep(3)
+            else:
+                try:
+                    shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
+                except:
+                    print("Não moveu o arquivo!")
+        else:
+            break
 
 '''
 page = financeiro.current_window_handle

@@ -11,12 +11,14 @@ from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da
 
 
 def adiantamento(driver):
+    #verificar se tem downloads antigos e apagar
+    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     #data atual formatada
     data_em_texto = date.today().strftime("%d.%m.%Y")
     #caminho da pasta macro(pasta do dia)
     caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Adiantamento\\" 
     #criar pasta do dia dentro de pagamento avulso
-    gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
+    #gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
     tipo_de_solicitacao = "AD"
     builder = ActionChains(driver)
     driver.implicitly_wait(2)
@@ -28,33 +30,33 @@ def adiantamento(driver):
 
     #FILTRANDO AS SOLICITAÇÕES APROVADAS PELO GERENTE
     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 2)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[3]","click","filtro",0.4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/ul/li[3]","click","filtro",0.4)
     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 2)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
-    funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro",0.3)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[6]/div[3]/ul/li[7]", "click", "filtro", 0.4)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[6]/div[1]", "click", "filtro", 0.3)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
+    funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro",0.3)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[7]", "click", "filtro", 0.4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[1]", "click", "filtro", 0.3)
     print(20*"=")
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/button", "click", "fechando filtro", 0.4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechando filtro", 0.4)
     
     #OBTER QUANTIDADE DE PAGAMENTOS
     sleep(5)
     quantidade_de_requisicoes = int((driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
     
     #LAÇO PARA TRAMITAR TODOS AS SOLICITAÇÕES
-    for linha in range(1): #voltar para antigo quantidades
+    for linha in range(2): #voltar para antigo quantidades
         dados_do_formulario = [] 
         global identificador
         #armazenando o id de cada solicitaçao
         identificador = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
-        estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
+        #estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A SOLICITAÇAO
         driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
-        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 3)
         #Acessando as informações presentes em 'Financeiro HTML'
         sleep(5)
-        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/div/div/div/div/div", "click", "click na linha", 4)
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/div/div/div/div/div", "click", "click na linha", 4)
         filtro_click = builder.send_keys(Keys.ARROW_DOWN)
         filtro_click.perform()
         filtro_click = builder.send_keys(Keys.ARROW_DOWN)
@@ -62,13 +64,13 @@ def adiantamento(driver):
         filtro_click = builder.send_keys(Keys.SPACE)
         filtro_click.perform()
         try:
-            driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[3]/button[2]").click()
+            driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[3]/button[2]").click()
         except:
             filtro_click = builder.send_keys(Keys.ARROW_DOWN)
             filtro_click.perform()
             filtro_click = builder.send_keys(Keys.SPACE)
             filtro_click.perform()
-            driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[3]/button[2]").click()
+            driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[3]/button[2]").click()
         sleep(3)
 
         #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
@@ -78,34 +80,45 @@ def adiantamento(driver):
         #ID DA SOLICITAÇAO
         dados_do_formulario.append(identificador)
         #CPF/CNPJ
-        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[1]/div[2]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[1]/div[2]/div/div/div/input").get_attribute("value"))
         #RAZAO SOCIAL
         dados_do_formulario.append("")
         #FORMA DE PAGAMENTO
         dados_do_formulario.append("Transferência Bancária")
         #BANCO 
-        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
         #AGENCIA
-        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
         #CONTA
-        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
         #TIPO DE CONTA 
-        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div[2]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div[2]/div/div[2]/div/div/div/input").get_attribute("value"))
         #NATUREZA DA CONTA
         dados_do_formulario.append("")
         #VALOR
-        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
+        valor = driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div/div/div/input").get_attribute("value")
+        dados_do_formulario.append(valor)
         #VALOR PAGO
         dados_do_formulario.append("0")
         #DATA SOLICITADA PARA PAGAMENTO
         dados_do_formulario.append("")
         #DATA DA SOLICITAÇÃO 
-        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
         #DATA DE PAGAMENTO 
         dados_do_formulario.append("")
-        #COMENTÁRIO ROBO
-        dados_do_formulario.append("")                                                                             
-        #AJUSTE Finaceiro
+
+        valor_da_conta = valor.replace(".","")
+        valor_da_conta = valor_da_conta.replace("R$","")
+        valor_da_conta = valor_da_conta.replace(",",".")
+        valor_da_conta = float(valor_da_conta)
+
+        if dados_do_formulario[5] == "" or  dados_do_formulario[6] == "" or  dados_do_formulario[7] == "" or  dados_do_formulario[8] == "" or  dados_do_formulario[9] == "" or valor_da_conta == 0:# and  banco != ""
+            #Comentario Robo
+            dados_do_formulario.append("Dados bancários incompletos ou solicitação está com valor zerado.")
+        else:
+            #Comentario Robo 
+            dados_do_formulario.append("")
+        #Ajuste
         dados_do_formulario.append("")
         
         #####PASSO QUE DEVE SER DADO APÓS O GERENTE ADICIONAR AS NOTAS####
@@ -138,7 +151,7 @@ def adiantamento(driver):
         # driver.switch_to.default_content()
         # funcoes.espera_explicita_de_elemento(driver, "/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button", "click", "baixar capa", 2)
         # print("passou")
-        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "baixar capa", 0.3)
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "baixar capa", 0.3)
 
         #CRIANDO A PASTA
         # nome_da_pasta = (f"ID {identificador}")
@@ -163,19 +176,12 @@ def adiantamento(driver):
         # sleep(3)
 
         #TRAMITAÇÃO DAS SOLICITAÇÕES
-        if (dados_do_formulario[5] != "" and dados_do_formulario[6] != ""
-        and dados_do_formulario[7] != "" and dados_do_formulario[8] != ""):
-            try:
-                funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","tramitar",2)
-                funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/ul/div[1]", "click", "tramitar", 0.4)
-                dados_do_formulario.append("Processada")
-            except:
-                dados_do_formulario.append(estado)
-                dados_do_formulario[15] += "Falha na tramitação"    
-        else:
-            dados_do_formulario[15] = "Dados Bancários incompletos"
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","tramitar",2)
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div[1]", "click", "tramitar", 0.4)
+        #status robo
+        dados_do_formulario.append("Processada")
 
-        #Inserir data na coluna de data de exec
+        #DATA DE EXECUÇÃO ROBO
         dados_do_formulario.append(date.today().strftime("%d/%m/%Y"))
         
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)

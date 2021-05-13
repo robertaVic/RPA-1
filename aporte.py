@@ -11,6 +11,8 @@ from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da
 
 
 def aporte(driver):
+    #verificar se tem downloads antigos e apagar
+    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     #data atual formatada
     data_em_texto = date.today().strftime("%d.%m.%Y")
     #caminho da pasta macro(pasta do dia)
@@ -42,21 +44,20 @@ def aporte(driver):
     quantidade_de_requisicoes = int((driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
     
     #LAÇO PARA TRAMITAR TODOS OS PAGAMENTOS
-    for linha in range(4): #voltar para antigo quantidades
+    for linha in range(2): #voltar para antigo quantidades
         dados_do_formulario = []
         global identificador
         #armazenando o id de cada solicitaçao
         identificador = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
-        global razao
         #armazenando a razao social de cada solicitaçao
-        estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
+        #estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A SOLICITAÇAO
         driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
         
         #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
-
+        sleep(3)
         #SA
         dados_do_formulario.append(tipo_de_solicitacao)
         #ID DA SOLICITAÇAO
@@ -88,16 +89,28 @@ def aporte(driver):
         dados_do_formulario.append("")
         #DATA DE PAGAMENTO 
         dados_do_formulario.append(driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div/div[2]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
-        #COMENTÁRIO ROBO
-        dados_do_formulario.append("")                                                                             
-        #AJUSTE FINACEIRO
+
+
+        valor_da_conta = valor.replace(".","")
+        valor_da_conta = valor_da_conta.replace("R$","")
+        valor_da_conta = valor_da_conta.replace(",",".")
+        valor_da_conta = float(valor_da_conta)
+
+        if dados_do_formulario[5] == "" or  dados_do_formulario[6] == "" or  dados_do_formulario[7] == "" or  dados_do_formulario[8] == "" or  dados_do_formulario[9] == "" or valor_da_conta == 0:# and  banco != ""
+            #Comentario Robo
+            dados_do_formulario.append("Dados bancários incompletos ou solicitação está com valor zerado.")
+            # tramitar = 1
+        else:
+            #Comentario Robo 
+            dados_do_formulario.append("")
+        #Ajuste
         dados_do_formulario.append("")
 
         #CRIAR A PASTA DO PAGAMENTO QUE ACABOU DE SER PROCESSADO
 
         nome_da_pasta = (f"SA ID {identificador}")
 
-        print(nome_da_pasta)
+        sleep(2)
         gerenciadorPastas.criarPastasFilhas("Solicitação de Aporte", nome_da_pasta)
         
         sleep(3)
@@ -110,14 +123,7 @@ def aporte(driver):
        
         #Baixando Nfs
         try:
-            if len(rows2) > 0:
-                # while baixadas < len(rows2):
-                for row in rows2:
-                    row.click()
-            else:
-                comentario_nao_possui_nota = (f"A solicitação não possui notas fiscais para serem baixadas")      
-                print(comentario_nao_possui_nota)  
-                dados_do_formulario[15] = comentario_nao_possui_nota
+            funcoes.baixar_anexos(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
         except:
             comentario_nota_fiscal = (f"Não foi possível baixar a nota fiscal")     
             print(comentario_nota_fiscal)
@@ -141,44 +147,20 @@ def aporte(driver):
 
         #MOVENDO ARQUIVOS
         print("mover arquivos")
-        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
-        print(arquivos)
-
-        #criando um laço para mover cada um para sua pasta especifica
-        for arquivo in arquivos:
-            print(arquivo)
-            #movendo os arquivos para a pasta da sua solicitaçao
-            down = os.path.splitext(arquivo)[-1].lower()
-            maximo_tentativas = 0
-            while maximo_tentativas <= 40:
-                if down == ".crdownload":
-                    print(arquivo + " BAIXANDO AINDA")
-                    maximo_tentativas+= 1
-                    sleep(3)
-                else:
-                    shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
-                    maximo_tentativas = 11
-                    
-        
-            dados_do_formulario[15] = "Arquivo nao foi movido"
+        funcoes.validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta)
         sleep(3)
-        if (dados_do_formulario[5] != "" and dados_do_formulario[6] != ""
-        and dados_do_formulario[7] != "" and dados_do_formulario[8] != ""):
-            try: 
-                funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[3]","click","tramitar",2)
-                funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div", "click", "PROCESSAR", 2)
-                if valor != "":
-                    dados_do_formulario.append("Processada")
-            except:
-                dados_do_formulario.append(estado)
-                dados_do_formulario[15] += "Falha na tramitação"
-        else:
-            dados_do_formulario[15] = "Dados Bancários incompletos"
 
-        #Inserir data na coluna de data de exec
+        #TRAMITAÇÃO
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[3]","click","tramitar",2)
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div", "click", "PROCESSAR", 2)
+        #status
+        dados_do_formulario.append("Processada")
+
+        #DATA DE EXECUÇÃO ROBO
         dados_do_formulario.append(date.today().strftime("%d/%m/%Y"))
+
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
-        sleep(3)
+        sleep(5)
 
     sleep(1.5)
     print("Vai começar a contar")
