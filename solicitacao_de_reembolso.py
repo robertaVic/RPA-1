@@ -1,5 +1,5 @@
 from datetime import date
-from funcoes import espera_explicita_de_elemento
+from funcoes import espera_explicita_de_elemento, validar_download
 from gerenciadorPlanilhas import ler_dados_da_planilha, preencher_solicitacao_na_planilha
 import time
 from selenium.webdriver.common.keys import Keys
@@ -32,6 +32,8 @@ def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao,
 '''Realizar coleta de todas as solicitações com status 'Aprovado pelo gerente'
     e realizar o download de seus arquivos anexos na pasta do destinada a solicitação'''
 def reembolso(drive):
+    #verificar se tem downloads antigos e apagar
+    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     data_em_texto = date.today().strftime("%d.%m.%Y")
     caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Reembolso\\"
     gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
@@ -157,12 +159,7 @@ def reembolso(drive):
         gerenciadorPastas.criarPastasFilhas('Reembolso', nome_da_pasta)
         
         #Movendo os Arquivos para a pasta da solicitacao
-        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
-        for arquivo in arquivos:
-            try:
-                shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
-            except:
-                print("Não moveu o arquivo!")
+        validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta)
 
         #Tramitando uma solicitação
         try:
