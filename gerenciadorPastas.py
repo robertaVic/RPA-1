@@ -42,4 +42,7 @@ caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - R
 def remover_arquivos_da_raiz(diretorio):
     listaDeArquivos = [f for f in listdir(diretorio) if isfile(join(diretorio, f))]
     for arquivo in listaDeArquivos:
-        os.remove(arquivo)
+        try:
+            os.remove(arquivo)
+        except:
+            print("Não deletou o arquivo")    
