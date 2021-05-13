@@ -42,7 +42,7 @@ def prestacao_de_contas(driver):
 
     #OBTER QUANTIDADE DE PRESTAÇÕES REALIZADAS
     sleep(5)
-    quantidade_de_requisicoes = int((driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span/div/p").get_attribute("innerText")).split(" ")[-1])
+    # quantidade_de_requisicoes = int((driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span/div/p").get_attribute("innerText")).split(" ")[-1])
     
     #LAÇO PARA TRAMITAR TODOS AS PRESTAÇÕES
     for linha in range(2): #voltar para antigo quantidades
@@ -52,9 +52,10 @@ def prestacao_de_contas(driver):
         #estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A PRESTAÇÃO
         driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
+        sleep(3)
         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
         
-        sleep(3)
+        sleep(5)
         #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
         caminho_em_comum_entre_campos_do_formulario = "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div"
         #PC

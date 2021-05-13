@@ -39,8 +39,8 @@ fazerLogin(driver)
 # pagamentoAvulso(driver)
 # aporte(driver)
 #reembolso(driver)
-# prestacao_de_contas(driver)
 adiantamento(driver)
+prestacao_de_contas(driver)
 # pagamentos(driver)
 
 
