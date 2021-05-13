@@ -1,6 +1,8 @@
 from time import sleep, time
 from datetime import date
 from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 from gerenciadorPastas import recuperar_diretorio_usuario
 from selenium.webdriver.chrome.options import Options
 
@@ -47,17 +49,24 @@ def padraoChrome(diretorio):
 #Inicia o navegador
 def chamarDriver(navegador):
     navegador.maximize_window()
+    #Limpando a cache
+    builder = ActionChains(navegador)
+    builder.key_down(Keys.CONTROL).key_down(Keys.F5)
+    builder.key_up(Keys.CONTROL).key_up(Keys.F5)
+    builder.perform()
+
     navegador.get("https://tpf2.madrix.app/")
+    
     #navegador.implicitly_wait(10)
 
 # #Faz login   
 def fazerLogin(login):
-    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "encontrar", "Login", 30)
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "click", "Login", 120)
     login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input").send_keys("roberta.costa")
-    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "encontrar", "Senha", 30)
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[1]/div/div/div/input", "click", "Senha", 120)
     login.find_element_by_xpath("/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[2]/div/div/div/input").send_keys("123")
-    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button/span[1]", "click", "Login", 30)
-
+    # espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button/span[1]", "click", "Login", 30)
+    espera_explicita_de_elemento(login, "/html/body/div/div/div[2]/main/div[2]/div/div/div/section/form/div[3]/div/button/span[1]", "click", "Login", 120)
 
 def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
     maximo_tentativas = 0
