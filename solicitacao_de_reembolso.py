@@ -186,7 +186,7 @@ def reembolso(drive):
 
 def tramitar_para_pago(): 
     lista_de_tramitacao = ler_dados_da_planilha("SRB")
-tramitar_para_pago()
+#tramitar_para_pago()
 
         
 

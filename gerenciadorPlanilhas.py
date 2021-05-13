@@ -15,26 +15,26 @@ def ler_dados_da_planilha(tipo_de_solicitacao):
     ultima_linha = sh1.max_row
     dados = []
     listaId = []
-    todos = list(range(8, ultima_linha))
+    todos = list(range(8, ultima_linha+1))
     for i in todos:
-        tipo = sh1['A']
-        todosOsIds = sh1["B"]
-        statusRobo = sh1["R"]
-        statusFinanceiro = sh1["X"]
+        tipo = sh1[f'A{i}'].value
+        todosOsIds = sh1[f"B{i}"].value
+        statusRobo = sh1[f"R{i}"].value
+        statusFinanceiro = sh1[f"Y{i}"].value
         # avulso = tipo[i]
-        if tipo[i].value == tipo_de_solicitacao:
-            listaId.append(todosOsIds[i].value)
-            statusRo = statusRobo[i]
-            statusFinan = statusFinanceiro[i]
-            if statusRo.value != statusFinan.value and statusFinan.value != None:
+        if tipo == tipo_de_solicitacao:
+            listaId.append(todosOsIds)
+            statusRo = statusRobo
+            statusFinan = statusFinanceiro
+            if statusRo != statusFinan and statusFinan != None:
                 cadaSolicitacao = []
-                status = statusRo.row
+                status = i
                 #geral = [todosOsIds[status].value, sh1[f"L{status}"].value, (sh1[f"Y{status}"].value).strftime("%d/%m/%Y"), sh1[f"X{status}"].value, status]
-                if (sh1[f"L{status}"].value != None) and (sh1[f"Y{status}"].value != None) and (sh1[f"X{status}"].value != None):
+                if (sh1[f"L{status}"].value != None) and (sh1[f"Z{status}"].value != None) and (sh1[f"Y{status}"].value != None):
                     cadaSolicitacao.append(sh1[f"B{status}"].value)
                     cadaSolicitacao.append(sh1[f"L{status}"].value)
-                    cadaSolicitacao.append((sh1[f"Y{status}"].value).strftime("%d/%m/%Y"))
-                    cadaSolicitacao.append(sh1[f"X{status}"].value)
+                    cadaSolicitacao.append((sh1[f"Z{status}"].value).strftime("%d/%m/%Y"))
+                    cadaSolicitacao.append(sh1[f"Y{status}"].value)
                     cadaSolicitacao.append(status)
                     dados.append(cadaSolicitacao)
     return dados     
@@ -74,7 +74,7 @@ def atualizar_status_na_planilha(linha):
     myFill = PatternFill(start_color='A9D08E', 
                     end_color='A9D08E', 
                     fill_type = 'solid')
-    sh1.cell(row=linha, column=18, value= sh1[f"X{linha}"].value).fill = myFill
+    sh1.cell(row=linha, column=18, value= sh1[f"Y{linha}"].value).fill = myFill
     wb.save(arquivo_excel)     
 
 # def quantidade_para_tramitacao():
