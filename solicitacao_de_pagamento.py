@@ -200,7 +200,7 @@ def pagamentos(drive):
         
         if banco == "" or  agencia == "" or  conta == "" or  tipo_de_conta == "" or  natureza_conta == "" or valor_da_conta == 0:# and  banco != ""
             #Comentario Robo
-            dados_do_formulario.append("Atenção: Dados bancarios inconpletos ou solicitação esta com valor da conta com zero.")
+            dados_do_formulario.append("Dados bancários incompletos ou solicitação esta com valor da conta com zero.")
             tramitar = 1
         else:
             #Comentario Robo 

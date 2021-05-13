@@ -40,22 +40,22 @@ def reembolso(drive):
 
     #Aceesando o menu de reembolso
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",120)
-    drive.get("https://tpf.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
+    drive.get("https://tpf2.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
+    time.sleep(8)
 
     #Filtrando as solicitações com status aprovado pelo gerente
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
-    time.sleep(10)
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
-    espera_explicita_de_elemento(drive,"/html/body/div[5]/div[3]/ul/li[3]","click","SRB4",120)
+    espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/ul/li[3]","click","SRB4",120)
 
     quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
 
     #Percorrento por todas as solicitações filtradas com o status definido no sistema
-    for qtd_solicitacoes in range(2):
+    for qtd_solicitacoes in range(10):
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
         #Tipo
-        dados_do_formulario.append("SRB")
+        dados_do_formulario.append("SR")
         path_comum = "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]"
         #ID da Solicitação
         id_solicitacao = drive.find_element_by_xpath(path_comum + "/td[4]/div").get_attribute("innerText")
@@ -68,22 +68,22 @@ def reembolso(drive):
         #Acessando informações dentro de uma solicitação
         drive.find_element_by_xpath(path_comum).click()
         time.sleep(3)
-        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[2]/div/div/div/div/div").click()
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[2]/div/div/div/div/div").click()
         time.sleep(3)
 
         #Acessando as informações presentes em 'Financeiro HTML'
         filtro_click = builder.send_keys(Keys.SPACE)
         filtro_click.perform()
         try:
-            drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[3]/button[2]").click()
+            drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[3]/button[2]").click()
         except:
             filtro_click = builder.send_keys(Keys.SPACE)
             filtro_click.perform()
-            drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div[3]/button[2]").click()
+            drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[3]/button[2]").click()
         time.sleep(3)
 
         #Recuperando as demais informações da solicitação que irão para a planilha
-        path_comum = "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/"
+        path_comum = "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/"
         cpf = drive.find_element_by_xpath(path_comum + "div[1]/div[2]/div/div/div/input").get_attribute("value")
         banco = drive.find_element_by_xpath(path_comum + "div[2]/div[2]/div/div[1]/div/div[1]/div/div/div/input").get_attribute("value")
         agencia = drive.find_element_by_xpath(path_comum + "div[2]/div[2]/div/div[1]/div/div[2]/div/div/div/input").get_attribute("value")
@@ -91,8 +91,8 @@ def reembolso(drive):
         tipo_de_conta = drive.find_element_by_xpath(path_comum + "div[2]/div[2]/div/div[2]/div/div[2]/div/div/div/input").get_attribute("value")
 
         #Acesando a aba de Anexo
-        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
-        qtd_anexos = (drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[2]/span").get_attribute("innerText")).split(" ")[-1]
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
+        qtd_anexos = (drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[2]/span").get_attribute("innerText")).split(" ")[-1]
         
 
         #Preencher lista com as informações que serão enviadas para a planilha
@@ -122,19 +122,24 @@ def reembolso(drive):
         dados_do_formulario.append(data_da_solicitacao)
         #Data Pgto
         dados_do_formulario.append("")
-        #Comentario Robo
-        dados_do_formulario.append("")
+
+        if banco == "" or  agencia == "" or  conta == "" or  tipo_de_conta == "":
+            #Comentario Robo
+            dados_do_formulario.append("Dados bancários incompletos")
+        else:
+            #Comentario Robo
+            dados_do_formulario.append("")
         #Ajuste
         dados_do_formulario.append("")
 
         #Baixando os anexos
         for anexo in range(int(qtd_anexos)):
-            drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr[" + str(anexo+1) + "]/td[2]/div[2]/div/a").click()
+            drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody/tr[" + str(anexo+1) + "]/td[2]/div[2]/div/a").click()
             time.sleep(10)
         
         #Imprimindo a Capa
-        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
-        drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[7]/div[2]/div/div/button").click()
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[7]/div[2]/div/div/button").click()
         time.sleep(15)
         drive.switch_to_frame(0)
         
@@ -143,10 +148,10 @@ def reembolso(drive):
         #drive.find_element_by_xpath("/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]").click()
         drive.find_element_by_xpath("/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td").click()
         drive.switch_to.default_content()
-        drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button").click()
+        drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div[1]/h2/div/div[2]/button").click()
         time.sleep(3)
 
-        nome_da_pasta = "ID " + id_solicitacao
+        nome_da_pasta = id_solicitacao[0:1] + " ID " + id_solicitacao[2:len(id_solicitacao)]
         
         #Criando pasta para o ID da solicitação no diretorio de reembolso
         gerenciadorPastas.criarPastasFilhas('Reembolso', nome_da_pasta)
@@ -161,22 +166,23 @@ def reembolso(drive):
 
         #Tramitando uma solicitação
         try:
-            drive.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[4]/fieldset/button[3]").click()
-            drive.find_element_by_xpath("/html/body/div[8]/div[3]/div/div[2]/ul/div[1]").click()
+            drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]").click()
+            drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div[2]/ul/div[1]").click()
+            time.sleep(6)
             dados_do_formulario.append("Processada")
         except:
-            dados_do_formulario.append(estado)
+            dados_do_formulario.append("")
             dados_do_formulario[15] = "Falha na tramitação"
         
         #Preencher a planilha
-        preencher_solicitacao_na_planilha(dados_do_formulario,'SRB')
+        preencher_solicitacao_na_planilha(dados_do_formulario,'SR')
 
         time.sleep(5)
 
         filtro_click = builder.send_keys(Keys.ESCAPE)
         filtro_click.perform()
 
-        drive.get("https://tpf.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
+        drive.get("https://tpf2.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
         espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","link","SRB5",160)
         time.sleep(4)
     
@@ -185,7 +191,7 @@ def reembolso(drive):
 
 
 def tramitar_para_pago(): 
-    lista_de_tramitacao = ler_dados_da_planilha("SRB")
+    lista_de_tramitacao = ler_dados_da_planilha("SR")
 #tramitar_para_pago()
 
         
