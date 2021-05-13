@@ -11,6 +11,7 @@ from pgAvulso import pagamentoAvulso
 from solicitacao_de_reembolso import reembolso
 from solicitacao_de_adiantamento import adiantamento
 from prestacaoDeContas import prestacao_de_contas
+from aporte import aporte
 
 #retornar a data atual
 today = date.today()
@@ -35,9 +36,10 @@ fazerLogin(driver)
 
 
 #entra no pagamento avulso
-#pagamentoAvulso(driver)
+pagamentoAvulso(driver)
 #reembolso(driver)
-adiantamento(driver)
+#adiantamento(driver)
 #prestacao_de_contas(driver)
 # pagamentos(driver)
+#aporte(driver)
 

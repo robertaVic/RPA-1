@@ -24,7 +24,7 @@ def prestacao_de_contas(driver):
 
     #ACESSANDO PRESTACAO DE CONTAS - CARTAO CORPORATIVO
     funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","PC",2)
-    driver.get("https://tpf.madrix.app/runtime/44/list/221/Prestação de Contas - Cartão Corporativo")
+    driver.get("https://tpf2.madrix.app/runtime/44/list/221/Prestação de Contas - Cartão Corporativo")
     driver.implicitly_wait(10)
 
     #FILTRANDO AS PRESTAÇÕES REALIZADAS
@@ -43,7 +43,7 @@ def prestacao_de_contas(driver):
     quantidade_de_requisicoes = int((driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span/div/p").get_attribute("innerText")).split(" ")[-1])
     
     #LAÇO PARA TRAMITAR TODOS AS PRESTAÇÕES
-    for linha in range(2): #voltar para antigo quantidades
+    for linha in range(1): #voltar para antigo quantidades
         dados_do_formulario = []
         #armazenando o id de cada prestação
         identificador = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
@@ -171,6 +171,8 @@ def prestacao_de_contas(driver):
             funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/ul/div", "click", "tramitar", 2)
             if valor != "":
                 dados_do_formulario.append("Processada")
+                #Inserir data na coluna de data de exec
+                dados_do_formulario.append(date.today().strftime("%d/%m/%Y"))
         except:
             dados_do_formulario.append(estado)
             dados_do_formulario[15] = "Falha na tramitação"
@@ -179,7 +181,8 @@ def prestacao_de_contas(driver):
         sleep(3)
 
     sleep(5)
-    driver.close()
+    print("FIMMMMMMMMMMMMMMM PC-CARTAO")
+    # driver.close()
     # funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 4)
     # funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[6]","click","filtro",2)
     # for i in range(len(ler_dados_da_planilha(tipo_de_solicitacao))):

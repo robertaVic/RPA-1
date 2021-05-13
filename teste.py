@@ -12,7 +12,7 @@ import gerenciadorPastas
 from os.path import isfile, join
 # from gerenciadorPlanilhas import ler_dados_da_planilha, atualizar_status_na_planilha, preencher_solicitacao_na_planilha
 
-
+os.remove(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\.849C9593-D756-4E56-8D6E-42412F2A707B")
 
 
         
@@ -21,29 +21,23 @@ from os.path import isfile, join
 
 
 data_em_texto = date.today().strftime("%d/%m/%Y")
-arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
+arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021R.xlsx"
 wb = load_workbook(arquivo_excel) #carregar o arquivo
 sh1 = wb.worksheets[0]
 
+# rows2 = ["beta", "betinha", "betona"]
+# ultima_linha = (sh1.max_row)
+# print(ultima_linha)
 
-ultima_linha = sh1.max_row
-todos = list(range(8, ultima_linha))
-listaId = []
-listaLinha = []
-for i in todos:
-    todosOsIds = sh1["B"]
-    tipo = sh1['A']
-    # avulso = tipo[i]
-    if tipo[i].value == "SPA":
-        listaId.append(todosOsIds[i].value)
-        listaLinha.append(todosOsIds[i].row)
-print(listaId)
-print(listaLinha)     
-if "0264867" in listaId:
-    print("JA EXISTE, SOBRESCREVER")
-    #sobrescrever
-    linhaa = listaId.index("0264867")
-    print(listaLinha[linhaa])     
+# for row in rows2:
+#     maximo_tentativas = 0
+#     while maximo_tentativas < 40: 
+#         if len(rows2) > 0:
+#             print(row)
+#             sleep(3)
+#             maximo_tentativas = 40
+#         else:
+#             maximo_tentativas += 1
 # ler_dados_da_planilha("SPA") 
 # print(len(ler_dados_da_planilha("SPA"))) 
 

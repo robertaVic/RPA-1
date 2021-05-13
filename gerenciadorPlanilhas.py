@@ -6,7 +6,7 @@ from openpyxl.styles import Color, PatternFill, Font, Border
 from openpyxl.styles import colors
 from openpyxl.cell import Cell
 
-arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021.xlsx"
+arquivo_excel = gerenciadorPastas.recuperar_diretorio_usuario() +"\\tpfe.com.br\\SGP e SGC - RPA\\Resultados\\Planilha de Acompanhamento de Solicitações Financeiras 2021R.xlsx"
 wb = load_workbook(arquivo_excel) #carregar o arquivo
 sh1 = wb.worksheets[0] #carregar a primeira planilha
 
@@ -20,7 +20,7 @@ def ler_dados_da_planilha(tipo_de_solicitacao):
         tipo = sh1['A']
         todosOsIds = sh1["B"]
         statusRobo = sh1["R"]
-        statusFinanceiro = sh1["X"]
+        statusFinanceiro = sh1["Y"]
         # avulso = tipo[i]
         if tipo[i].value == tipo_de_solicitacao:
             listaId.append(todosOsIds[i].value)
@@ -74,7 +74,7 @@ def atualizar_status_na_planilha(linha):
     myFill = PatternFill(start_color='A9D08E', 
                     end_color='A9D08E', 
                     fill_type = 'solid')
-    sh1.cell(row=linha, column=18, value= sh1[f"X{linha}"].value).fill = myFill
+    sh1.cell(row=linha, column=18, value= sh1[f"Y{linha}"].value).fill = myFill
     wb.save(arquivo_excel)     
 
 # def quantidade_para_tramitacao():
