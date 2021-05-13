@@ -55,7 +55,7 @@ def pagamentos(drive):
     quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
 
     #Percorrento por todas as solicitações filtradas com o status definido no sistema
-    for qtd_solicitacoes in range(10):
+    for qtd_solicitacoes in range(2):
         tramitar = 0
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
