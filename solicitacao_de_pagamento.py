@@ -40,12 +40,10 @@ def pagamentos(drive):
     gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
 
     builder = ActionChains(drive)
-    #drive.implicitly_wait(70)
-
     #Aceesando o menu de pagamento
-    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",100)
-
+    #espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",100)
     drive.get("https://tpf2.madrix.app/runtime/44/list/186/Solicitação de Pagamento")
+
     time.sleep(8)
     #Filtrando as solicitações com status pagamento solicitado
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
@@ -57,12 +55,12 @@ def pagamentos(drive):
     quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
 
     #Percorrento por todas as solicitações filtradas com o status definido no sistema
-    for qtd_solicitacoes in range(10):
+    for qtd_solicitacoes in range(2):
         tramitar = 0
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
         #Tipo
-        dados_do_formulario.append("SP") /html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div[1]/div/div/input
+        dados_do_formulario.append("SP")
         path_comum = "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]"
         #ID da Solicitação
         espera_explicita_de_elemento(drive, path_comum + "/td[4]/div","encontrar","id_solicitacao",120)
@@ -237,8 +235,10 @@ def pagamentos(drive):
         
     time.sleep(4)
 
-    tramitar_para_pago(drive)
-    drive.close()
+    lista_de_tramitacao = ler_dados_da_planilha("SP")
+    if lista_de_tramitacao > 0:
+        tramitar_para_pago(drive)
+    #drive.close()
     
 
 def tramitar_para_pago(drive):

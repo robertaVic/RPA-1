@@ -25,7 +25,6 @@ diretorio_padrao = "\\tpfe.com.br\\SGP e SGC - RPA\\"
 chrome_options = padraoChrome(diretorio_padrao)
 
 #caminho onde a pasta será criada
-
 caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\"
 
 #inserindo as opçoes do chrome no driver
@@ -37,10 +36,10 @@ fazerLogin(driver)
 
 #entra no pagamento avulso
 pagamentoAvulso(driver)
-# aporte(driver)
+#aporte(driver)
+#adiantamento(driver)
+#prestacao_de_contas(driver)
+pagamentos(driver)
 #reembolso(driver)
-# adiantamento(driver)
-# prestacao_de_contas(driver)
-# pagamentos(driver)
 
 

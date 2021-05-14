@@ -45,4 +45,4 @@ def remover_arquivos_da_raiz(diretorio):
         try:
             os.remove(arquivo)
         except:
-            print("Não deletou o arquivo")    
+            print("Não deletou o arquivo")   
