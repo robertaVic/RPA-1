@@ -123,7 +123,15 @@ def aporte(driver):
        
         #Baixando Nfs
         try:
-            funcoes.baixar_anexos(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            for row in rows2:
+                maximo_tentativas = 0
+                while maximo_tentativas < 40: 
+                    if len(rows2) > 0:
+                        row.click()
+                        sleep(3)
+                        maximo_tentativas = 40
+                    else:
+                        maximo_tentativas += 1
         except:
             comentario_nota_fiscal = (f"Não foi possível baixar a nota fiscal")     
             print(comentario_nota_fiscal)

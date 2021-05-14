@@ -16,7 +16,7 @@ from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da
 #função para tramitar as solicitações
 def pagamentoAvulso(financeiro):
     #verificar se tem downloads antigos e apagar
-    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
     #data atual formatada
     data_em_texto = date.today().strftime("%d.%m.%Y")
     #caminho da pasta macro(pasta do dia)
@@ -28,9 +28,9 @@ def pagamentoAvulso(financeiro):
     financeiro.implicitly_wait(10)
 
     #ACESSANDO PAGAMENTO AVULSO
-    funcoes.espera_explicita_de_elemento(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",2)
+    # funcoes.espera_explicita_de_elemento(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",2)
     financeiro.get("https://tpf2.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
-    financeiro.implicitly_wait(10)
+    #financeiro.implicitly_wait(10)
     #FILTRANDO OS PAGAMENTOS SOLICITADOS
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 3)
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/ul/li[2]","click","filtro",2)
@@ -70,21 +70,42 @@ def pagamentoAvulso(financeiro):
         #ID DA SOLICITAÇAO
         dados_do_formulario.append(identificador)
         #CPF/CNPJ
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[1]/div/div/div/input").get_attribute("value"))
+        cnpj = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[1]/div/div/div/input").get_attribute("value")
+        cpf = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[2]/div/div/div/input").get_attribute("value")
+        try:
+            validacao_cpf = 0
+            validacao_cpf = cpf.replace(".","")
+            validacao_cpf = validacao_cpf.replace("-","")
+            validacao_cpf = int(validacao_cpf)
+        except:
+            validacao_cpf = 0
+        if len(cpf)> 0 and validacao_cpf > 0:
+            dados_do_formulario.append(cpf)
+        else:
+            dados_do_formulario.append(cnpj)
         #RAZÃO SOCIAL
-        dados_do_formulario.append(razao)
+        dados_do_formulario.append(razao) 
         #FORMA DE PAGAMENTO
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
+        try:
+            dados_do_formulario.append(financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText"))
+        except:
+            dados_do_formulario.append("")
         #BANCO
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
         #AGENCIA
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
         #CONTA
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[2]/div/div[2]/div/div/div/div/div/div/div[1]/input").get_attribute("value"))
+        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
         #TIPO DE CONTA
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[2]/div/div[3]/div/div/div/div/div/div/div[1]/input").get_attribute("value"))
+        try:
+            dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[2]/div/div[2]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText"))
+        except:
+            dados_do_formulario.append("")
         #NATUREZA DA CONTA
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/input").get_attribute("value"))
+        try:
+            dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[2]/div/div[3]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText"))
+        except:
+            dados_do_formulario.append("")
         #VALOR
         valor = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value")
         dados_do_formulario.append(valor)
