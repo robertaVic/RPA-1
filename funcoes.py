@@ -92,7 +92,7 @@ def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao,
 def validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta):
     
     while True:
-        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
+        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
         if len(arquivos) > 0 and len(arquivos) != 1:
             arquivo = arquivos[-1]
             extensao = arquivo.split(".")[1]

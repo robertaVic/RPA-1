@@ -48,7 +48,7 @@ def pagamentoAvulso(financeiro):
     quantidade_de_requisicoes = int((financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
     
     #LAÇO PARA TRAMITAR TODOS OS PAGAMENTOS
-    for linha in range(2): #voltar para antigo quantidades
+    for linha in range(1): #voltar para antigo quantidades
         dados_do_formulario = []
         global identificador
         #armazenando o id de cada solicitaçao
@@ -93,7 +93,7 @@ def pagamentoAvulso(financeiro):
         #BANCO
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
         #AGENCIA
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
         #CONTA
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
         #TIPO DE CONTA
