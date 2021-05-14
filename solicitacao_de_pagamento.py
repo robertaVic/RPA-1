@@ -60,7 +60,7 @@ def pagamentos(drive):
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
         #Tipo
-        dados_do_formulario.append("SP") /html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div[1]/div/div/input
+        dados_do_formulario.append("SP")
         path_comum = "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]"
         #ID da Solicitação
         espera_explicita_de_elemento(drive, path_comum + "/td[4]/div","encontrar","id_solicitacao",120)
@@ -235,7 +235,9 @@ def pagamentos(drive):
         
     time.sleep(4)
 
-    tramitar_para_pago(drive)
+    lista_de_tramitacao = ler_dados_da_planilha("SP")
+    if lista_de_tramitacao > 0:
+        tramitar_para_pago(drive)
     #drive.close()
     
 

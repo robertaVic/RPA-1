@@ -203,7 +203,7 @@ def tramitar_para_pago(drive):
         #Acessando o botao do filtro
         espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","SRB5",120)
         espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","SRB6",120)
-        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0][]))
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[2]/button").click()
         time.sleep(2)
 

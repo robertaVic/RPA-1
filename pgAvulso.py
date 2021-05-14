@@ -16,7 +16,7 @@ from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da
 #função para tramitar as solicitações
 def pagamentoAvulso(financeiro):
     #verificar se tem downloads antigos e apagar
-    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
     #data atual formatada
     data_em_texto = date.today().strftime("%d.%m.%Y")
     #caminho da pasta macro(pasta do dia)
