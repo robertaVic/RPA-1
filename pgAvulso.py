@@ -16,7 +16,7 @@ from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da
 #função para tramitar as solicitações
 def pagamentoAvulso(financeiro):
     #verificar se tem downloads antigos e apagar
-    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
+    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     #data atual formatada
     data_em_texto = date.today().strftime("%d.%m.%Y")
     #caminho da pasta macro(pasta do dia)
@@ -93,12 +93,12 @@ def pagamentoAvulso(financeiro):
         #BANCO
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
         #AGENCIA
-        dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
+        dados_do_formulario.append(financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[1]/div/div[2]/div/div/div/input").get_attribute("value"))
         #CONTA
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[2]/div/div[1]/div/div/div/input").get_attribute("value"))
         #TIPO DE CONTA
         try:
-            dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[2]/div/div[2]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText"))
+            dados_do_formulario.append(financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[3]/div[2]/div/div[2]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText"))
         except:
             dados_do_formulario.append("")
         #NATUREZA DA CONTA
@@ -136,10 +136,10 @@ def pagamentoAvulso(financeiro):
         
         sleep(3)
         #CRIAR A PASTA DO PAGAMENTO QUE ACABOU DE SER PROCESSADO
-        if not razao:
-            nome_da_pasta = (f"PA ID {identificador}")
-        else:    
-            nome_da_pasta = (f"PA ID {identificador} {razao}")
+        
+        nome_da_pasta = (f"PA ID {identificador}")
+        # else:    
+        #     nome_da_pasta = (f"PA ID {identificador} {razao}")
 
         print(nome_da_pasta)
         gerenciadorPastas.criarPastasFilhas("Pagamento Avulso", nome_da_pasta) 
