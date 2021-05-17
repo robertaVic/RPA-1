@@ -43,6 +43,6 @@ def remover_arquivos_da_raiz(diretorio):
     arquivos = listar_arquivos_em_diretorios(diretorio)
     for arquivo in arquivos:
         try:
-            os.remove(arquivo)
+            os.remove(diretorio+arquivo)
         except:
             print("Não deletou o arquivo")   
