@@ -47,7 +47,7 @@ def pagamentoAvulso(financeiro):
     sleep(5)
     quantidade_de_requisicoes = int((financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]").get_attribute("innerText")).split(" ")[-1])
     #LAÇO PARA TRAMITAR TODOS OS PAGAMENTOS
-    for linha in range(1): #voltar para antigo quantidades
+    for linha in range(0): #voltar para antigo quantidades
         dados_do_formulario = []
         global identificador
         #armazenando o id de cada solicitaçao
