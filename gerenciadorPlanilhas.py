@@ -61,12 +61,13 @@ def preencher_solicitacao_na_planilha(dados_formulario, tipo_de_solicitacao):
             sh1.cell(row=listaLinha[linhaa], column=coluna+1, value=dados_formulario[coluna])
             wb.save(arquivo_excel)
         else:
-            print("NÃO EXISTE, SALVAR NOVO")
+            if coluna == 0:
+                print("salvar novo")
             #adicionar um novo
             sh1.cell(row=ultima_linha+1, column=coluna+1, value=dados_formulario[coluna])
             # print("adicionando um novo")
             wb.save(arquivo_excel)
-        print("SALVOU")  
+    print("SALVOU")  
     print(ultima_linha)
 
 def atualizar_status_na_planilha(linha):

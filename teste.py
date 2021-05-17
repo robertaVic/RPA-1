@@ -2,6 +2,7 @@
 # from selenium.webdriver import Chrome
 # from gerenciadorPlanilhas import tramitar_para_pago
 import os
+import shutil
 from openpyxl.styles import Color, PatternFill, Font, Border
 from openpyxl.styles import colors
 from openpyxl.cell import Cell
@@ -14,6 +15,19 @@ from os.path import isfile, join
 
 os.remove(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\.849C9593-D756-4E56-8D6E-42412F2A707B")
 
+while True:
+    arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+    if len(arquivos) > 0 and len(arquivos) != 1:
+        arquivo = arquivos[-1]
+        print(arquivo)
+        extensao = arquivo.split(".")[1]
+        if extensao == "crdownload":
+            sleep(3)
+        else:
+            try:
+                shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
+            except:
+                print("Não moveu o arquivo 1!")
 
         
 

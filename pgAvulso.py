@@ -86,8 +86,9 @@ def pagamentoAvulso(financeiro):
         #RAZÃO SOCIAL
         dados_do_formulario.append(razao) 
         #FORMA DE PAGAMENTO
+        forma_de_pagamento = financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText")
         try:
-            dados_do_formulario.append(financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText"))
+            dados_do_formulario.append(forma_de_pagamento)
         except:
             dados_do_formulario.append("")
         #BANCO
@@ -110,7 +111,7 @@ def pagamentoAvulso(financeiro):
         valor = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value")
         dados_do_formulario.append(valor)
         #VALOR PAGO
-        dados_do_formulario.append("0") 
+        dados_do_formulario.append("") 
         #DATA SOLICITADA PARA PAGAMENTO
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[5]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
         #DATA DA SOLICITAÇÃO 
@@ -124,20 +125,28 @@ def pagamentoAvulso(financeiro):
         valor_da_conta = valor_da_conta.replace(",",".")
         valor_da_conta = float(valor_da_conta)
 
-        if dados_do_formulario[5] == "" or  dados_do_formulario[6] == "" or  dados_do_formulario[7] == "" or  dados_do_formulario[8] == "" or  dados_do_formulario[9] == "" or valor_da_conta == 0:# and  banco != ""
-            #Comentario Robo
-            dados_do_formulario.append("Dados bancários incompletos ou solicitação está com valor zerado.")
-            # tramitar = 1
+        if forma_de_pagamento == "Transferência Bancária":
+            if dados_do_formulario[5] == "" or  dados_do_formulario[6] == "" or  dados_do_formulario[7] == "" or  dados_do_formulario[8] == "" or  dados_do_formulario[9] == "" or valor_da_conta == 0:# and  banco != ""
+                #Comentario Robo
+                dados_do_formulario.append("Dados bancários incompletos ou solicitação está com valor zerado.")
+                # tramitar = 1
+            else:
+                dados_do_formulario.append("")    
+        elif forma_de_pagamento == "Boleto Bancário":
+            if valor_da_conta == 0:
+                dados_do_formulario.append("Boleto com valor zerado")
+            else:
+                #Comentario Robo 
+                dados_do_formulario.append("")
         else:
-            #Comentario Robo 
-            dados_do_formulario.append("")
+            dados_do_formulario.append("")                
         #Ajuste
         dados_do_formulario.append("")
         
         sleep(3)
         #CRIAR A PASTA DO PAGAMENTO QUE ACABOU DE SER PROCESSADO
         
-        nome_da_pasta = (f"PA ID {identificador}")
+        nome_da_pasta = (f"ID PA{identificador}")
         # else:    
         #     nome_da_pasta = (f"PA ID {identificador} {razao}")
 
@@ -156,7 +165,7 @@ def pagamentoAvulso(financeiro):
                 while maximo_tentativas < 40: 
                     if len(rows2) > 0:
                         row.click()
-                        sleep(3)
+                        sleep(2)
                         maximo_tentativas = 40
                     else:
                         maximo_tentativas += 1
@@ -169,7 +178,7 @@ def pagamentoAvulso(financeiro):
             #     comentario_nao_possui_nota = (f"A solicitação não possui notas fiscais para serem baixadas")      
             #     print(comentario_nao_possui_nota)  
             #     dados_do_formulario[15] = comentario_nao_possui_nota
-        sleep(5)
+        sleep(2)
         #IMPRIMINDO
         try:
             funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]", "click", "voltar", 10)
@@ -219,19 +228,19 @@ def pagamentoAvulso(financeiro):
             funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
             #Filtrar o ID
             financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[6]/div[1]", "click", "filtro", 0.4 )
+            # funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[6]/div[1]", "click", "filtro", 0.4 )
             print(20*"=")
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[5]/div[3]/div/div[2]/button", "click", "filtro", 0.4 )
+            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "filtro", 0.4 )
             sleep(3)
             funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input", "click", "LINHA", 2 )
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "LINHA",2 )
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]", "click", "LINHA", 2 )
+            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "editar",2 )
+            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]", "click", "pagamentos", 2 )
             sleep(2)
 
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","SPA",2)
+            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","add um novo pg",2)
             sleep(3)
             #Data
-            financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(str(solicitacao[2]))
+            financeiro.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(str(solicitacao[2]))
             #Valor
             valor = str(solicitacao[1]).replace(".",",")
 
@@ -242,20 +251,20 @@ def pagamentoAvulso(financeiro):
                 valor+="0"
             elif teste_casas_decimais_virgula == 0:
                 valor+=",00"
-            financeiro.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(valor)
+            financeiro.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(valor)
             #Salvar
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","SPA",3)
+            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","SPA",3)
             #Voltar
             funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button","click","SPA",2)
             #Tramitar
             funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","SPA",3) 
             sleep(3)   
             #Pago ou parcialmente pago 
-            if str(solicitacao[3]) == "PAGO":
-                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","SPA",2)    
-            elif str(solicitacao[3]) == "PARCIALMENTE PAGO":  
-                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/div/div[2]/ul/div[2]","click","SPA",2)
-            sleep(2)
+            if str(solicitacao[3]) == "Pago":
+                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[1]","click","pago",3)    
+            elif str(solicitacao[3]) == "Parcialmente pago":  
+                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[2]","click","SPA",3)
+            sleep(4)
             
             atualizar_status_na_planilha(int(solicitacao[4]))     
     print("FIMMMMMMMMMMMMMMM AVULSO")
