@@ -52,10 +52,10 @@ def pagamentos(drive):
     time.sleep(6)
 
 
-    quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
+    quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]").get_attribute("innerText")).split(" ")[-1])
 
     #Percorrento por todas as solicitações filtradas com o status definido no sistema
-    for qtd_solicitacoes in range(1):
+    for qtd_solicitacoes in range(0):
         tramitar = 0
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
@@ -92,6 +92,7 @@ def pagamentos(drive):
         drive.find_element_by_xpath(path_comum).click()
         time.sleep(3)
         #Banco
+        espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div[1]/div/div/input","encontrar","Banco",120)
         banco = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div[1]/div/div/input").get_attribute("value")
         #Agencia
         agencia = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[2]/div/div/div/input").get_attribute("value")
@@ -130,25 +131,55 @@ def pagamentos(drive):
         drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div[1]/h2/div/div[2]/button").click()
 
 
-        time.sleep(4)
+        time.sleep(5)
 
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]").click()
-        time.sleep(10)
+        time.sleep(15)
 
         #/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div
         div_externa = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div")
         trs = div_externa.find_elements_by_tag_name("a")
+        
+        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+        qtd_arquivos = len(arquivos)
+        
         for certidao in trs:
             certidao.click()
-            time.sleep(5)
+            qtd_arquivos+=1
+            arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            qtd_arquivos2 = len(arquivos)
+
+            while  qtd_arquivos2 < qtd_arquivos:
+                arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+                qtd_arquivos2 = len(arquivos)
+            
+            #arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            #qtd_arquivos = len(arquivos)
+
+        time.sleep(5)
         
         #Download de Nota Fiscal
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]").click()
         div_externa = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]")
         trs = div_externa.find_elements_by_tag_name("a")
+
+        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+        qtd_arquivos = len(arquivos)
+
         for nfs in trs:
             nfs.click()
-            time.sleep(10)
+            arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            qtd_arquivos2 = len(arquivos)
+            
+            while  qtd_arquivos2 < qtd_arquivos:
+                arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+                qtd_arquivos2 = len(arquivos)
+            
+            arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            qtd_arquivos = len(arquivos)
+            #time.sleep(10)
+        
+        time.sleep(5)
 
         #Criando pasta para o ID da solicitação no diretorio de reembolso
         nome_da_pasta = "SP ID " + id_solicitacao
@@ -238,23 +269,27 @@ def pagamentos(drive):
     lista_de_tramitacao = ler_dados_da_planilha("SP")
     if len(lista_de_tramitacao) > 0:
         tramitar_para_pago(drive)
-    #drive.close()
+    drive.close()
     
 
 def tramitar_para_pago(drive):
+    builder = ActionChains(drive)
 
     drive.get("https://tpf2.madrix.app/runtime/44/list/186/Solicitação de Pagamento")
+    time.sleep(3)
     #Filtrando as solicitações com status processado
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
-    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
-    espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/ul/li[8]","click","SRB4",120)
+    time.sleep(3)
+    encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",4)
+    time.sleep(3)
+    encontrar_elemento_por_repeticao(drive,"/html/body/div[4]/div[3]/ul/li[8]","click","SRB4",4)
     time.sleep(3)
 
     lista_de_tramitacao = ler_dados_da_planilha("SP")
     
     for solicitacao in lista_de_tramitacao:
         #Acessando o botao do filtro
-        espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[2]","click","SRB5",120)
+        encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[2]","click","SRB5",4)
         espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","SRB6",120)
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[2]/button").click()
@@ -281,14 +316,17 @@ def tramitar_para_pago(drive):
         drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(valor)
         #Salvar
         drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
+        time.sleep(5)
         #/html/body/div[7]/div[3]/div/div/div[1]/div[4]/fieldset/button[2]
         #/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]
         #Voltar
         #drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[1]/button").click()
         #Dados
-        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
+        encontrar_elemento_por_repeticao(drive,"/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]","click","Click em dados pg",4)
+        #drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
         #Valor Liquido
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div[2]/div/div/input").send_keys(valor)
+        
         #Pagar
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[8]/div[1]/div/button").click()
         time.sleep(5)

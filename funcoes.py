@@ -105,7 +105,12 @@ def validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta):
                     print("Não moveu o arquivo 1!")
 
         else:
-            break
+            sleep(3)
+            arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            if len(arquivos) > 0 and len(arquivos) != 1:
+                continue
+            else:
+                break
 
 '''
 page = financeiro.current_window_handle
