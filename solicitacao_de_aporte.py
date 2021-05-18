@@ -36,7 +36,8 @@ def aporte(driver):
     funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[4]/div/div/div/div", "click", "filtro",0.3)
     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[3]", "click", "solicitado", 0.4)
     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[1]", "click", "clicar fora", 2)
-    funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "aplicar", 0.3)
+    sleep(4)
+    funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "aplicar", 3)
     print(20*"=")
 
     #OBTER QUANTIDADE DE PAGAMENTOS
@@ -189,10 +190,12 @@ def aporte(driver):
             funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
             #Filtrar o ID
             driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
-            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[4]/div/div/div/div", "click", "filtro",0.3)
-            funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[4]", "click", "processadoss", 0.4)
-            funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[1]", "click", "clicar fora", 0.5)
-            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "aplicar", 0.3)
+            #funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[4]/div/div/div/div", "click", "filtro",0.3)
+            #funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[4]", "click", "processadoss", 0.4)
+            #sleep(4)
+            #funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[1]", "click", "clicar fora", 2)
+            
+            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "aplicar", 3)
             sleep(3)
             funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input", "click", "LINHA", 2 )
             funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[3]", "click", "LINHA",2 )
