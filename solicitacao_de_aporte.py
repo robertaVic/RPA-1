@@ -191,6 +191,7 @@ def aporte(driver):
             driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
             funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[4]/div/div/div/div", "click", "filtro",0.3)
             funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[4]", "click", "processadoss", 0.4)
+            sleep(3)
             funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[1]", "click", "clicar fora", 0.5)
             funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "aplicar", 0.3)
             sleep(3)
@@ -198,9 +199,9 @@ def aporte(driver):
             funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[3]", "click", "LINHA",2 )
             sleep(2)
             #Pago ou parcialmente pago 
-            if str(solicitacao[3]) == "Pago":
+            if str(solicitacao[3]).lower() == "pago":
                 funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/ul/div[1]","click","SPA",3)    
-            elif str(solicitacao[3]) == "Parcialmente pago":  
+            elif str(solicitacao[3]).lower() == "parcialmente pago":  
                 funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/ul/div[2]","click","SPA",3)
             sleep(4)
             

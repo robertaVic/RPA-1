@@ -6,7 +6,7 @@ from funcoes import *
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
-from gerenciadorPastas import criarPastaData, recuperar_diretorio_usuario
+from gerenciadorPastas import  recuperar_diretorio_usuario
 from pgAvulso import pagamentoAvulso
 from solicitacao_de_reembolso import reembolso
 from solicitacao_de_adiantamento import adiantamento

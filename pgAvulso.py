@@ -48,7 +48,7 @@ def pagamentoAvulso(financeiro):
     quantidade_de_requisicoes = int((financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]").get_attribute("innerText")).split(" ")[-1])
     
     #LAÇO PARA TRAMITAR TODOS OS PAGAMENTOS
-    for linha in range(0): #voltar para antigo quantidades
+    for linha in range(1): #voltar para antigo quantidades
         dados_do_formulario = []
         global identificador
         #armazenando o id de cada solicitaçao
@@ -219,6 +219,7 @@ def pagamentoAvulso(financeiro):
     lista_de_tramitacao = ler_dados_da_planilha(tipo_de_solicitacao)
     #Filtro
     if len(lista_de_tramitacao) > 0:
+        sleep(2)
         funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 4)
         funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/ul/li[6]","click","filtro",2)
         #Para cada solicitaçao que precisa ser paga
@@ -260,11 +261,11 @@ def pagamentoAvulso(financeiro):
             funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","SPA",3) 
             sleep(3)   
             #Pago ou parcialmente pago 
-            if str(solicitacao[3]) == "Pago":
-                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[1]","click","pago",3)    
-            elif str(solicitacao[3]) == "Parcialmente pago":  
-                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[2]","click","SPA",3)
-            sleep(4)
+            if str(solicitacao[3]).lower() == "pago":
+                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[1]","click","pago",2)    
+            elif str(solicitacao[3]).lower() == "parcialmente pago":  
+                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[2]","click","SPA",2)
+            sleep(10)
             
             atualizar_status_na_planilha(int(solicitacao[4]))     
     print("FIMMMMMMMMMMMMMMM AVULSO")
