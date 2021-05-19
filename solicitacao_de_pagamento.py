@@ -153,7 +153,7 @@ def pagamentos(drive):
                 arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
                 qtd_arquivos2 = len(arquivos)
             
-            #arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            #arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\Financeiro - Automacao\\")
             #qtd_arquivos = len(arquivos)
 
         time.sleep(5)
@@ -182,7 +182,7 @@ def pagamentos(drive):
         time.sleep(5)
 
         #Criando pasta para o ID da solicitação no diretorio de reembolso
-        nome_da_pasta = "SP ID " + id_solicitacao
+        nome_da_pasta = "ID SP" + id_solicitacao[-6::]
         gerenciadorPastas.criarPastasFilhas('Pagamentos', nome_da_pasta)
 
         #Preencher lista com as informações que serão enviadas para a planilha

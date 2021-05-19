@@ -25,12 +25,17 @@ def pagamentoAvulso(financeiro):
     gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
     tipo_de_solicitacao = "PA"
     builder = ActionChains(financeiro)
-    financeiro.implicitly_wait(10)
+    #financeiro.implicitly_wait(10)
 
     #ACESSANDO PAGAMENTO AVULSO
-    # funcoes.espera_explicita_de_elemento(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",2)
+    funcoes.espera_explicita_de_elemento(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",2)
     financeiro.get("https://tpf2.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
     #financeiro.implicitly_wait(10)
+    #Limpando Filtros
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 4)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro", 4)
+    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/button","click","filtro", 4)
+
     #FILTRANDO OS PAGAMENTOS SOLICITADOS
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 3)
     funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/ul/li[2]","click","filtro",2)
@@ -46,7 +51,6 @@ def pagamentoAvulso(financeiro):
     #OBTER QUANTIDADE DE PAGAMENTOS
     sleep(5)
     quantidade_de_requisicoes = int((financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]").get_attribute("innerText")).split(" ")[-1])
-    
     #LAÇO PARA TRAMITAR TODOS OS PAGAMENTOS
     for linha in range(1): #voltar para antigo quantidades
         dados_do_formulario = []
@@ -55,10 +59,14 @@ def pagamentoAvulso(financeiro):
         identificador = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
         global razao
         #armazenando a razao social de cada solicitaçao
+        #/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]
+        #/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input
         razao = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[6]/div").get_attribute("innerText")
         #estado = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A SOLICITAÇAO
-        financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
+        #/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]
+        funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input", "click", "click na checkbox", 4)
+        #financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
         funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
         
@@ -70,6 +78,8 @@ def pagamentoAvulso(financeiro):
         #ID DA SOLICITAÇAO
         dados_do_formulario.append(identificador)
         #CPF/CNPJ
+        funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[1]/div/div/input", "click", "cpf cnpj", 4)
+        sleep(1)
         cnpj = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[1]/div/div/div/input").get_attribute("value")
         cpf = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[2]/div/div/div/input").get_attribute("value")
         try:
@@ -85,11 +95,13 @@ def pagamentoAvulso(financeiro):
             dados_do_formulario.append(cnpj)
         #RAZÃO SOCIAL
         dados_do_formulario.append(razao) 
-        #FORMA DE PAGAMENTO
-        forma_de_pagamento = financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText")
+       
         try:
+            #FORMA DE PAGAMENTO
+            forma_de_pagamento = financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[4]/div[1]/div/div[1]/div/div/div/div/div/div/div[1]/div").get_attribute("innerText")
             dados_do_formulario.append(forma_de_pagamento)
         except:
+            forma_de_pagamento = ""
             dados_do_formulario.append("")
         #BANCO
         dados_do_formulario.append(financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[3]/div[1]/div/div[1]/div/div/div/input").get_attribute("value"))
@@ -146,7 +158,7 @@ def pagamentoAvulso(financeiro):
         sleep(3)
         #CRIAR A PASTA DO PAGAMENTO QUE ACABOU DE SER PROCESSADO
         
-        nome_da_pasta = (f"ID PA{identificador}")
+        nome_da_pasta = "ID " + "PA"+ str(identificador)[-6::]
         # else:    
         #     nome_da_pasta = (f"PA ID {identificador} {razao}")
 
@@ -210,6 +222,8 @@ def pagamentoAvulso(financeiro):
      
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(5)
+        financeiro.get("https://tpf2.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
+        sleep(2)
 
     sleep(1.5)
     print("Vai começar a contar")

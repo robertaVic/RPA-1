@@ -25,8 +25,7 @@ def aporte(driver):
 
     #ACESSANDO SOLICITAÇAO DE APORTE
     funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","AD",2)
-    driver.get("https://tpf2.madrix.app/runtime/44/list/220/Solicitação de Aporte")
-    #driver.implicitly_wait(10)
+    driver.get("https://tpf2.madrix.app/runtime/44/list/220/Solicitação de Aporte")    #driver.implicitly_wait(10)
 
     #FILTRANDO AS SOLICITAÇÕES APROVADAS PELO GERENTE
     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 2)
@@ -35,16 +34,16 @@ def aporte(driver):
     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
     funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[4]/div/div/div/div", "click", "filtro",0.3)
     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[3]", "click", "solicitado", 0.4)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[1]", "click", "clicar fora", 2)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[1]", "click", "clicar fora", 0.5)
     funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "aplicar", 0.3)
     print(20*"=")
 
     #OBTER QUANTIDADE DE PAGAMENTOS
-    sleep(3)
-    quantidade_de_requisicoes = int((driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]").get_attribute("innerText")).split(" ")[-1])
+    sleep(5)
+    quantidade_de_requisicoes = int((driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
     
     #LAÇO PARA TRAMITAR TODOS OS PAGAMENTOS
-    for linha in range(5): #voltar para antigo quantidades
+    for linha in range(2): #voltar para antigo quantidades
         dados_do_formulario = []
         global identificador
         #armazenando o id de cada solicitaçao
@@ -52,11 +51,7 @@ def aporte(driver):
         #armazenando a razao social de cada solicitaçao
         #estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A SOLICITAÇAO
-        sleep(3)
-        try:
-            driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
-        except:
-            driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").send_keys("\n")
+        driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
         
@@ -86,7 +81,7 @@ def aporte(driver):
         valor = driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[2]/div/div/div[2]/div[1]/div/div[1]/div/div/div/input").get_attribute("value")
         dados_do_formulario.append(valor)
         #VALOR PAGO
-        dados_do_formulario.append("")
+        dados_do_formulario.append("0")
         #DATA SOLICITADA PARA PAGAMENTO
         dados_do_formulario.append("")
         #DATA DA SOLICITAÇÃO 
@@ -112,11 +107,13 @@ def aporte(driver):
 
         #CRIAR A PASTA DO PAGAMENTO QUE ACABOU DE SER PROCESSADO
 
-        nome_da_pasta = (f"ID SA{identificador}")
+        #nome_da_pasta = (f"SA ID {identificador}")
+        nome_da_pasta = "ID SA" + str(identificador)[-6::]
 
         sleep(2)
         gerenciadorPastas.criarPastasFilhas("Solicitação de Aporte", nome_da_pasta)
         
+        sleep(3)
 
         #BAIXAR NOTA FISCAL
         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]", "click", "clicar em notas", 3)
@@ -131,7 +128,7 @@ def aporte(driver):
                 while maximo_tentativas < 40: 
                     if len(rows2) > 0:
                         row.click()
-                        sleep(2)
+                        sleep(3)
                         maximo_tentativas = 40
                     else:
                         maximo_tentativas += 1
@@ -140,7 +137,7 @@ def aporte(driver):
             print(comentario_nota_fiscal)
             dados_do_formulario[15] = comentario_nota_fiscal 
 
-        sleep(2)
+        sleep(5)
         #IMPRIMINDO
         try: 
             funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]", "click", "voltar", 10)
@@ -159,7 +156,7 @@ def aporte(driver):
         #MOVENDO ARQUIVOS
         print("mover arquivos")
         funcoes.validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta)
-        sleep(1)
+        sleep(3)
 
         #TRAMITAÇÃO
         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[3]","click","tramitar",2)
@@ -173,6 +170,7 @@ def aporte(driver):
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(5)
 
+    sleep(1.5)
     print("Vai começar a contar")
     sleep(5)
 
@@ -199,9 +197,9 @@ def aporte(driver):
             funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[3]", "click", "LINHA",2 )
             sleep(2)
             #Pago ou parcialmente pago 
-            if str(solicitacao[3]).lower() == "pago":
+            if str(solicitacao[3]).upper() == "PAGO":
                 funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/ul/div[1]","click","SPA",3)    
-            elif str(solicitacao[3]).lower() == "parcialmente pago":  
+            elif str(solicitacao[3]).upper() == "PARCIALMENTE PAGO":  
                 funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/ul/div[2]","click","SPA",3)
             sleep(4)
             

@@ -22,7 +22,7 @@ def adiantamento(driver):
     #gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
     tipo_de_solicitacao = "AD"
     builder = ActionChains(driver)
-    driver.implicitly_wait(2)
+    #driver.implicitly_wait(2)
 
     #ACESSANDO SOLICITAÇAO DE ADIANTAMENTO
     # funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","AD",2)
@@ -30,15 +30,15 @@ def adiantamento(driver):
     # driver.implicitly_wait(10)
 
     #FILTRANDO AS SOLICITAÇÕES APROVADAS PELO GERENTE
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 2)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/ul/li[3]","click","filtro",0.4)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 2)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
-    funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro",0.3)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[7]", "click", "filtro", 0.4)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[1]", "click", "filtro", 0.3)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/ul/li[3]","click","filtro",4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",4)
+    funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro",4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[7]", "click", "filtro", 4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[1]", "click", "filtro", 4)
     print(20*"=")
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechando filtro", 0.4)
+    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechando filtro", 4)
     
     #OBTER QUANTIDADE DE PAGAMENTOS
     sleep(5)
@@ -50,6 +50,8 @@ def adiantamento(driver):
         dados_do_formulario = [] 
         global identificador
         #armazenando o id de cada solicitaçao
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div", "link", "Encontrar ID", 3)
+        sleep(2)
         identificador = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
         #estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A SOLICITAÇAO
@@ -63,24 +65,32 @@ def adiantamento(driver):
         #Acessando as informações presentes em 'Financeiro HTML'
         sleep(5)
 
-        if linha == 0:
-            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/div/div/div/div/div", "click", "escolher form", 4)
-            filtro_click = builder.send_keys(Keys.ARROW_DOWN)
-            filtro_click.perform()
-            filtro_click = builder.send_keys(Keys.ARROW_DOWN)
-            filtro_click.perform()
-            filtro_click = builder.send_keys(Keys.SPACE)
-            filtro_click.perform()
-            try:
-                funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[3]/button[2]", "click", "acessar form", 0.5)
-            except: 
-                filtro_click = builder.send_keys(Keys.ARROW_DOWN)
-                filtro_click.perform()
-                filtro_click = builder.send_keys(Keys.SPACE)
-                filtro_click.perform()
-                funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[3]/button[2]", "click", "acessar form", 0.5).click()
-            sleep(3)
-
+      #  if linha == 0:
+       #     funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/div/div/div/div/div", "click", "escolher form", 4)
+        #    filtro_click = builder.send_keys(Keys.ARROW_DOWN)
+         #   filtro_click.perform()
+          #  filtro_click = builder.send_keys(Keys.ARROW_DOWN)
+           # filtro_click.perform()
+            #filtro_click = builder.send_keys(Keys.SPACE)
+            #filtro_click.perform()
+            #try:
+             #   funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[3]/button[2]", "click", "acessar form", 0.5)
+            #except: 
+             #   filtro_click = builder.send_keys(Keys.ARROW_DOWN)
+              #  filtro_click.perform()
+               # filtro_click = builder.send_keys(Keys.SPACE)
+                #filtro_click.perform()
+                #funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[3]/button[2]", "click", "acessar form", 0.5).click()
+            #sleep(3)
+            
+    
+        #Acessando as informações presentes em 'Financeiro HTML'
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/div/div/div/div/div", "click", "escolher form", 4)
+        filtro_click = builder.send_keys(Keys.DOWN)
+        filtro_click = builder.send_keys(Keys.SPACE)
+        filtro_click.perform()
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[3]/button[2]", "click", "acessar form", 4)
+        sleep(3)
         #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
 
         #AD
@@ -184,8 +194,8 @@ def adiantamento(driver):
         # sleep(3)
 
         #TRAMITAÇÃO DAS SOLICITAÇÕES
-        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","tramitar",2)
-        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div[1]", "click", "tramitar", 0.4)
+        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","tramitar",4)
+        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div[1]", "click", "tramitar", 4)
         #status robo
         dados_do_formulario.append("Processada")
 
@@ -194,6 +204,9 @@ def adiantamento(driver):
         
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(5)
+        driver.get("https://tpf2.madrix.app/runtime/44/list/184/Solicitação de Adiantamento")
+        sleep(2)
+
         
 
    #2° PARTE: ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO 
@@ -203,16 +216,16 @@ def adiantamento(driver):
         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/ul/li[6]","click","filtro",2)
         for solicitacao in lista_de_tramitacao:
             funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 2)
-            funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
+            funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",4)
             driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
             # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro", 0.4)
             # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[6]/div[3]/ul/li[7]", "click", "filtro", 0.4)
             # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[6]/div[1]", "click", "filtro", 0.4 )
-            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechar filtro", 0.5 )
+            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechar filtro", 4)
             sleep(5)
-            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input", "click", "linha", 0.4 )
-            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]", "click", "tramitar", 0.4 )
-            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div", "click", "pagar", 0.4)
+            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input", "click", "linha", 4 )
+            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]", "click", "tramitar", 4 )
+            funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div", "click", "pagar", 4)
             atualizar_status_na_planilha(int(solicitacao[4]))    
     
     print("FIMMMMMMMMMMMMMMM ADIANTAMENTO")
