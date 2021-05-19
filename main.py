@@ -35,11 +35,11 @@ fazerLogin(driver)
 
 
 #entra no pagamento avulso
-pagamentoAvulso(driver)
+#pagamentoAvulso(driver)
 #aporte(driver)
 #adiantamento(driver)
 #prestacao_de_contas(driver)
-pagamentos(driver)
+#pagamentos(driver)
 #reembolso(driver)
 
 
