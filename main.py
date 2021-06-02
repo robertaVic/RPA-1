@@ -1,4 +1,5 @@
 #Codigo Principal
+from gerenciadorPlanilhas import formatar_planilha
 from solicitacao_de_pagamento import pagamentos
 from selenium import webdriver
 from selenium.webdriver import Chrome
@@ -6,7 +7,7 @@ from funcoes import *
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from datetime import date,datetime
-from gerenciadorPastas import  recuperar_diretorio_usuario
+from gerenciadorPastas import criarPastaData, recuperar_diretorio_usuario
 from pgAvulso import pagamentoAvulso
 from solicitacao_de_reembolso import reembolso
 from solicitacao_de_adiantamento import adiantamento
@@ -35,11 +36,15 @@ fazerLogin(driver)
 
 
 #entra no pagamento avulso
-#pagamentoAvulso(driver)
+# pagamentoAvulso(driver)
 #aporte(driver)
-#adiantamento(driver)
+adiantamento(driver)
 #prestacao_de_contas(driver)
 #pagamentos(driver)
-#reembolso(driver)
+# reembolso(driver)
 
-
+print(datetime.now())
+#formatar_planilha()
+driver.quit()
+sleep(5)
+exit()

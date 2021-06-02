@@ -5,7 +5,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from gerenciadorPastas import recuperar_diretorio_usuario
 from selenium.webdriver.chrome.options import Options
-import gerenciadorPastas
+from gerenciadorPastas import *
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -91,7 +91,7 @@ def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao,
 
 def validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta):
     while True:
-        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+        arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
         if len(arquivos) > 0 and len(arquivos) != 1:
             arquivo = arquivos[-1]
             print(arquivo)
@@ -100,13 +100,13 @@ def validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta):
                 sleep(3)
             else:
                 try:
-                    shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
+                    shutil.move(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
                 except:
                     print("Não moveu o arquivo 1!")
 
         else:
             sleep(3)
-            arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
             if len(arquivos) > 0 and len(arquivos) != 1:
                 continue
             else:

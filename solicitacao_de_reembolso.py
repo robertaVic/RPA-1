@@ -1,59 +1,44 @@
 from datetime import date
-from funcoes import espera_explicita_de_elemento, validar_download
-from gerenciadorPlanilhas import ler_dados_da_planilha, preencher_solicitacao_na_planilha
+
+from selenium.webdriver.common import keys
+from funcoes import encontrar_elemento_por_repeticao, espera_explicita_de_elemento, validar_download
+from gerenciadorPlanilhas import atualizar_status_na_planilha, ler_dados_da_planilha, preencher_solicitacao_na_planilha
 import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-import gerenciadorPastas
+from gerenciadorPastas import *
 import shutil
 
   
 
 '''Função responsavel por fazer buscas repetitivas em um mesmo elemento da página'''
-def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao, tempo_espera):
-    maximo_tentativas = 0
-    while maximo_tentativas <= 20:
-        print(informacao_acao, maximo_tentativas)
-        try:
-            drive.find_element_by_xpath(element_path)
-            if acao == "click":
-                drive.find_element_by_xpath(element_path).click()
-                maximo_tentativas = 21
-            elif acao == "link":
-                maximo_tentativas = 21
-                pass
-        except:
-            maximo_tentativas+=1
-            time.sleep(tempo_espera)
-    if maximo_tentativas > 20:
-        return("#Erro " + informacao_acao)
 
 
 '''Realizar coleta de todas as solicitações com status 'Aprovado pelo gerente'
     e realizar o download de seus arquivos anexos na pasta do destinada a solicitação'''
 def reembolso(drive):
-    #verificar se tem downloads antigos e apagar
-    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+    #Verificar se tem downloads antigos e apagar
+    remover_arquivos_da_raiz(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     data_em_texto = date.today().strftime("%d.%m.%Y")
-    caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Reembolso\\"
-    gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
+    caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Reembolso\\"
+    criarPastaData(caminho_da_pasta, data_em_texto)
     builder = ActionChains(drive)
     #drive.implicitly_wait(70)
 
     #Aceesando o menu de reembolso
-    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",120)
+    #espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",120)
     drive.get("https://tpf2.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
     time.sleep(8)
 
     #Filtrando as solicitações com status aprovado pelo gerente
     espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
-    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
-    espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/ul/li[3]","click","SRB4",120)
+    encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",4)
+    encontrar_elemento_por_repeticao(drive,"/html/body/div[4]/div[3]/ul/li[3]","click","SRB4",4)
 
-    quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p").get_attribute("innerText")).split(" ")[-1])
+    #quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]").get_attribute("innerText")).split(" ")[-1])
 
     #Percorrento por todas as solicitações filtradas com o status definido no sistema
-    for qtd_solicitacoes in range(10):
+    for qtd_solicitacoes in range(0):
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
         #Tipo
@@ -66,9 +51,13 @@ def reembolso(drive):
         estado = drive.find_element_by_xpath(path_comum + "/td[7]/div/span").get_attribute("innerText")
         valor_solicitado = drive.find_element_by_xpath(path_comum + "/td[9]").get_attribute("innerText")
         data_da_solicitacao = drive.find_element_by_xpath(path_comum + "/td[10]").get_attribute("innerText")
+        solicitante = drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[6]/div/div[2]").get_attribute("innerText")
+        
 
         #Acessando informações dentro de uma solicitação
-        drive.find_element_by_xpath(path_comum).click()
+        encontrar_elemento_por_repeticao(drive,path_comum,"click","filtro",4) 
+
+        #drive.find_element_by_xpath(path_comum).click()
         time.sleep(3)
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[2]/div/div/div/div/div").click()
         time.sleep(3)
@@ -153,27 +142,54 @@ def reembolso(drive):
         drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div[1]/h2/div/div[2]/button").click()
         time.sleep(3)
 
-        nome_da_pasta = id_solicitacao[0:1] + " ID " + id_solicitacao[2:len(id_solicitacao)]
-        
+
+        solicitante1 = solicitante.replace("\\" , "")
+        solicitante1 = solicitante1.replace("/", "")
+        solicitante1 = solicitante1.replace(":", "")
+        solicitante1 = solicitante1.replace("*", "")
+        solicitante1 = solicitante1.replace("?", "")
+        solicitante1 = solicitante1.replace('"', "")
+        solicitante1 = solicitante1.replace("<", "")
+        solicitante1 = solicitante1.replace(">", "")
+        solicitante1 = solicitante1.replace("|", "")
+        solicitante1 = solicitante1.replace(".", "")
+        solicitante1 = solicitante1.replace(",", "")
+
+        nome_da_pasta = "ID " + str(id_solicitacao) + " " + str(solicitante)
         #Criando pasta para o ID da solicitação no diretorio de reembolso
-        gerenciadorPastas.criarPastasFilhas('Reembolso', nome_da_pasta)
+        criarPastasFilhas('Reembolso', nome_da_pasta)
         
         #Movendo os Arquivos para a pasta da solicitacao
         validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta)
 
-        #Tramitando uma solicitação
+        #Tramitando para processado
         try:
-            drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]").click()
-            drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div[2]/ul/div[1]").click()
-            time.sleep(6)
-            dados_do_formulario.append("Processada")
+            encontrar_elemento_por_repeticao(drive,"/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]","click","Tramitar botao 0",4)
+            encontrar_elemento_por_repeticao(drive,"/html/body/div[7]/div[3]/div/div[2]/ul/div[1]","click","Processado",4)
+
+            #drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]").click()
+            #drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div[2]/ul/div[1]").click()
+            #time.sleep(6)
+            #dados_do_formulario.append("Processada")
+        except:
+            print("Falha na tramitação de processado")
+            #dados_do_formulario.append("")
+            #dados_do_formulario[15] = "Falha na tramitação"
+        
+        #Tramitando para NFs Entregues
+        try:
+            encontrar_elemento_por_repeticao(drive,"/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]","click","Tramitar botao 1",4)
+            encontrar_elemento_por_repeticao(drive,"/html/body/div[7]/div[3]/div/div[2]/ul/div[1]","click","Status NFs Pagas",4)
+            #drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]").click()
+            #drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div[2]/ul/div").click()
+            time.sleep(5)
+            dados_do_formulario.append("NFs Entregues")
         except:
             dados_do_formulario.append("")
             dados_do_formulario[15] = "Falha na tramitação"
         
         #Preencher a planilha
         preencher_solicitacao_na_planilha(dados_do_formulario,'SR')
-
         time.sleep(5)
 
         filtro_click = builder.send_keys(Keys.ESCAPE)
@@ -184,37 +200,63 @@ def reembolso(drive):
         time.sleep(4)
     
     time.sleep(4)
+    lista_de_tramitacao = ler_dados_da_planilha("SR")
+    if len(lista_de_tramitacao) > 0:
+        tramitar_para_pago(drive)
+
     drive.close()
+
+    
 
 
 def tramitar_para_pago(drive):
+    builder = ActionChains(drive)
     drive.get("https://tpf2.madrix.app/runtime/44/list/176/Solicitação de Reembolso")
     #Filtrando as solicitações com status processado
     
-    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2",120)
-    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3",120)
-    espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/ul/li[9]","click","SRB4",120)
+    espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","encontrar","SRB2-",120)
+    encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","SRB3-",4)
+    encontrar_elemento_por_repeticao(drive,"/html/body/div[4]/div[3]/ul/li[17]","click","SRB4-",4)
     
     time.sleep(3)
 
-    lista_de_tramitacao = ler_dados_da_planilha("RB")
-    
+    lista_de_tramitacao = ler_dados_da_planilha("SR")
+    contador = 0
     for solicitacao in lista_de_tramitacao:
+        contador+=1
         #Acessando o botao do filtro
-        espera_explicita_de_elemento(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","SRB5",120)
-        espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","SRB6",120)
+        encontrar_elemento_por_repeticao(drive,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","SRB5",4)
+        encontrar_elemento_por_repeticao(drive,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","SRB6",4)
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
         drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div[2]/button").click()
         time.sleep(2)
 
         drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr").click()
-        #/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[8]/div[1]/div/button
-        time.sleep(5)
-        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[4]").click()
-        espera_explicita_de_elemento(drive,"/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[5]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","SRB7",120)
-        time.sleep(10)
-        #Data
-        drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(solicitacao[2])
+
+        #html
+        if contador < 2:
+            encontrar_elemento_por_repeticao(drive, "/html/body/div[4]/div[3]/div/div[2]/div/div/div/div/div", "click", "escolher form", 4)
+            #filtro_click = builder.send_keys(Keys.DOWN)
+            filtro_click = builder.send_keys(Keys.SPACE)
+            filtro_click.perform()
+            encontrar_elemento_por_repeticao(drive, "/html/body/div[4]/div[3]/div/div[3]/button[2]", "click", "escolher form OK", 4)
+            encontrar_elemento_por_repeticao(drive, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div/div/input", "link", "escolher form OK", 4)
+        
+        encontrar_elemento_por_repeticao(drive, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div/div/input", "link", "Valor", 4)
+        valor_sgp = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div/div/input").get_attribute("value")
+        valor_sgp = valor_sgp.replace("R$", "")
+        valor_sgp = valor_sgp.replace(",", ".")
+        valor_sgp = float(valor_sgp)
+
+        while valor_sgp > 0:
+            print(valor_sgp)
+            drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div/div/input").send_keys(Keys.BACKSPACE)
+            valor_sgp = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div/div/input").get_attribute("value")
+            valor_sgp = valor_sgp.replace("R$", "")
+            valor_sgp = valor_sgp.replace(",", ".")
+            valor_sgp = float(valor_sgp)
+
+        
         #Valor
         valor = str(solicitacao[1]).replace(".",",")
 
@@ -225,19 +267,21 @@ def tramitar_para_pago(drive):
             valor+="0"
         elif teste_casas_decimais_virgula == 0:
             valor+=",00"
-        drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(valor)
-        #Salvar
-        drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]").click()
-        #/html/body/div[7]/div[3]/div/div/div[1]/div[4]/fieldset/button[2]
-        #/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]
-        #Voltar
-        #drive.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[1]/button").click()
-        #Dados
-        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]").click()
-        #Valor Liquido
-        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[1]/div[2]/div/div/input").send_keys(valor)
-        #Pagar
-        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[8]/div[1]/div/button").click()
+
+        time.sleep(4)
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div/div/input").click()
+        drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div/div/input").send_keys(valor)
+        
+        time.sleep(2)
+        #Tramitar
+        encontrar_elemento_por_repeticao(drive, "/html/body/div[4]/div[3]/div/div/div/div[4]/fieldset/button[3]", "click", "tramitar 2", 4)
+        encontrar_elemento_por_repeticao(drive, "/html/body/div[7]/div[3]/div/div[2]/ul/div[1]", "click", "status pago", 4)
+
+        #Fechar
+        encontrar_elemento_por_repeticao(drive, "/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "fechando solicitacao", 4)
+
+        
+
         time.sleep(5)
         
         atualizar_status_na_planilha(int(solicitacao[4]))

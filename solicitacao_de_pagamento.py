@@ -5,7 +5,7 @@ from gerenciadorPlanilhas import atualizar_status_na_planilha, ler_dados_da_plan
 import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-import gerenciadorPastas
+from gerenciadorPastas import *
 import shutil
 from funcoes import espera_explicita_de_elemento, validar_download
 
@@ -34,10 +34,10 @@ def encontrar_elemento_por_repeticao(drive, element_path, acao, informacao_acao,
     e realizar o download de seus arquivos anexos na pasta do destinada a solicitação'''
 def pagamentos(drive):
     #verificar se tem downloads antigos e apagar
-    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+    remover_arquivos_da_raiz(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     data_em_texto = date.today().strftime("%d.%m.%Y")
-    caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamentos\\"
-    gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
+    caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamentos\\"
+    criarPastaData(caminho_da_pasta, data_em_texto)
 
     builder = ActionChains(drive)
     #Aceesando o menu de pagamento
@@ -55,12 +55,12 @@ def pagamentos(drive):
     quantidade_de_requisicoes = int((drive.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]").get_attribute("innerText")).split(" ")[-1])
 
     #Percorrento por todas as solicitações filtradas com o status definido no sistema
-    for qtd_solicitacoes in range(0):
+    for qtd_solicitacoes in range(1):
         tramitar = 0
         #Lista para coleta das informações que serão enviadas para a planilha
         dados_do_formulario = []
         #Tipo
-        dados_do_formulario.append("SP")
+        dados_do_formulario.append("PG")
         path_comum = "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]"
         #ID da Solicitação
         espera_explicita_de_elemento(drive, path_comum + "/td[4]/div","encontrar","id_solicitacao",120)
@@ -140,17 +140,17 @@ def pagamentos(drive):
         div_externa = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div")
         trs = div_externa.find_elements_by_tag_name("a")
         
-        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+        arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
         qtd_arquivos = len(arquivos)
         
         for certidao in trs:
             certidao.click()
             qtd_arquivos+=1
-            arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
             qtd_arquivos2 = len(arquivos)
 
             while  qtd_arquivos2 < qtd_arquivos:
-                arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+                arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
                 qtd_arquivos2 = len(arquivos)
             
             #arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\Financeiro - Automacao\\")
@@ -163,27 +163,37 @@ def pagamentos(drive):
         div_externa = drive.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]")
         trs = div_externa.find_elements_by_tag_name("a")
 
-        arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+        arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
         qtd_arquivos = len(arquivos)
 
         for nfs in trs:
             nfs.click()
-            arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
             qtd_arquivos2 = len(arquivos)
             
             while  qtd_arquivos2 < qtd_arquivos:
-                arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+                arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
                 qtd_arquivos2 = len(arquivos)
             
-            arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+            arquivos = listar_arquivos_em_diretorios(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
             qtd_arquivos = len(arquivos)
             #time.sleep(10)
         
         time.sleep(5)
-
+        razao_social = razao_social.replace("\\" , "")
+        razao_social = razao_social.replace("/", "")
+        razao_social = razao_social.replace(":", "")
+        razao_social = razao_social.replace("*", "")
+        razao_social = razao_social.replace("?", "")
+        razao_social = razao_social.replace('"', "")
+        razao_social = razao_social.replace("<", "")
+        razao_social = razao_social.replace(">", "")
+        razao_social = razao_social.replace("|", "")
+        razao_social = razao_social.replace(".", "")
         #Criando pasta para o ID da solicitação no diretorio de reembolso
-        nome_da_pasta = "ID SP" + id_solicitacao[-6::]
-        gerenciadorPastas.criarPastasFilhas('Pagamentos', nome_da_pasta)
+        nome_da_pasta = "ID " + str(id_solicitacao) + " " + str(razao_social)
+        print(nome_da_pasta)
+        criarPastasFilhas('Pagamentos', nome_da_pasta)
 
         #Preencher lista com as informações que serão enviadas para a planilha
         #CPF

@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import date
-import gerenciadorPastas
-import funcoes
+from gerenciadorPastas import *
+from funcoes import *
 import shutil
 import os
 from selenium.webdriver.common.keys import Keys
@@ -13,43 +13,44 @@ from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da
 
 def prestacao_de_contas(driver):
     #verificar se tem downloads antigos e apagar
-    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+    remover_arquivos_da_raiz(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     #data atual formatada
     data_em_texto = date.today().strftime("%d.%m.%Y")
     #caminho da pasta macro(pasta do dia)
-    caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Prestação de Contas\\" 
+    caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Prestação de Contas\\" 
     #criar pasta do dia dentro de pagamento avulso
-    #gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
+    criarPastaData(caminho_da_pasta, data_em_texto)
     tipo_de_solicitacao = "PC"
     builder = ActionChains(driver)
     driver.implicitly_wait(2)
 
     #ACESSANDO PRESTACAO DE CONTAS - CARTAO CORPORATIVO
-    # funcoes.espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","PC",2)
+    # espera_explicita_de_elemento(driver,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","PC",2)
     driver.get("https://tpf2.madrix.app/runtime/44/list/221/Prestação de Contas - Cartão Corporativo")
     #driver.implicitly_wait(10)
 
     #FILTRANDO AS PRESTAÇÕES REALIZADAS
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 3)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/ul/li[6]","click","filtro",2)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 3)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
-    funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro",2)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[3]", "click", "filtro", 0.4)
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[1]", "click", "filtro", 0.3)
+    encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","1-filtro", 3)
+    encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/ul/li[2]","click","todas",4)
+    encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","2-filtro", 3)
+    encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","limpar filtro",3)
+    encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/ul/li[3]/div/div/div/div", "click", "novo filtro",3)
+    encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[3]", "click", "prestaçao realizada", 3)
+    encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[1]", "click", "clicar fora", 3)
     print(20*"=")
-    funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechando filtro", 0.4)
+    encontrar_elemento_por_repeticao(driver,"/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechando filtro", 0.4)
 
     #OBTER QUANTIDADE DE PRESTAÇÕES REALIZADAS
     sleep(5)
     # quantidade_de_requisicoes = int((driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span/div/p").get_attribute("innerText")).split(" ")[-1])
     
     #LAÇO PARA TRAMITAR TODOS AS PRESTAÇÕES
-    for linha in range(5): #voltar para antigo quantidades
+    for linha in range(5):
+        print(linha) #voltar para antigo quantidades
         dados_do_formulario = []
         #armazenando o id de cada prestação
         identificador = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[4]/div").get_attribute("innerText")
-        #estado = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
+        solicitante = driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[5]/div/div[2]").get_attribute("innerText")
         #ACESSANDO A PRESTAÇÃO
         sleep(3)
         #driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
@@ -58,7 +59,7 @@ def prestacao_de_contas(driver):
         except:
             driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").send_keys("\n")
         sleep(3)
-        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
+        encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
         
         sleep(5)
         #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
@@ -111,82 +112,56 @@ def prestacao_de_contas(driver):
         dados_do_formulario.append("")
         
         # #BAIXANDO AS NOTAS FISCAIS
-        # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]", "click", "clicar em notas", 3)
-        # tbody2 = driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody")
+        # #BAIXANDO AS NOTAS FISCAIS
+        encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]", "click", "clicar em notas", 3)
+        tbody2 = driver.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody")
         # #pega todas as linhas que contem nf
-        # rows2 = tbody2.find_elements_by_tag_name("a") 
+        rows2 = tbody2.find_elements_by_tag_name("a") 
        
-        # try:
-        #     if len(rows2) > 0:
-        #         for row in rows2:
-        #             row.click()
-        #             sleep(5)
-        #     # else:
-        #     #     comentario_nao_possui_nota = (f"A prestação não possui notas fiscais para serem baixadas")      
-        #     #     print(comentario_nao_possui_nota)  
-        # except:
-        #     comentario_nota_fiscal = (f"Não foi possível baixar a nota fiscal")     
-        #     print(comentario_nota_fiscal) 
+        try:
+            for row in rows2:
+                maximo_tentativas = 0
+                while maximo_tentativas < 40: 
+                    if len(rows2) > 0:
+                        row.click()
+                        sleep(2)
+                        maximo_tentativas = 40
+                    else:
+                        maximo_tentativas += 1
+        except:
+            comentario_nota_fiscal = (f"Não foi possível baixar a nota fiscal")     
+            print(comentario_nota_fiscal)
+            dados_do_formulario[15] = comentario_nota_fiscal 
  
-        # sleep(10)
-        # #IMPRIMINDO E BAIXANDO CAPA
-        # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]", "click", "voltar", 10)
-        # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div[2]/div/div/button", "click", "imprimir", 10)
-        # driver.switch_to_frame(0)
-        # funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr","click","filtro",2) 
-        # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]", "click", "baixar capa", 2)
-        # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td", "click", "baixar capa", 2)
-        # driver.switch_to.default_content()
-        # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[8]/div[3]/div/div[1]/h2/div/div[2]/button", "click", "baixar capa", 2)
-        # print("passou")
-        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "baixar capa", 2)
+        sleep(3)
+        #IMPRIMINDO E BAIXANDO CAPA
+        encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]", "click", "voltar", 10)
+        encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[5]/div[2]/div/div/button", "click", "imprimir", 5)
+        driver.switch_to_frame(0)
+        encontrar_elemento_por_repeticao(driver,"/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr","click","filtro-impressao",2) 
+        encontrar_elemento_por_repeticao(driver, "/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]", "click", "baixar capa", 2)
+        encontrar_elemento_por_repeticao(driver, "/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td", "click", "baixar capa", 2)
+        driver.switch_to.default_content()
+        encontrar_elemento_por_repeticao(driver, "/html/body/div[7]/div[3]/div/div[1]/h2/div/div[2]/button", "click", "baixar capa", 2)
+        print("passou")
+        encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "fechar", 2)
     
-        # # if not comentario_nota_fiscal:
-        # #     comentario = ("Nenhum")
-        # # else:
-        # #     comentario = (f"2- {comentario_nota_fiscal}")   
-        # #     if not comentario_nao_possui_nota:
-        # #         comentario = (f"Nenhum")
-        # #     else:
-        # #         comentario = (f"3- {comentario_nao_possui_nota}")
-        # #         comentario+= comentario, 
-
-        # # print(comentario) 
-        
-        # #CRIAR A PASTA DO PAGAMENTO QUE ACABOU DE SER PROCESSADO
+        # CRIAR A PASTA DO PAGAMENTO QUE ACABOU DE SER PROCESSADO
     
-        # nome_da_pasta = (f"ID {identificador}")
+        nome_da_pasta = "ID PC" + str(identificador) + " " + str(solicitante)
 
-        # print(nome_da_pasta)
-        # gerenciadorPastas.criarPastasFilhas("Prestação de Contas", nome_da_pasta) 
+        print(nome_da_pasta)
+        criarPastasFilhas("Prestação de Contas", nome_da_pasta) 
 
-        # sleep(3)
-        # print("mover arquivos")
-
-        # #LISTANDO OS ARQUIVOS BAIXADOS E MOVENDO PARA SUA RESPECTIVA PASTA
-        # arquivos = gerenciadorPastas.listar_arquivos_em_diretorios(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA")
-        # print(arquivos)
-        # #criando um laço para mover cada um para sua pasta especifica
-        # for arquivo in arquivos:
-        #     print(arquivo)
-        #     #movendo os arquivos para a pasta da sua solicitaçao
-        #     down = os.path.splitext(arquivo)[-1].lower()
-        #     maximo_tentativas = 0
-        #     while maximo_tentativas <= 20:
-        #         if down == ".crdownload":
-        #             maximo_tentativas+= 1
-        #             sleep(2)
-        #         else:
-        #             try:
-        #                 shutil.move(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\" + arquivo, caminho_da_pasta + data_em_texto +"\\"+ nome_da_pasta + "\\" + arquivo)
-        #                 maximo_tentativas = 11
-        #             except:
-        #                 maximo_tentativas+= 1
-        # sleep(3)
+        print("mover arquivos")
+        sleep(3)
+        # MOVENDO A CAPA PARA SUA RESPECTIVA PASTA
+        validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta)
+        sleep(3)
 
         #TRAMITAR PARA "PROCESSADA"
-        funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[4]","click","tramitar",2)
-        funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div", "click", "tramitar", 2)
+        encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[4]","click","tramitar",2)
+        encontrar_elemento_por_repeticao(driver, "/html/body/div[4]/div[3]/div/div[2]/ul/div", "click", "processar", 2)
         #status
         dados_do_formulario.append("Processada")
         #DATA EXECUÇAO ROBO
@@ -194,6 +169,8 @@ def prestacao_de_contas(driver):
         
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(5)
+        driver.get("https://tpf2.madrix.app/runtime/44/list/221/Prestação de Contas - Cartão Corporativo")
+        sleep(2)
 
     sleep(5)
     print("FIMMMMMMMMMMMMMMM PC-CARTAO")
@@ -201,36 +178,36 @@ def prestacao_de_contas(driver):
 
     # lista_de_tramitacao = ler_dados_da_planilha(tipo_de_solicitacao)
     # if len(lista_de_tramitacao) > 0:
-    #     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 4)
-    #     funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[6]","click","filtro",2)
+    #     encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 4)
+    #     encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/ul/li[6]","click","filtro",2)
     #     for solicitacao in lista_de_tramitacao:
     #         print(solicitacao)
-    #         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 2)
-    #         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
+    #         encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 2)
+    #         encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
     #         driver.find_element_by_xpath("/html/body/div[5]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(ler_dados_da_planilha(str(solicitacao[0]))
-    #         # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro", 0.4)
-    #         # funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[6]/div[3]/ul/li[7]", "click", "filtro", 0.4)
-    #         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[6]/div[1]", "click", "filtro", 0.4 )
+    #         # encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/ul/li[3]/div/div/div/div", "click", "filtro", 0.4)
+    #         # encontrar_elemento_por_repeticao(driver, "/html/body/div[6]/div[3]/ul/li[7]", "click", "filtro", 0.4)
+    #         encontrar_elemento_por_repeticao(driver, "/html/body/div[6]/div[1]", "click", "filtro", 0.4 )
     #         print(20*"=")
-    #         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/button", "click", "filtro", 0.4 )
+    #         encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div[2]/button", "click", "filtro", 0.4 )
     #         sleep(3)
-    #         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/PDCn/PDCn[1]/input", "click", "LINHA", 2 )
-    #         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "LINHA",2 )
-    #         funcoes.encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]", "click", "LINHA", 2 )
+    #         encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/PDCn/PDCn[1]/input", "click", "LINHA", 2 )
+    #         encontrar_elemento_por_repeticao(driver, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "LINHA",2 )
+    #         encontrar_elemento_por_repeticao(driver, "/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]", "click", "LINHA", 2 )
     #         sleep(2)
-    #         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/PDCn/div/button[1]","click","PDC",2)
+    #         encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/PDCn/div/button[1]","click","PDC",2)
     #         sleep(3)
     #         driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(ler_dados_da_planilha(tipo_de_solicitacao)[0][2])
     #         driver.find_element_by_xpath("/html/body/div[8]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(ler_dados_da_planilha(tipo_de_solicitacao)[0][1])
-    #         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","PDC",3)
-    #         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button","click","PDC",2)
-    #         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","PDC",3)
-    #         funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","PDC",2) 
+    #         encontrar_elemento_por_repeticao(driver,"/html/body/div[8]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","PDC",3)
+    #         encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div/div/div[1]/div/div[3]/button","click","PDC",2)
+    #         encontrar_elemento_por_repeticao(driver,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","PDC",3)
+    #         encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","PDC",2) 
     #         sleep(3)    
     #         if ler_dados_da_planilha(tipo_de_solicitacao)[0][3] == "PAGO":
-    #             funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","tramitar pago",2)    
+    #             encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[1]","click","tramitar pago",2)    
     #         elif ler_dados_da_planilha(tipo_de_solicitacao)[0][3] == "PARCIALMENTE PAGO":  
-    #             funcoes.encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[2]","click","tramitar parcialmente",2)
+    #             encontrar_elemento_por_repeticao(driver,"/html/body/div[5]/div[3]/div/div[2]/ul/div[2]","click","tramitar parcialmente",2)
     #         sleep(2)
     #         atualizar_status_na_planilha(ler_dados_da_planilha(tipo_de_solicitacao)[0][4])    
     # driver.close()    

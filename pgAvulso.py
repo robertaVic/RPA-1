@@ -1,7 +1,7 @@
 from time import sleep
 from datetime import date
-import gerenciadorPastas
-import funcoes
+from gerenciadorPastas import *
+from funcoes import *
 import shutil
 import os
 from selenium.webdriver.common.keys import Keys
@@ -16,37 +16,32 @@ from gerenciadorPlanilhas import preencher_solicitacao_na_planilha, ler_dados_da
 #função para tramitar as solicitações
 def pagamentoAvulso(financeiro):
     #verificar se tem downloads antigos e apagar
-    gerenciadorPastas.remover_arquivos_da_raiz(gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
+    remover_arquivos_da_raiz(recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\")
     #data atual formatada
     data_em_texto = date.today().strftime("%d.%m.%Y")
     #caminho da pasta macro(pasta do dia)
-    caminho_da_pasta = gerenciadorPastas.recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamento Avulso\\" 
+    caminho_da_pasta = recuperar_diretorio_usuario() + "\\tpfe.com.br\\SGP e SGC - RPA\\Pagamento Avulso\\" 
     #criar pasta do dia dentro de pagamento avulso
-    gerenciadorPastas.criarPastaData(caminho_da_pasta, data_em_texto)
+    criarPastaData(caminho_da_pasta, data_em_texto)
     tipo_de_solicitacao = "PA"
     builder = ActionChains(financeiro)
     #financeiro.implicitly_wait(10)
 
     #ACESSANDO PAGAMENTO AVULSO
-    funcoes.espera_explicita_de_elemento(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",2)
+    espera_explicita_de_elemento(financeiro,"/html/body/div[1]/div/div[2]/main/section/div/div/div/div/section/div/div[2]/div","encontrar","SRB1",2)
     financeiro.get("https://tpf2.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
     #financeiro.implicitly_wait(10)
-    #Limpando Filtros
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 4)
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro", 4)
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/button","click","filtro", 4)
-
     #FILTRANDO OS PAGAMENTOS SOLICITADOS
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 3)
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/ul/li[2]","click","filtro",2)
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 3)
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/ul/li[2]","click","filtro",2)
     
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 3)
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","limpar",0.2)
-    funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/ul/li[3]/div/div/div", "click", "filtro",2)
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/ul/li[3]", "click", "filtro", 0.4)
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[1]", "click", "filtro", 0.3)
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 3)
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","limpar",0.2)
+    encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/ul/li[3]/div/div/div", "click", "filtro",2)
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[3]/ul/li[3]", "click", "filtro", 0.4)
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[5]/div[1]", "click", "filtro", 0.3)
     print(20*"=")
-    funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechando filtro", 0.4)
+    encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/button", "click", "fechando filtro", 0.4)
     
     #OBTER QUANTIDADE DE PAGAMENTOS
     sleep(5)
@@ -65,22 +60,21 @@ def pagamentoAvulso(financeiro):
         #estado = financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[7]/div/span").get_attribute("innerText")
         #ACESSANDO A SOLICITAÇAO
         #/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/span[2]/div/p[2]
-        funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input", "click", "click na checkbox", 4)
+        encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input", "click", "click na checkbox", 4)
         #financeiro.find_element_by_xpath("/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr[1]/td[2]/span/span[1]/input").click()
         #clicar no lápis de edição
-        funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
+        encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "click na linha", 4)
         
         #PEGAR TODAS AS INFORMAÇOES PARA ALIMENTAR A PLANILHA
         caminho_em_comum_entre_campos_do_formulario = "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div"
-
-        #SA
+       
+        #PA
         dados_do_formulario.append(tipo_de_solicitacao)
         #ID DA SOLICITAÇAO
         dados_do_formulario.append(identificador)
         #CPF/CNPJ
-        funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[1]/div/div/input", "click", "cpf cnpj", 4)
-        sleep(1)
-        cnpj = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[1]/div/div/div/input").get_attribute("value")
+        encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[1]/div/div/div/input", "click", "cnpj", 4)
+        cnpj = financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[2]/div[1]/div/div/div/input").get_attribute("value")
         cpf = financeiro.find_element_by_xpath(caminho_em_comum_entre_campos_do_formulario + "[2]/div[2]/div/div/div/input").get_attribute("value")
         try:
             validacao_cpf = 0
@@ -158,15 +152,28 @@ def pagamentoAvulso(financeiro):
         sleep(3)
         #CRIAR A PASTA DO PAGAMENTO QUE ACABOU DE SER PROCESSADO
         
-        nome_da_pasta = "ID " + "PA"+ str(identificador)[-6::]
+        razao = razao.replace("\\" , "")
+        razao = razao.replace("/", "")
+        razao = razao.replace(":", "")
+        razao = razao.replace("*", "")
+        razao = razao.replace("?", "")
+        razao = razao.replace('"', "")
+        razao = razao.replace("<", "")
+        razao = razao.replace(">", "")
+        razao = razao.replace("|", "")
+        razao = razao.replace(".", "")
+        razao = razao.replace(",", "")
+        
+        
+        nome_da_pasta = "ID " + str(identificador)  + " " + str(razao)
         # else:    
         #     nome_da_pasta = (f"PA ID {identificador} {razao}")
 
         print(nome_da_pasta)
-        gerenciadorPastas.criarPastasFilhas("Pagamento Avulso", nome_da_pasta) 
+        criarPastasFilhas("Pagamento Avulso", nome_da_pasta) 
 
         #BAIXAR AS NF
-        funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]", "click", "clicar em notas", 3)
+        encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[2]", "click", "clicar em notas", 3)
         tbody2 = financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[3]/div/div/div/div[1]/div[3]/table/tbody")
         #pega todas as linhas que contem nf
         rows2 = tbody2.find_elements_by_tag_name("a") 
@@ -193,27 +200,27 @@ def pagamentoAvulso(financeiro):
         sleep(2)
         #IMPRIMINDO
         try:
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]", "click", "voltar", 10)
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div[2]/div/div/button", "click", "imprimir", 3)
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[1]", "click", "voltar", 10)
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[2]/div/div[6]/div[2]/div/div[2]/div/div/button", "click", "imprimir", 3)
             financeiro.switch_to_frame(0)
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr","click","filtro",2) 
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]", "click", "baixar capa", 2)
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td", "click", "baixar capa", 2)
+            encontrar_elemento_por_repeticao(financeiro,"/html/body/div/div/div/div[2]/div/table/tbody/tr/td[1]/table/tbody/tr/td[3]/div/table/tbody/tr","click","filtro",2) 
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div/div/div/div[16]/div/div[1]/table/tbody/tr/td[2]", "click", "baixar capa", 2)
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div/div/div/div[20]/div[4]/table/tbody/tr/td[1]/div/table/tbody/tr/td", "click", "baixar capa", 2)
             financeiro.switch_to.default_content()
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[7]/div[3]/div/div[1]/h2/div/div[2]/button", "click", "baixar capa", 2)
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div[7]/div[3]/div/div[1]/h2/div/div[2]/button", "click", "baixar capa", 2)
             print("passou")
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "baixar capa", 2)
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button", "click", "baixar capa", 2)
         except:
             dados_do_formulario[15] += "A capa nao foi baixada"
             print(dados_do_formulario[15])
 
         #MOVENDO ARQUIVOS
         print("mover arquivos")
-        funcoes.validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta)
+        validar_download(caminho_da_pasta, data_em_texto, nome_da_pasta)
         
         #TRAMITAÇÃO
-        funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","tramitar",2)
-        funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div[2]/ul/div[3]", "click", "tramitar", 2)
+        encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","tramitar",2)
+        encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div[2]/ul/div[3]", "click", "tramitar", 2)
         #Status 
         dados_do_formulario.append("Processada")
 
@@ -223,36 +230,36 @@ def pagamentoAvulso(financeiro):
         preencher_solicitacao_na_planilha(dados_do_formulario, tipo_de_solicitacao)
         sleep(5)
         financeiro.get("https://tpf2.madrix.app/runtime/44/list/190/Solicitação de Pgto Avulso")
-        sleep(2)
 
     sleep(1.5)
     print("Vai começar a contar")
     sleep(5)
 
-    # 2° PARTE : ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO 
+     # 2° PARTE : ESPERANDO DO FINANCEIRO PRA TRAMITAR PRA PAGO 
     lista_de_tramitacao = ler_dados_da_planilha(tipo_de_solicitacao)
     #Filtro
     if len(lista_de_tramitacao) > 0:
-        sleep(2)
-        funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 4)
-        funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/ul/li[6]","click","filtro",2)
+        encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div/div/div","click","filtro", 4)
+        encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/ul/li[6]","click","filtro",2)
         #Para cada solicitaçao que precisa ser paga
         for solicitacao in lista_de_tramitacao:
             print(lista_de_tramitacao)
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 2)
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
+            encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/button[3]","click","filtro", 2)
+            encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[1]/div[1]/button","click","filtro",0.2)
             #Filtrar o ID
-            financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(str(solicitacao[0]))
-            # funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[6]/div[1]", "click", "filtro", 0.4 )
+            solicitacao2 = str(solicitacao[0])
+            solicitacao2 = solicitacao2[2:len(solicitacao2)]
+            financeiro.find_element_by_xpath("/html/body/div[4]/div[3]/div/ul/li[1]/div/div/div/div/input").send_keys(solicitacao2)
+            # encontrar_elemento_por_repeticao(financeiro, "/html/body/div[6]/div[1]", "click", "filtro", 0.4 )
             print(20*"=")
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "filtro", 0.4 )
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div[2]/button", "click", "filtro", 0.4 )
             sleep(3)
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input", "click", "LINHA", 2 )
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "editar",2 )
-            funcoes.encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]", "click", "pagamentos", 2 )
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[3]/div/div/div/table/tbody/tr/td[2]/span/span[1]/input", "click", "LINHA", 2 )
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[1]", "click", "editar",2 )
+            encontrar_elemento_por_repeticao(financeiro, "/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[1]/div/div[2]/div/button[3]", "click", "pagamentos", 2 )
             sleep(2)
 
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","add um novo pg",2)
+            encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div[4]/div/div/div/div[1]/div[1]/div[1]/div/div/span/div/button[1]","click","add um novo pg",2)
             sleep(3)
             #Data
             financeiro.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[1]/div/div/div/input").send_keys(str(solicitacao[2]))
@@ -268,18 +275,20 @@ def pagamentoAvulso(financeiro):
                 valor+=",00"
             financeiro.find_element_by_xpath("/html/body/div[7]/div[3]/div/div/div/div[3]/form/fieldset/div/div/div/div[1]/div[2]/div/div/div/input").send_keys(valor)
             #Salvar
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","SPA",3)
+            encontrar_elemento_por_repeticao(financeiro,"/html/body/div[7]/div[3]/div/div/div/div[4]/fieldset/button[2]","click","SPA",3)
             #Voltar
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button","click","SPA",2)
+            encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div/div/div[1]/div/div[3]/button","click","SPA",2)
             #Tramitar
-            funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","SPA",3) 
+            encontrar_elemento_por_repeticao(financeiro,"/html/body/div[1]/div/div[2]/div/main/section/div/div/div/div[1]/div/div[1]/div[3]/div/button[2]","click","SPA",3) 
             sleep(3)   
             #Pago ou parcialmente pago 
+            #Erro no Maiusculo
             if str(solicitacao[3]).lower() == "pago":
-                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[1]","click","pago",2)    
+                encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[1]","click","pago",3)
+                #/html/body/div[4]/div[3]/div/div[2]/ul/div[1]
             elif str(solicitacao[3]).lower() == "parcialmente pago":  
-                funcoes.encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[2]","click","SPA",2)
-            sleep(10)
+                encontrar_elemento_por_repeticao(financeiro,"/html/body/div[4]/div[3]/div/div[2]/ul/div[2]","click","SPA",3)
+            sleep(4)
             
             atualizar_status_na_planilha(int(solicitacao[4]))     
     print("FIMMMMMMMMMMMMMMM AVULSO")
